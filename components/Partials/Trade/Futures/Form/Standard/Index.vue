@@ -180,7 +180,7 @@ watch(
 </script>
 
 <template>
-  <div class="p-4 lg:pb-8">
+  <div class="space-y-4 p-4 lg:pb-8">
     <PartialsTradeFuturesFormStandardNavigation
       v-model="orderType"
       @trade-type:change="onTradeTypeChange"
@@ -194,49 +194,46 @@ watch(
       }"
     />
 
-    <div class="space-y-4 pt-4">
-      <AppButton
-        is-full-width
-        variant="primary-outline"
-        class="rounded-lg p-2.5 w-full text-sm font-medium"
-        @click="openLeverageModal"
-      >
-        {{
-          $t('trade.leverageModal.leverageAt', {
-            leverageAmount:
-              derivativeFormValues[DerivativesTradeFormField.Leverage]
-          })
-        }}
-      </AppButton>
+    <AppButton
+      is-full-width
+      variant="primary-outline"
+      class="rounded-lg p-2.5 w-full text-sm font-medium"
+      @click="openLeverageModal"
+    >
+      {{
+        $t('trade.leverageModal.leverageAt', {
+          leverageAmount:
+            derivativeFormValues[DerivativesTradeFormField.Leverage]
+        })
+      }}
+    </AppButton>
 
-      <PartialsTradeFuturesFormStandardTriggerField v-if="isTriggerOrder" />
+    <PartialsTradeFuturesFormStandardTriggerField v-if="isTriggerOrder" />
 
-      <PartialsTradeCommonFormLimitPriceField
-        v-if="isLimitOrder"
-        v-bind="{
-          isBuySide: orderSide === TradeDirection.Long,
-          fieldName: DerivativesTradeFormField.LimitPrice,
-          cyTag: PerpetualMarketCyTags.LimitpriceInputField,
-          lastTradedPrice,
-          shouldSkipAutoSet: orderType === DerivativeTradeTypes.StopLimit,
-          bypassPriceWarning:
-            derivativeFormValues[DerivativesTradeFormField.BypassPriceWarning]
-        }"
-      />
+    <PartialsTradeCommonFormLimitPriceField
+      v-if="isLimitOrder"
+      v-bind="{
+        isBuySide: orderSide === TradeDirection.Long,
+        fieldName: DerivativesTradeFormField.LimitPrice,
+        cyTag: PerpetualMarketCyTags.LimitpriceInputField,
+        lastTradedPrice,
+        shouldSkipAutoSet: orderType === DerivativeTradeTypes.StopLimit,
+        bypassPriceWarning:
+          derivativeFormValues[DerivativesTradeFormField.BypassPriceWarning]
+      }"
+    />
 
-      <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{
-          isLimitOrder,
-          quantity: quantityToBigNumber,
-          worstPrice: tradeDetails.executionPrice.value,
-          marginWithFee: tradeDetails.marginWithFee.value,
-          minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
-        }"
-      />
-    </div>
+    <PartialsTradeFuturesFormStandardAmountField
+      v-bind="{
+        isLimitOrder,
+        quantity: quantityToBigNumber,
+        worstPrice: tradeDetails.executionPrice.value,
+        marginWithFee: tradeDetails.marginWithFee.value,
+        minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
+      }"
+    />
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
-      class="my-4"
       v-bind="{
         isLimitOrder,
         isMarketOrder,
@@ -247,7 +244,6 @@ watch(
 
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
-      class="my-4"
       v-bind="{
         tradeDetails,
         isLimitOrder,
@@ -272,7 +268,7 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity class="mt-6" />
+    <PartialsTradeCommonFormAccountEquity class="!mt-6" />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"

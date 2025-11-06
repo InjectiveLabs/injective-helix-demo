@@ -106,7 +106,7 @@ watch(
 </script>
 
 <template>
-  <div class="p-4 lg:pb-8">
+  <div class="space-y-4 p-4 lg:pb-8">
     <div
       class="border-b max-lg:-mx-4 max-lg:-mt-2"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
@@ -142,41 +142,32 @@ watch(
     <PartialsTradeCommonFormSideSelector
       v-model="orderSideValue"
       is-spot
-      class="mt-4"
+      v-bind="{ isLimitOrder }"
+    />
+
+    <PartialsTradeCommonFormLimitPriceField
+      v-if="isLimitOrder"
       v-bind="{
-        isLimitOrder
+        lastTradedPrice,
+        fieldName: SpotTradeFormField.Price,
+        isBuySide: orderSideValue === OrderSide.Buy,
+        cyTag: SpotMarketCyTags.LimitPriceInputField,
+        bypassPriceWarning:
+          spotFormValues[SpotTradeFormField.BypassPriceWarning]
       }"
     />
 
-    <div class="pt-4 space-y-4">
-      <PartialsTradeCommonFormLimitPriceField
-        v-if="isLimitOrder"
-        v-bind="{
-          lastTradedPrice,
-          fieldName: SpotTradeFormField.Price,
-          isBuySide: orderSideValue === OrderSide.Buy,
-          cyTag: SpotMarketCyTags.LimitPriceInputField,
-          bypassPriceWarning:
-            spotFormValues[SpotTradeFormField.BypassPriceWarning]
-        }"
-      />
-
-      <PartialsTradeSpotFormStandardAmountField
-        v-bind="{
-          quantity: quantityToBigNumber,
-          totalWithFee: totalWithFeeToBigNumber,
-          minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
-        }"
-      />
-    </div>
-
-    <PartialsTradeSpotFormStandardAdvancedSettings
-      v-if="isLimitOrder"
-      class="my-4"
+    <PartialsTradeSpotFormStandardAmountField
+      v-bind="{
+        quantity: quantityToBigNumber,
+        totalWithFee: totalWithFeeToBigNumber,
+        minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
+      }"
     />
 
+    <PartialsTradeSpotFormStandardAdvancedSettings v-if="isLimitOrder" />
+
     <PartialsTradeSpotFormStandardDetails
-      class="my-4"
       v-bind="{
         tradeDetails,
         isLimitOrder
@@ -193,6 +184,6 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity class="mt-6" />
+    <PartialsTradeCommonFormAccountEquity class="!mt-6" />
   </div>
 </template>
