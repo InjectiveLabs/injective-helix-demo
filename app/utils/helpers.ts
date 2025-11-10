@@ -334,11 +334,13 @@ export function mergeObjects<T extends Record<any, any>>(
  *
  * @param number - The number to quantize.
  * @param precision - The precision to quantize the number to.
+ * @param rounding - The rounding mode to use (down by default)
  * @returns The quantized number.
  */
 export function quantizeNumber(
   number: number | BigNumberInBase,
-  tensMultiplier: number
+  tensMultiplier: number,
+  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN
 ): BigNumberInBase {
   const numberInBigNumber = new BigNumberInBase(number)
 
@@ -351,7 +353,7 @@ export function quantizeNumber(
   return new BigNumberInBase(
     new BigNumberInBase(number)
       .dividedBy(divideBy)
-      .dp(0, BigNumber.ROUND_DOWN)
+      .dp(0, rounding)
       .times(divideBy)
   )
 }

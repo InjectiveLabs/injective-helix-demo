@@ -1,6 +1,6 @@
 import { SharedMarketType } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { safeAmount, quantizeNumber } from '@/app/utils/helpers'
 import {
   calculateNotional,
@@ -71,10 +71,15 @@ export function useTradeDetails({
     worstPrice.value = new BigNumberInBase(data.worstPrice)
     averagePrice.value = new BigNumberInBase(data.averagePrice)
 
-    calculatedNotional.value = calculateNotional({
+    const rawCalculatedNotional = calculateNotional({
       price: new BigNumberInBase(worstPrice.value),
       quantity: new BigNumberInBase(safeAmount(quantity.value))
     })
+
+    calculatedNotional.value = quantizeNumber(
+      rawCalculatedNotional,
+      market.value.priceTensMultiplier
+    )
   }
 
   function setPricesForLimitOrTriggerOrder() {
@@ -102,15 +107,23 @@ export function useTradeDetails({
     set: (value) => {
       quantity.value = value
 
-      const quantityInBase = new BigNumberInBase(safeAmount(value))
+      const quantityInBase = quantizeNumber(
+        new BigNumberInBase(safeAmount(value)),
+        market.value.quantityTensMultiplier
+      )
 
       if (isLimitOrder.value || isTriggerOrder?.value) {
         setPricesForLimitOrTriggerOrder()
 
-        calculatedNotional.value = calculateNotional({
+        const rawCalculatedNotional = calculateNotional({
           quantity: quantityInBase,
           price: worstPrice.value as BigNumberInBase
         })
+
+        calculatedNotional.value = quantizeNumber(
+          rawCalculatedNotional,
+          market.value.priceTensMultiplier
+        )
         notional.value = notionalWithFee.value.toFixed()
         enoughLiquidity.value = true
 
@@ -155,10 +168,14 @@ export function useTradeDetails({
         )
         quantity.value = calculatedQuantityQuantized.toFixed()
 
-        calculatedNotional.value = calculateNotional({
+        const rawCalculatedNotional = calculateNotional({
           price: worstPrice.value as BigNumberInBase,
           quantity: calculatedQuantityQuantized
         })
+        calculatedNotional.value = quantizeNumber(
+          rawCalculatedNotional,
+          market.value.priceTensMultiplier
+        )
         enoughLiquidity.value = true
 
         return
@@ -181,13 +198,19 @@ export function useTradeDetails({
     new BigNumberInBase(safeAmount(slippagePercentage.value)).div(100)
   )
 
-  const slippagePrice = computed(() =>
-    calculateSlippagePrice({
+  const slippagePrice = computed(() => {
+    const calculatedSlippagePrice = calculateSlippagePrice({
       isBuy: isBuy.value,
       slippageTolerance: slippageTolerance.value,
       price: new BigNumberInBase(bestPrice.value)
     })
-  )
+
+    return quantizeNumber(
+      calculatedSlippagePrice,
+      market.value.priceTensMultiplier,
+      isBuy.value ? BigNumber.ROUND_UP : BigNumber.ROUND_DOWN
+    )
+  })
 
   const estSlippagePercentage = computed(() =>
     calculateEstimatedSlippage({
