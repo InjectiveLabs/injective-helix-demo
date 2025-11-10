@@ -138,7 +138,7 @@ onMounted(() => {
   )
 })
 
-function addTpSl(position: PositionV2) {
+function updateTpSl(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
 }
@@ -236,13 +236,18 @@ watch(
       }"
     />
 
+    <PartialsTradeFuturesFormStandardSettingsTpSl
+      v-if="isMarketOrder"
+      v-bind="{ estLiquidationPrice }"
+      @tpsl:update="updateTpSl"
+    />
+
     <PartialsTradeFuturesFormStandardAdvancedSettings
       v-bind="{
         isLimitOrder,
         isMarketOrder,
         estLiquidationPrice
       }"
-      @tpsl:add="addTpSl"
     />
 
     <PartialsTradeFuturesFormStandardDetails
@@ -270,7 +275,7 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity class="!mt-6" />
+    <PartialsTradeCommonFormAccountEquity class="border-t pt-5 !mt-6" />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
