@@ -144,6 +144,7 @@ const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
   isBuy,
   market,
   markPrice,
+  isReduceOnly,
   price: computed(() => props.worstPrice),
   quantity: computed(() => props.quantity),
   marginWithFee: computed(() => props.marginWithFee),
