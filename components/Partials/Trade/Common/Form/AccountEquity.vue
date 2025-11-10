@@ -90,8 +90,8 @@ function onDeposit() {
             <template #prefix>$</template>
           </SharedAmountUsd>
           <span class="text-coolGray-450"> USD </span>
-        </p></template
-      >
+        </p>
+      </template>
     </PartialsTradeCommonFormDetailsRow>
 
     <PartialsTradeCommonFormDetailsRow>

@@ -12,8 +12,8 @@ const emit = defineEmits<{
 
 withDefaults(
   defineProps<{
-    isLimitOrder: boolean
-    isMarketOrder: boolean
+    isLimitOrder?: boolean
+    isMarketOrder?: boolean
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}

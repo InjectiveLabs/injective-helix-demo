@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
-  SpotMarketCyTags,
-  PerpetualMarketCyTags,
   BusEvents,
-  IsSpotKey
+  IsSpotKey,
+  SpotMarketCyTags,
+  PerpetualMarketCyTags
 } from '@/types'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 
@@ -24,12 +24,6 @@ const sides = computed(() =>
     : [TradeDirection.Long, TradeDirection.Short]
 )
 
-const cyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.SpotTradingSide
-    : PerpetualMarketCyTags.TradeDirection
-)
-
 function onOrderSideClicked() {
   if (props.isLimitOrder) {
     useEventBus(BusEvents.OrderSideToggled).emit()
@@ -45,7 +39,11 @@ function onOrderSideClicked() {
       class="flex-1"
       v-model="side"
       v-bind="{ value: option }"
-      :data-cy="`${dataCyTag(cyTag)}-${option}`"
+      :data-cy="`${dataCyTag(
+        isSpot
+          ? SpotMarketCyTags.SpotTradingSide
+          : PerpetualMarketCyTags.TradeDirection
+      )}-${option}`"
       @click="onOrderSideClicked"
     >
       <AppButton

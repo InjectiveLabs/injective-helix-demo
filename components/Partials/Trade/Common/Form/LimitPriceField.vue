@@ -11,7 +11,7 @@ import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isBuy: boolean
+    isBuy?: boolean
     fieldName: string
     shouldSkipAutoSet?: boolean
     bypassPriceWarning?: boolean
@@ -47,12 +47,6 @@ const {
 })
 
 const hasClickedLimitField = ref(false)
-
-const cyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.LimitPriceInputField
-    : PerpetualMarketCyTags.LimitpriceInputField
-)
 
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
@@ -126,7 +120,13 @@ function onResetLimitField() {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
-      :data-cy="dataCyTag(cyTag)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.LimitPriceInputField
+            : PerpetualMarketCyTags.LimitpriceInputField
+        )
+      "
       @click="onResetLimitField"
     >
       <template #right>

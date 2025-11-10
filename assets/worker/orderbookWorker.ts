@@ -256,8 +256,8 @@ self.addEventListener(
 
     function calculateNotionalInfo({
       isBuy,
-      isSpot: _isSpot,
       notional,
+      isSpot: _isSpot,
       baseDecimals: _baseDecimals,
       quoteDecimals: _quoteDecimals
     }: {
@@ -284,9 +284,9 @@ self.addEventListener(
           messageType: WorkerMessageResponseType.ReceiveNotionalInfo,
           data: {
             quantity: '0',
+            bestPrice: '0',
             worstPrice: '0',
-            averagePrice: '0',
-            bestPrice: '0'
+            averagePrice: '0'
           }
         } as OrderbookWorkerResult)
         return
@@ -353,8 +353,8 @@ self.addEventListener(
 
     function calculateQuantityInfo({
       isBuy,
-      isSpot: _isSpot,
       quantity,
+      isSpot: _isSpot,
       baseDecimals: _baseDecimals,
       quoteDecimals: _quoteDecimals
     }: {
@@ -380,9 +380,9 @@ self.addEventListener(
         self.postMessage({
           messageType: WorkerMessageResponseType.ReceiveQuantityInfo,
           data: {
+            bestPrice: '0',
             worstPrice: '0',
             averagePrice: '0',
-            bestPrice: '0',
             enoughLiquidity: false
           }
         } as OrderbookWorkerResult)
@@ -428,10 +428,10 @@ self.addEventListener(
       self.postMessage({
         messageType: WorkerMessageResponseType.ReceiveQuantityInfo,
         data: {
-          worstPrice,
-          averagePrice: String(averagePrice),
           bestPrice,
-          enoughLiquidity
+          worstPrice,
+          enoughLiquidity,
+          averagePrice: String(averagePrice)
         }
       } as OrderbookWorkerResult)
     }
@@ -475,30 +475,31 @@ self.addEventListener(
           isBuy: true,
           priceMap: buys,
           isSpot: data.isSpot,
-          priceLevels: data.orderbook.buys,
           baseDecimals: data.baseDecimals,
+          priceLevels: data.orderbook.buys,
           quoteDecimals: data.quoteDecimals
         })
         priceLevelsToMap({
           isBuy: false,
           priceMap: sells,
           isSpot: data.isSpot,
-          priceLevels: data.orderbook.sells,
           baseDecimals: data.baseDecimals,
+          priceLevels: data.orderbook.sells,
           quoteDecimals: data.quoteDecimals
         })
 
         sendReplaceOrderbook()
 
-        if (lastReceivedQuantityOrAmount) {
-          if (
-            lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity
-          ) {
-            calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
-          } else {
-            calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
-          }
+        if (!lastReceivedQuantityOrAmount) {
+          break
         }
+
+        if (lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity) {
+          calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
+        } else {
+          calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
+        }
+
         break
 
       case WorkerMessageType.Fetch:
@@ -509,16 +510,16 @@ self.addEventListener(
           isBuy: true,
           priceMap: buys,
           isSpot: data.isSpot,
-          priceLevels: data.orderbook.buys,
           baseDecimals: data.baseDecimals,
+          priceLevels: data.orderbook.buys,
           quoteDecimals: data.quoteDecimals
         })
         priceLevelsToMap({
           isBuy: false,
           priceMap: sells,
           isSpot: data.isSpot,
-          priceLevels: data.orderbook.sells,
           baseDecimals: data.baseDecimals,
+          priceLevels: data.orderbook.sells,
           quoteDecimals: data.quoteDecimals
         })
 
@@ -564,14 +565,15 @@ self.addEventListener(
           )
         }
 
-        if (lastReceivedQuantityOrAmount) {
-          if (
-            lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity
-          ) {
-            calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
-          } else {
-            calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
-          }
+        if (!lastReceivedQuantityOrAmount) {
+          sendReplaceOrderbook()
+          break
+        }
+
+        if (lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity) {
+          calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
+        } else {
+          calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
         }
 
         sendReplaceOrderbook()

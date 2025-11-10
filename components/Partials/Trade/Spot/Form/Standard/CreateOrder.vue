@@ -29,11 +29,11 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const props = withDefaults(
   defineProps<{
-    isLimitOrder: boolean
+    isLimitOrder?: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
-    hasEnoughLiquidity: boolean
-    hasSlippageWarning: boolean
+    hasEnoughLiquidity?: boolean
+    hasSlippageWarning?: boolean
   }>(),
   {
     hasEnoughLiquidity: true
@@ -126,12 +126,6 @@ const isDisabled = computed(() => {
   )
 })
 
-onMounted(() => {
-  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
-    chartType.value = chart
-  })
-})
-
 const mixPanelFields = computed(() => ({
   leverage: '',
   triggerPrice: '',
@@ -158,6 +152,12 @@ async function onSubmit() {
     submitMarketOrder()
   }
 }
+
+onMounted(() => {
+  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
+    chartType.value = chart
+  })
+})
 
 function submitMarketOrder() {
   status.setLoading()

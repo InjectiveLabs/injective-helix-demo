@@ -17,8 +17,8 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 withDefaults(
   defineProps<{
-    isLimitOrder: boolean
-    isTriggerOrder: boolean
+    isLimitOrder?: boolean
+    isTriggerOrder?: boolean
     tradeDetails: TradeDetails
     estLiquidationPrice: BigNumberInBase
   }>(),
@@ -111,7 +111,7 @@ function openSlippageModal() {
               showEstSlippage:
                 tradeDetails.enoughLiquidity.value && !isTriggerOrder
             }"
-            @click="openSlippageModal"
+            @on:click="openSlippageModal"
           />
         </template>
       </PartialsTradeCommonFormDetailsRow>

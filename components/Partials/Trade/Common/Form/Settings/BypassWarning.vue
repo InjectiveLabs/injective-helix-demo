@@ -14,12 +14,6 @@ const { value: bypassPriceWarningValue } = useBooleanField({
   rule: '',
   name: props.formFieldName
 })
-
-const cyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.AdvancedSettingsBypassWarning
-    : PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox
-)
 </script>
 
 <template>
@@ -27,7 +21,13 @@ const cyTag = computed(() =>
     <AppCheckbox
       v-model="bypassPriceWarningValue"
       class="w-full text-white"
-      :data-cy="dataCyTag(cyTag)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.AdvancedSettingsBypassWarning
+            : PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox
+        )
+      "
     >
       {{ $t('trade.bypassPriceWarning') }}
     </AppCheckbox>

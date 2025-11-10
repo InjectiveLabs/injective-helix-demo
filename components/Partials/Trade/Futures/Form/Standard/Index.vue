@@ -167,17 +167,18 @@ function openLeverageModal() {
 watch(
   [() => derivativeFormValues.value],
   ([formValues]) => {
+    const amount = formValues[DerivativesTradeFormField.Amount] || '0'
     const option =
       formValues[DerivativesTradeFormField.AmountOption] ||
       TradeAmountOption.Base
 
     if (option === TradeAmountOption.Base) {
-      tradeDetails.quantity.value =
-        formValues[DerivativesTradeFormField.Amount] || '0'
-    } else {
-      tradeDetails.notional.value =
-        formValues[DerivativesTradeFormField.Amount] || '0'
+      tradeDetails.quantity.value = amount
+
+      return
     }
+
+    tradeDetails.notional.value = amount
   },
   { deep: true }
 )

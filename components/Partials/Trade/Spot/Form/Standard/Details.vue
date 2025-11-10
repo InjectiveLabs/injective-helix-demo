@@ -17,7 +17,7 @@ const spotMarket = inject(MarketKey) as ComputedRef<UiSpotMarket>
 
 withDefaults(
   defineProps<{
-    isLimitOrder: boolean
+    isLimitOrder?: boolean
     tradeDetails: TradeDetails
   }>(),
   {}
@@ -97,7 +97,7 @@ function openSlippageModal() {
               showEstSlippage: tradeDetails.enoughLiquidity.value,
               estSlippagePercentage: tradeDetails.estSlippagePercentage.value
             }"
-            @click="openSlippageModal"
+            @on:click="openSlippageModal"
           />
         </template>
       </PartialsTradeCommonFormDetailsRow>

@@ -2,9 +2,9 @@
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  safeAmount,
   calculateWorstPrice,
-  calculateTotalQuantity,
-  safeAmount
+  calculateTotalQuantity
 } from '@/app/utils/helpers'
 import {
   ONE_IN_BASE,
@@ -47,7 +47,7 @@ const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
   defineProps<{
-    isLimitOrder: boolean
+    isLimitOrder?: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
     marginWithFee: BigNumberInBase

@@ -12,7 +12,7 @@ import { IsSpotKey, SpotMarketCyTags, PerpetualMarketCyTags } from '@/types'
 const props = withDefaults(
   defineProps<{
     formAmount: string
-    showEstSlippage: boolean
+    showEstSlippage?: boolean
     slippagePercentage: string
     estSlippagePercentage: BigNumberInBase
   }>(),
@@ -21,21 +21,9 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{ click: [] }>()
+const emit = defineEmits<{ 'on:click': [] }>()
 
 const isSpot = inject(IsSpotKey)
-
-const estSlippageCyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.DisplayedEstimatedSlippage
-    : PerpetualMarketCyTags.DisplayedEstimatedSlippage
-)
-
-const slippagePercentageCyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.DisplayedSlippageTolerance
-    : PerpetualMarketCyTags.DisplayedSlippageTolerance
-)
 
 const estSlippageDecimals = computed(() => {
   if (props.formAmount === '0') {
@@ -58,7 +46,7 @@ const adaptedEstSlippagePercentage = computed(() => {
 })
 
 function handleClick() {
-  emit('click')
+  emit('on:click')
 }
 </script>
 
@@ -78,7 +66,13 @@ function handleClick() {
                 decimals: estSlippageDecimals,
                 amount: adaptedEstSlippagePercentage
               }"
-              :data-cy="dataCyTag(estSlippageCyTag)"
+              :data-cy="
+                dataCyTag(
+                  isSpot
+                    ? SpotMarketCyTags.DisplayedEstimatedSlippage
+                    : PerpetualMarketCyTags.DisplayedEstimatedSlippage
+                )
+              "
             />
           </template>
         </i18n-t>
@@ -95,7 +89,13 @@ function handleClick() {
                 amount: slippagePercentage,
                 decimals: DEFAULT_PERCENTAGE_DECIMALS
               }"
-              :data-cy="dataCyTag(slippagePercentageCyTag)"
+              :data-cy="
+                dataCyTag(
+                  isSpot
+                    ? SpotMarketCyTags.DisplayedSlippageTolerance
+                    : PerpetualMarketCyTags.DisplayedSlippageTolerance
+                )
+              "
             />
           </template>
         </i18n-t>

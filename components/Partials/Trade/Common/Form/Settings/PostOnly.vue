@@ -17,12 +17,6 @@ const { value: postOnlyValue } = useBooleanField({
   name: props.formFieldName,
   initialValue: jsonStore.isPostUpgradeMode
 })
-
-const cyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.AdvancedSettingsPostOnly
-    : PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox
-)
 </script>
 
 <template>
@@ -30,7 +24,13 @@ const cyTag = computed(() =>
     <AppCheckbox
       v-model="postOnlyValue"
       class="w-full text-white"
-      :data-cy="dataCyTag(cyTag)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.AdvancedSettingsPostOnly
+            : PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox
+        )
+      "
       :disabled="jsonStore.isPostUpgradeMode"
     >
       {{ $t('trade.postOnly') }}

@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,
   MarketKey,
   TradeTypes,
   SpotMarketCyTags,
-  SpotTradeFormField,
-  TradeAmountOption
+  TradeAmountOption,
+  SpotTradeFormField
 } from '@/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
@@ -96,15 +96,17 @@ onMounted(() => {
 watch(
   [() => spotFormValues.value],
   ([formValues]) => {
+    const amount = formValues[SpotTradeFormField.Amount] || '0'
     const option =
       formValues[SpotTradeFormField.AmountOption] || TradeAmountOption.Base
-    const amount = formValues[SpotTradeFormField.Amount] || '0'
 
     if (option === TradeAmountOption.Base) {
       tradeDetails.quantity.value = amount
-    } else {
-      tradeDetails.notional.value = amount
+
+      return
     }
+
+    tradeDetails.notional.value = amount
   },
   { deep: true }
 )

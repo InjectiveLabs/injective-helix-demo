@@ -221,13 +221,9 @@ export function useTradeDetails({
   )
 
   const margin = computed(() => {
-    if (isSpot.value || !leverage?.value) {
-      return ZERO_IN_BASE
-    }
+    const leverageInBase = new BigNumberInBase(safeAmount(leverage?.value))
 
-    const leverageInBase = new BigNumberInBase(safeAmount(leverage.value))
-
-    if (leverageInBase.isZero()) {
+    if (isSpot.value || leverageInBase.isZero()) {
       return ZERO_IN_BASE
     }
 

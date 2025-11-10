@@ -13,12 +13,6 @@ const isSpot = inject(IsSpotKey)
 
 const isOpen = ref(false)
 
-const cyTag = computed(() =>
-  isSpot
-    ? SpotMarketCyTags.AdvancedSettings
-    : PerpetualMarketCyTags.AdvancedSettings
-)
-
 function toggle() {
   isOpen.value = !isOpen.value
 }
@@ -28,7 +22,13 @@ function toggle() {
   <div>
     <div
       class="flex justify-between items-center cursor-pointer"
-      :data-cy="dataCyTag(cyTag)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.AdvancedSettings
+            : PerpetualMarketCyTags.AdvancedSettings
+        )
+      "
       @click="toggle"
     >
       <p class="text-xs font-semibold select-none text-white">

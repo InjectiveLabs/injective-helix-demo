@@ -35,24 +35,18 @@ const currentSlippageValue = computed(
     defaultSlippage
 )
 
-const slippageFieldName = computed(() =>
-  isSpot ? SpotTradeFormField.Slippage : DerivativesTradeFormField.Slippage
-)
-
-const tempSlippageFieldName = computed(() =>
-  isSpot
-    ? SpotTradeFormField.TempSlippage
-    : DerivativesTradeFormField.TempSlippage
-)
-
 const { value: slippage } = useStringField({
-  name: slippageFieldName.value,
+  name: isSpot
+    ? SpotTradeFormField.Slippage
+    : DerivativesTradeFormField.Slippage,
   initialValue: currentSlippageValue.value
 })
 
 const { value: tempSlippage, errorMessage } = useStringField({
   rule: 'slippage',
-  name: tempSlippageFieldName.value,
+  name: isSpot
+    ? SpotTradeFormField.TempSlippage
+    : DerivativesTradeFormField.TempSlippage,
   initialValue: currentSlippageValue.value
 })
 

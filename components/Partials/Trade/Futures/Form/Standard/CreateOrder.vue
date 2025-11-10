@@ -39,14 +39,14 @@ const { markPrice } = useDerivativeLastPrice(
 
 const props = withDefaults(
   defineProps<{
-    isLimitOrder: boolean
-    isTriggerOrder: boolean
+    isLimitOrder?: boolean
+    isTriggerOrder?: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
     worstPrice: BigNumberInBase
-    hasEnoughLiquidity: boolean
-    hasSlippageWarning: boolean
+    hasEnoughLiquidity?: boolean
+    hasSlippageWarning?: boolean
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
   }>(),
@@ -95,8 +95,6 @@ const isAuthorized = computed(() => {
 
   return authZStore.hasAuthZPermission(msg)
 })
-
-const tradesCount = computed(() => derivativeStore.subaccountTradesCount)
 
 const isBuy = computed(
   () =>
@@ -189,12 +187,6 @@ const isDisabled = computed(() => {
   return false
 })
 
-onMounted(() => {
-  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
-    chartType.value = chart
-  })
-})
-
 const mixPanelFields = computed(() => ({
   isBuy: isBuy.value,
   chartType: chartType.value,
@@ -209,6 +201,12 @@ const mixPanelFields = computed(() => ({
   slippageTolerance:
     derivativeFormValues.value[DerivativesTradeFormField.Slippage] || ''
 }))
+
+onMounted(() => {
+  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
+    chartType.value = chart
+  })
+})
 
 function onSubmit() {
   if (!isRWAMarket.value) {
@@ -265,7 +263,7 @@ async function submitLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta(tradesCount.value)
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -304,7 +302,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta(tradesCount.value)
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -347,7 +345,7 @@ function submitStopLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta(tradesCount.value)
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -390,7 +388,7 @@ function submitStopMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta(tradesCount.value)
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -418,11 +416,11 @@ function submitStopMarketOrder() {
     <div>
       <AppButton
         class="w-full"
-        :variant="isBuy ? 'success' : 'danger'"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         v-bind="{
           status,
-          disabled: isDisabled
+          disabled: isDisabled,
+          variant: isBuy ? 'success' : 'danger'
         }"
         @click="onSubmit"
       >
