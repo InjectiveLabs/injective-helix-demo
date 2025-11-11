@@ -12,7 +12,6 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { markPrice } = useDerivativeLastPrice(market)
@@ -23,9 +22,10 @@ const emit = defineEmits<{
 
 const props = withDefaults(
   defineProps<{
+    currentMarketPosition?: PositionV2
     estLiquidationPrice: BigNumberInBase
   }>(),
-  {}
+  { currentMarketPosition: undefined }
 )
 
 const stopLossPercentage = ref('')
@@ -78,31 +78,25 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
       )
 
       if (isBuy.value) {
-        const minValueRule = `minValue:${formattedEstLiquidationPrice}`
+        const minValueRule = `liquidationValue:${formattedEstLiquidationPrice},true`
         const maxValueRule = `maxValue:${formattedMarkPrice}`
 
         return [minValueRule, maxValueRule].join('|')
       }
 
       const minValueRule = `minValue:${formattedMarkPrice}`
-      const maxValueRule = `maxValue:${formattedEstLiquidationPrice}`
+      const maxValueRule = `liquidationValue:${formattedEstLiquidationPrice},false`
 
       return [minValueRule, maxValueRule].join('|')
     })
   })
-
-const currentMarketPosition = computed(() =>
-  positionStore.subaccountPositions.find(
-    (position) => position.marketId === market.value.marketId
-  )
-)
 
 const tpTriggerPrice = computed(() => {
   const existingTpOrder = derivativeStore.subaccountConditionalOrders.find(
     (order) =>
       (order.orderType === OrderSide.TakeBuy ||
         order.orderType === OrderSide.TakeSell) &&
-      order.marketId === currentMarketPosition.value?.marketId
+      order.marketId === props.currentMarketPosition?.marketId
   )
 
   return existingTpOrder
@@ -118,7 +112,7 @@ const slTriggerPrice = computed(() => {
     (order) =>
       (order.orderType === OrderSide.StopBuy ||
         order.orderType === OrderSide.StopSell) &&
-      order.marketId === currentMarketPosition.value?.marketId
+      order.marketId === props.currentMarketPosition?.marketId
   )
 
   return existingSlOrder
@@ -132,8 +126,8 @@ const slTriggerPrice = computed(() => {
 watch(() => isBuy.value, setInitialTpSl)
 
 function updateTpSl() {
-  if (currentMarketPosition.value) {
-    emit('tpsl:update', currentMarketPosition.value)
+  if (props.currentMarketPosition) {
+    emit('tpsl:update', props.currentMarketPosition)
   }
 }
 

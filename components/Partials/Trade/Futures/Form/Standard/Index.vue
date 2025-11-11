@@ -15,6 +15,7 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const positionStore = usePositionStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -127,6 +128,12 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
+const currentMarketPosition = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === market.value.marketId
+  )
+)
+
 onMounted(() => {
   setFormValues(
     {
@@ -237,8 +244,8 @@ watch(
     />
 
     <PartialsTradeFuturesFormStandardSettingsTpSl
-      v-if="isMarketOrder"
-      v-bind="{ estLiquidationPrice }"
+      v-if="isMarketOrder || (isLimitOrder && currentMarketPosition)"
+      v-bind="{ estLiquidationPrice, currentMarketPosition }"
       @tpsl:update="updateTpSl"
     />
 

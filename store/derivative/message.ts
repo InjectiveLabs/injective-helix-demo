@@ -114,8 +114,10 @@ export const submitLimitOrder = async ({
   margin,
   market,
   quantity,
+  stopLoss,
   orderSide,
-  reduceOnly
+  reduceOnly,
+  takeProfit
 }: {
   reduceOnly: boolean
   orderSide: OrderSide
@@ -123,6 +125,8 @@ export const submitLimitOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   market: UiDerivativeMarket
+  stopLoss?: BigNumberInBase
+  takeProfit?: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -189,6 +193,15 @@ export const submitLimitOrder = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({
     messages: [...cw20Messages, ...cancelTpSlOrderMsgs, message]
+  })
+
+  await derivativeStore.submitExtraTpSlOrders({
+    price,
+    market,
+    quantity,
+    stopLoss,
+    orderSide,
+    takeProfit
   })
 
   await fetchBalances({
@@ -295,10 +308,10 @@ export const submitMarketOrder = async ({
   margin,
   market,
   quantity,
+  stopLoss,
   orderSide,
   reduceOnly,
-  takeProfit,
-  stopLoss
+  takeProfit
 }: {
   reduceOnly: boolean
   orderSide: OrderSide
@@ -370,47 +383,14 @@ export const submitMarketOrder = async ({
     messages: [...cw20Messages, ...cancelTpSlOrderMsgs, message]
   })
 
-  const shouldCreateConditionalOrders =
-    (takeProfit && takeProfit.gt(0)) || (stopLoss && stopLoss.gt(0))
-
-  if (shouldCreateConditionalOrders) {
-    // To exist a position with conditional orders: long position = sell, short position = buy
-    const isExitOrderBuy = !(
-      [OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]
-    ).includes(orderSide)
-
-    const tpMessage = createTpSlMessage({
-      market,
-      quantity,
-      isExitOrderBuy,
-      markPrice: price,
-      marketId: market.marketId,
-      feeRecipient: referralStore.feeRecipient,
-      subaccountId: accountStore.subaccountId,
-      triggerPrice: takeProfit ?? new BigNumberInBase(0),
-      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-    })
-
-    const slMessage = createTpSlMessage({
-      market,
-      quantity,
-      isExitOrderBuy,
-      markPrice: price,
-      feeRecipient: referralStore.feeRecipient,
-      marketId: market.marketId,
-      subaccountId: accountStore.subaccountId,
-      triggerPrice: stopLoss ?? new BigNumberInBase(0),
-      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-    })
-
-    const tpSlMessages = [tpMessage, slMessage].filter(
-      (msg) => msg
-    ) as MsgCreateDerivativeMarketOrder[]
-
-    await sharedWalletStore.broadcastWithFeeDelegation({
-      messages: tpSlMessages
-    })
-  }
+  await derivativeStore.submitExtraTpSlOrders({
+    price,
+    market,
+    quantity,
+    stopLoss,
+    orderSide,
+    takeProfit
+  })
 
   await fetchBalances({
     shouldFetchCw20Balances: cw20Messages.length > 0
@@ -672,4 +652,66 @@ export async function submitChase({
   await fetchBalances()
 
   return await true
+}
+
+export async function submitExtraTpSlOrders({
+  price,
+  market,
+  quantity,
+  stopLoss,
+  orderSide,
+  takeProfit
+}: {
+  orderSide: OrderSide
+  price: BigNumberInBase
+  quantity: BigNumberInBase
+  market: UiDerivativeMarket
+  stopLoss?: BigNumberInBase
+  takeProfit?: BigNumberInBase
+}) {
+  const sharedWalletStore = useSharedWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+
+  const shouldCreateConditionalOrders =
+    (takeProfit && takeProfit.gt(0)) || (stopLoss && stopLoss.gt(0))
+
+  if (shouldCreateConditionalOrders) {
+    // To exist a position with conditional orders: long position = sell, short position = buy
+    const isExitOrderBuy = !(
+      [OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]
+    ).includes(orderSide)
+
+    const tpMessage = createTpSlMessage({
+      market,
+      quantity,
+      isExitOrderBuy,
+      markPrice: price,
+      marketId: market.marketId,
+      feeRecipient: referralStore.feeRecipient,
+      subaccountId: accountStore.subaccountId,
+      triggerPrice: takeProfit ?? new BigNumberInBase(0),
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+    })
+
+    const slMessage = createTpSlMessage({
+      market,
+      quantity,
+      isExitOrderBuy,
+      markPrice: price,
+      feeRecipient: referralStore.feeRecipient,
+      marketId: market.marketId,
+      subaccountId: accountStore.subaccountId,
+      triggerPrice: stopLoss ?? new BigNumberInBase(0),
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+    })
+
+    const tpSlMessages = [tpMessage, slMessage].filter(
+      (msg) => msg
+    ) as MsgCreateDerivativeMarketOrder[]
+
+    await sharedWalletStore.broadcastWithFeeDelegation({
+      messages: tpSlMessages
+    })
+  }
 }
