@@ -162,9 +162,12 @@ async function validateSlippage() {
     .fetchOrderbookV2(props.row.market.marketId)
     .catch($onError)
 
+  const isBuy = props.row.position.direction === TradeDirection.Short
+  const records = isBuy ? orderbookRecords?.sells : orderbookRecords?.buys
+
   const { worstPrice } = calculateWorstPriceFromPriceLevel(
     quantityValue.value,
-    orderbookRecords?.sells || []
+    records || []
   )
 
   const formattedWorstPrice = sharedToBalanceInTokenInBase({
