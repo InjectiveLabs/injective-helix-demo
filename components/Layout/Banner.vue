@@ -11,12 +11,11 @@ import type { SharedBanner } from '@shared/types'
 import { TradePage, UtmSource, NoticeBanner, LeaderboardSubPage } from '@/types'
 
 const perpSettlePairs = [
-  // {
-  //   slug: 'wti-usdt-perp',
-  //   marketId:
-  //     '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
-  //   newExpiryLaunch: true
-  // }
+  {
+    slug: 'nflx-usdt-perp',
+    marketId:
+      '0xe4fd69fb47edd3a7ca1436fae764055001139659d3e0df1eb7237f031737afde'
+  }
 ] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
 const preLaunchMarketPairs = [
