@@ -78,7 +78,7 @@ export const closePosition = async ({
     triggerPrice: '0',
     marketId: position.marketId,
     feeRecipient: referralStore.feeRecipient,
-    price: liquidationPrice.toFixed(), //'4015090000' + '0'.repeat(18),
+    price: liquidationPrice.toFixed(),
     subaccountId: accountStore.subaccountId,
     orderType,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
