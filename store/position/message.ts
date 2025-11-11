@@ -12,8 +12,8 @@ import {
 import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { ConditionalOrderSide } from '@/types'
-import type { UiDerivativeMarket } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket } from '@/types'
 
 export const closePosition = async ({
   quantity,
@@ -78,7 +78,7 @@ export const closePosition = async ({
     triggerPrice: '0',
     marketId: position.marketId,
     feeRecipient: referralStore.feeRecipient,
-    price: liquidationPrice.toFixed(),
+    price: liquidationPrice.toFixed(), //'4015090000' + '0'.repeat(18),
     subaccountId: accountStore.subaccountId,
     orderType,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
