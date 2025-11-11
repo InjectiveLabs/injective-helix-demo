@@ -1,7 +1,9 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { excludedPriceDeviationSlugs } from '@/app/data/market'
-import { UiDerivativeMarket, DerivativeTradeTypes } from '@/types'
+import { DerivativeTradeTypes } from '@/types'
+import type { ComputedRef } from 'vue'
+import type { UiDerivativeMarket } from '@/types'
 
 export function useMarkPriceThresholdError({
   type,
@@ -11,6 +13,7 @@ export function useMarkPriceThresholdError({
   quantity,
   markPrice,
   triggerPrice,
+  isReduceOnly,
   marginWithFee
 }: {
   isBuy: Ref<boolean>
@@ -19,8 +22,9 @@ export function useMarkPriceThresholdError({
   quantity: Ref<BigNumberInBase>
   marginWithFee: Ref<BigNumberInBase>
   triggerPrice: Ref<string | undefined>
-  market: Ref<UiDerivativeMarket | undefined>
-  type: Ref<DerivativeTradeTypes | undefined>
+  market: Ref<undefined | UiDerivativeMarket>
+  type: Ref<undefined | DerivativeTradeTypes>
+  isReduceOnly?: ComputedRef<boolean | undefined>
 }) {
   /**
    * Computes whether the current Mark Price violates margin requirements.
@@ -36,6 +40,10 @@ export function useMarkPriceThresholdError({
    */
 
   const isMarkPriceThresholdError = computed(() => {
+    if (isReduceOnly?.value) {
+      return false
+    }
+
     const markPriceInBigNumber = new BigNumberInBase(markPrice.value || 0)
 
     if (
