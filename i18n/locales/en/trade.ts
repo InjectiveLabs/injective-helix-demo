@@ -8,6 +8,7 @@ export default {
     fee: 'Fee',
     buy: 'Buy',
     max: 'Max',
+    fees: 'Fees',
     size: 'Size',
     info: 'Info',
     long: 'Long',
