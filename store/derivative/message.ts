@@ -669,9 +669,9 @@ export async function submitExtraTpSlOrders({
   stopLoss?: BigNumberInBase
   takeProfit?: BigNumberInBase
 }) {
-  const sharedWalletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const referralStore = useReferralStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const shouldCreateConditionalOrders =
     (takeProfit && takeProfit.gt(0)) || (stopLoss && stopLoss.gt(0))
@@ -688,8 +688,8 @@ export async function submitExtraTpSlOrders({
       isExitOrderBuy,
       markPrice: price,
       marketId: market.marketId,
-      feeRecipient: referralStore.feeRecipient,
       subaccountId: accountStore.subaccountId,
+      feeRecipient: referralStore.feeRecipient,
       triggerPrice: takeProfit ?? new BigNumberInBase(0),
       injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
     })
@@ -699,9 +699,9 @@ export async function submitExtraTpSlOrders({
       quantity,
       isExitOrderBuy,
       markPrice: price,
-      feeRecipient: referralStore.feeRecipient,
       marketId: market.marketId,
       subaccountId: accountStore.subaccountId,
+      feeRecipient: referralStore.feeRecipient,
       triggerPrice: stopLoss ?? new BigNumberInBase(0),
       injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
     })

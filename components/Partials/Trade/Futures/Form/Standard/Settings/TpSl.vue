@@ -223,9 +223,7 @@ const onStopLossPercentageChange = useDebounceFn(() => {
             amount: tpTriggerPrice,
             shouldAbbreviate: false
           }"
-        >
-          <template #prefix>$</template>
-        </SharedAmountUsd>
+        />
         <span v-else>&mdash;</span>
         <span> / </span>
         <SharedAmountUsd
@@ -236,9 +234,7 @@ const onStopLossPercentageChange = useDebounceFn(() => {
             amount: slTriggerPrice,
             shouldAbbreviate: false
           }"
-        >
-          <template #prefix>$</template>
-        </SharedAmountUsd>
+        />
         <span v-else>&mdash;</span>
       </p>
     </div>
