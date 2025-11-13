@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { SpotMarketCyTags } from '@/types'
+import { IsSpotKey, SpotMarketCyTags, PerpetualMarketCyTags } from '@/types'
 
-const jsonStore = useSharedJsonStore()
+withDefaults(
+  defineProps<{
+    forceOpen?: boolean
+  }>(),
+  {}
+)
+
+const isSpot = inject(IsSpotKey)
 
 const isOpen = ref(false)
 
@@ -16,7 +22,13 @@ function toggle() {
   <div>
     <div
       class="flex justify-between items-center cursor-pointer"
-      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettings)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.AdvancedSettings
+            : PerpetualMarketCyTags.AdvancedSettings
+        )
+      "
       @click="toggle"
     >
       <p class="text-xs font-semibold select-none text-white">
@@ -29,20 +41,11 @@ function toggle() {
 
     <AppCollapse
       v-bind="{
-        isOpen: jsonStore.isPostUpgradeMode ? true : isOpen
+        isOpen: forceOpen ? true : isOpen
       }"
     >
       <div class="space-y-2 py-2">
-        <PartialsTradeSpotFormStandardAdvancedSettingsPostOnly />
-
-        <p
-          v-if="jsonStore.isPostUpgradeMode"
-          class="text-orange-500 text-xs ml-1"
-        >
-          {{ $t('trade.postOnlyWarning') }}
-        </p>
-
-        <PartialsTradeSpotFormStandardAdvancedSettingsBypassWarning />
+        <slot />
       </div>
     </AppCollapse>
   </div>

@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketKey,
   BusEvents,
-  SpotMarketCyTags,
-  SpotTradeFormField
+  IsSpotKey,
+  PerpetualMarketCyTags,
+  SpotMarketCyTags
 } from '@/types'
-import type { UiSpotMarket, SpotTradeForm } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+
+const props = withDefaults(
+  defineProps<{
+    isBuy?: boolean
+    fieldName: string
+    shouldSkipAutoSet?: boolean
+    bypassPriceWarning?: boolean
+    lastTradedPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const appStore = useAppStore()
 const orderbookStore = useOrderbookStore()
-const sharedTokenStore = useSharedTokenStore()
-const spotFormValues = useFormValues<SpotTradeForm>()
 
-const market = inject(MarketKey) as Ref<UiSpotMarket>
-
-const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
+const isSpot = inject(IsSpotKey)
+const market = inject(MarketKey) as Ref<UiMarketWithToken>
 
 const {
   errorMessage,
   value: limitValue,
   resetField: resetLimitValue
 } = useStringField({
-  name: SpotTradeFormField.Price,
+  name: props.fieldName,
   initialValue: '',
   dynamicRule: computed(() => {
     if (
       appStore.devMode ||
-      spotFormValues.value[SpotTradeFormField.BypassPriceWarning]
+      props.bypassPriceWarning ||
+      props.lastTradedPrice.isZero()
     ) {
       return ''
     }
 
-    if (lastTradedPrice.value.isZero()) {
-      return ''
-    }
-
-    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value.toFixed()}`
+    return `priceTooFarFromLastTradePrice:${props.lastTradedPrice.toFixed()}`
   })
 })
 
-const el = ref(null)
 const hasClickedLimitField = ref(false)
-
-const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(limitValue.value || 0).times(
-      sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
-    )
-  )
-)
 
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
@@ -77,10 +72,13 @@ function setLimitPriceToTopOfOrderbook() {
     return
   }
 
-  limitValue.value =
-    spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
-      ? orderbookStore.highestBuyPrice
-      : orderbookStore.lowestSellPrice
+  if (props.shouldSkipAutoSet) {
+    return
+  }
+
+  limitValue.value = props.isBuy
+    ? orderbookStore.highestBuyPrice
+    : orderbookStore.lowestSellPrice
 }
 
 function setLimitPriceToMid() {
@@ -111,7 +109,7 @@ function onResetLimitField() {
 </script>
 
 <template>
-  <div v-if="market" ref="el" class="space-y-2">
+  <div v-if="market" class="space-y-2">
     <div class="flex items-center">
       <p class="field-label">{{ $t('trade.limitPrice') }}</p>
     </div>
@@ -122,7 +120,13 @@ function onResetLimitField() {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
-      :data-cy="dataCyTag(SpotMarketCyTags.LimitPriceInputField)"
+      :data-cy="
+        dataCyTag(
+          isSpot
+            ? SpotMarketCyTags.LimitPriceInputField
+            : PerpetualMarketCyTags.LimitpriceInputField
+        )
+      "
       @click="onResetLimitField"
     >
       <template #right>
@@ -137,8 +141,6 @@ function onResetLimitField() {
       </template>
     </AppInputField>
 
-    <div v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>

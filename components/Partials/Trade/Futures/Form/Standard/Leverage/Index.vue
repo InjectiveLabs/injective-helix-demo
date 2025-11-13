@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useIMask } from 'vue-imask'
-import { dataCyTag } from '@shared/utils'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {

@@ -1,7 +1,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm } from '@/types'
+import type { SwapForm } from '@/types'
 
 export function useSwapFee(formValues: Ref<Partial<SwapForm>>) {
   const swapStore = useSwapStore()
@@ -30,7 +30,7 @@ export function useSwapFee(formValues: Ref<Partial<SwapForm>>) {
           [{ from: token.symbol, to: tokens[index + 1].token.symbol }]
         ]
       },
-      [] as { from: string; to: string }[][]
+      [] as { to: string; from: string }[][]
     )
 
     return routeSymbols.map((symbols, index) => {

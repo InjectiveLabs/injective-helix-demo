@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
 import { usdtToken } from '@shared/data/token'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
@@ -15,7 +13,6 @@ import {
   BusEvents,
   MarketKey,
   TradeTypes,
-  MarketCyTags,
   SpotMarketCyTags,
   TradeAmountOption,
   SpotTradeFormField
@@ -28,8 +25,6 @@ const validateLimitField = useValidateField(SpotTradeFormField.Price)
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
-
-const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
@@ -70,10 +65,6 @@ const decimals = computed(() =>
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
-)
-
-const selectedSymbol = computed(
-  () => options.find((item) => item.id === typeValue.value)?.label || ''
 )
 
 const baseBalance = computed(() => {
@@ -299,9 +290,7 @@ onMounted(() => {
     <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField
-      v-bind="{
-        decimals
-      }"
+      v-bind="{ decimals }"
       v-model="amountValue"
       :placeholder="
         new BigNumberInBase(1)
@@ -313,43 +302,10 @@ onMounted(() => {
       @click="onClick"
     >
       <template #right>
-        <USelectMenu
+        <PartialsTradeCommonFormAmountFieldTokenSelector
           v-model="typeValue"
-          v-bind="{
-            options,
-            variant: 'none',
-            valueAttribute: 'id',
-            uiMenu: { width: 'w-auto' },
-            popper: { offsetDistance: 12 }
-          }"
-        >
-          <div
-            class="flex items-center gap-2"
-            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
-          >
-            <span>
-              {{ selectedSymbol }}
-            </span>
-
-            <UIcon
-              :name="NuxtUiIcons.ChevronDown"
-              class="size-3 transition-all text-gray-500 -mb-0.5"
-            />
-          </div>
-
-          <template #option="{ option }">
-            <span
-              class="mr-1"
-              :data-cy="
-                option.id === TradeAmountOption.Base
-                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
-                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
-              "
-            >
-              {{ option.label }}
-            </span>
-          </template>
-        </USelectMenu>
+          :options="options"
+        />
       </template>
 
       <template #bottom>
@@ -385,18 +341,8 @@ onMounted(() => {
         </div>
       </template>
     </AppInputField>
-    <div
-      v-if="errorMessage || isNotionalLessThanMinNotional"
-      class="error-message capitalize"
-    >
-      {{
-        errorMessage
-          ? errorMessage
-          : $t('trade.minNotionalError', {
-              minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.symbol
-            })
-      }}
+    <div v-if="errorMessage" class="error-message capitalize">
+      {{ errorMessage }}
     </div>
     <div
       v-else-if="isShowTensMultiplierNote && amountValue"

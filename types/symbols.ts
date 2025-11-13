@@ -1,19 +1,19 @@
-import { ShallowRef } from 'vue'
-import { Status } from '@injectivelabs/utils'
-import { UiMarketWithToken } from './trade'
-import { OrderbookWorkerMessage } from './worker'
+import type { ShallowRef } from 'vue'
+import type { Status } from '@injectivelabs/utils'
+import type { UiMarketWithToken } from './trade'
+import type { OrderbookWorkerMessage } from './worker'
 
 export const OrderbookWorkerKey = Symbol('OrderbookWorker') as InjectionKey<
   ShallowRef<
-    | (Omit<Worker, 'postMessage'> & {
-        postMessage(message: OrderbookWorkerMessage): void
-      })
     | null
+    | ({
+        postMessage(message: OrderbookWorkerMessage): void
+      } & Omit<Worker, 'postMessage'>)
   >
 >
 
 export const MarketKey = Symbol('Market') as InjectionKey<
-  ComputedRef<UiMarketWithToken | undefined>
+  ComputedRef<undefined | UiMarketWithToken>
 >
 
 export const PortfolioStatusKey = Symbol(

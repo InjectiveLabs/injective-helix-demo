@@ -36,7 +36,7 @@ const maxLeverageAvailable = computed(() =>
 
 const futuresLeveragePreference = computed(() => {
   const leveragePreference =
-    appStore.userState.preferences.futuresLeverage || '1'
+    appStore.userState.preferences.futuresLeverage || UI_DEFAULT_LEVERAGE
 
   const futuresLeverage = new BigNumberInBase(leveragePreference)
     .decimalPlaces(UI_DEFAULT_MIN_DISPLAY_DECIMALS)

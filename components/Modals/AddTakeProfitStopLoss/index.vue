@@ -73,27 +73,23 @@ const market = computed(() =>
   derivativeStore.marketByIdOrSlug(props.position?.marketId)
 )
 
-const existingTpOrder = computed(() => {
-  const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
-
-  return derivativeStore.subaccountConditionalOrders.find(
+const existingTpOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
     (order) =>
-      order.orderType === orderType &&
-      order.marketId === props.position.marketId &&
-      order.subaccountId === props.position.subaccountId
+      (order.orderType === OrderSide.TakeBuy ||
+        order.orderType === OrderSide.TakeSell) &&
+      order.marketId === props.position.marketId
   )
-})
+)
 
-const existingSlOrder = computed(() => {
-  const orderType = isBuy.value ? OrderSide.StopSell : OrderSide.StopBuy
-
-  return derivativeStore.subaccountConditionalOrders.find(
+const existingSlOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
     (order) =>
-      order.orderType === orderType &&
-      order.marketId === props.position.marketId &&
-      order.subaccountId === props.position.subaccountId
+      (order.orderType === OrderSide.StopBuy ||
+        order.orderType === OrderSide.StopSell) &&
+      order.marketId === props.position.marketId
   )
-})
+)
 
 const tpTriggerPrice = computed(
   () => tpOrderTriggerPrice.value || takeProfitValue.value || '0'

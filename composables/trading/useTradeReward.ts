@@ -1,7 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import type { Ref } from 'vue'
-import type { UiMarketWithToken } from '@/types'
 import type { PointsMultiplier } from '@injectivelabs/sdk-ts'
+import type { UiMarketWithToken } from '@/types'
 
 export function useTradeReward(market?: Ref<undefined | UiMarketWithToken>) {
   const exchangeStore = useExchangeStore()

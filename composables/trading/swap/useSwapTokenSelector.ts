@@ -1,8 +1,8 @@
 import { injToken, usdtToken } from '@shared/data/token'
 import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
-import type { AccountBalance } from '@/types'
 import type { Route } from '@injectivelabs/sdk-ts'
 import type { SharedBalanceWithTokenAndPrice } from '@shared/types'
+import type { AccountBalance } from '@/types'
 
 export function useSwapTokenSelector({
   balances,
