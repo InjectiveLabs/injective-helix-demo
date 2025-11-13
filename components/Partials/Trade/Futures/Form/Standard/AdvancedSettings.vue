@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import { DerivativesTradeFormField } from '@/types'
 
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
-import type { BigNumberInBase } from '@injectivelabs/utils'
-
 const jsonStore = useSharedJsonStore()
-
-const emit = defineEmits<{
-  'tpsl:add': [position: PositionV2]
-}>()
 
 withDefaults(
   defineProps<{
     isLimitOrder?: boolean
     isMarketOrder?: boolean
-    estLiquidationPrice: BigNumberInBase
   }>(),
   {}
 )
-
-function addTpSl(position: PositionV2) {
-  emit('tpsl:add', position)
-}
 </script>
 
 <template>
@@ -47,12 +35,6 @@ function addTpSl(position: PositionV2) {
     <PartialsTradeCommonFormSettingsBypassWarning
       v-if="isLimitOrder"
       :formFieldName="DerivativesTradeFormField.BypassPriceWarning"
-    />
-
-    <PartialsTradeFuturesFormStandardSettingsTpSl
-      v-if="isMarketOrder"
-      v-bind="{ estLiquidationPrice }"
-      @tpsl:add="addTpSl"
     />
   </PartialsTradeCommonFormAdvancedSettings>
 </template>

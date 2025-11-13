@@ -257,7 +257,9 @@ async function submitLimitOrder() {
       margin: props.margin,
       price: limitPrice.value,
       quantity: props.quantity,
+      stopLoss: stopLossValue.value,
       market: derivativeMarket?.value,
+      takeProfit: takeProfitValue.value,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })

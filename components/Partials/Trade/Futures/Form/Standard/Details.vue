@@ -166,7 +166,7 @@ function openSlippageModal() {
           })
         "
       >
-        <template #label>{{ $t('trade.makerTakerRate') }}</template>
+        <template #label>{{ $t('trade.fees') }}</template>
         <template #value>
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)">
             {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
@@ -175,7 +175,7 @@ function openSlippageModal() {
       </PartialsTradeCommonFormDetailsRow>
 
       <PartialsTradeCommonFormDetailsRow v-else>
-        <template #label>{{ $t('trade.makerRate') }}</template>
+        <template #label>{{ $t('trade.fees') }}</template>
         <template #value>
           <p>{{ makerFeeRateToFixed }}%</p>
         </template>

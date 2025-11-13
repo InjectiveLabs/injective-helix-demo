@@ -15,6 +15,7 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const positionStore = usePositionStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -127,6 +128,12 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
+const currentMarketPosition = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === market.value.marketId
+  )
+)
+
 onMounted(() => {
   setFormValues(
     {
@@ -138,7 +145,7 @@ onMounted(() => {
   )
 })
 
-function addTpSl(position: PositionV2) {
+function updateTpSl(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
 }
@@ -236,13 +243,18 @@ watch(
       }"
     />
 
+    <PartialsTradeFuturesFormStandardSettingsTpSl
+      v-if="isMarketOrder || (isLimitOrder && currentMarketPosition)"
+      v-bind="{ estLiquidationPrice, currentMarketPosition }"
+      @tpsl:update="updateTpSl"
+    />
+
     <PartialsTradeFuturesFormStandardAdvancedSettings
       v-bind="{
         isLimitOrder,
         isMarketOrder,
         estLiquidationPrice
       }"
-      @tpsl:add="addTpSl"
     />
 
     <PartialsTradeFuturesFormStandardDetails
@@ -270,7 +282,7 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity class="!mt-6" />
+    <PartialsTradeCommonFormAccountEquity class="border-t pt-5 !mt-6" />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"

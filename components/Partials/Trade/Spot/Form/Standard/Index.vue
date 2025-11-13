@@ -188,6 +188,6 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity class="!mt-6" />
+    <PartialsTradeCommonFormAccountEquity class="border-t pt-5 !mt-6" />
   </div>
 </template>
