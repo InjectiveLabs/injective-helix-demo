@@ -11,13 +11,9 @@ import {
 } from '@/types'
 import type {
   UiMarketWithToken,
-  OrderbookWorkerResult,
-  OrderbookWorkerMessage
+  OrderbookWorkerType,
+  OrderbookWorkerResult
 } from '@/types'
-
-interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
-  postMessage(message: OrderbookWorkerMessage): void
-}
 
 export function useDerivativeOrderbook(
   market: ComputedRef<undefined | UiMarketWithToken>
@@ -44,13 +40,13 @@ export function useOrderbook(
   const aggregation = ref(market.value?.priceDecimals || 0)
   const orderbookStatus = reactive(new Status(StatusType.Loading))
 
-  const worker = shallowRef<null | OrderbookWorker>(null)
+  const worker = shallowRef<null | OrderbookWorkerType>(null)
 
   onMounted(() => {
     if (typeof Worker !== 'undefined') {
       worker.value = new OrderbookWorker()
 
-      worker.value.onmessage = (event) => {
+      worker.value.addEventListener('message', (event) => {
         const data = event.data as OrderbookWorkerResult
 
         if (data.messageType === WorkerMessageResponseType.ReplaceOrderbook) {
@@ -63,11 +59,7 @@ export function useOrderbook(
 
           useEventBus(BusEvents.OrderbookReplaced).emit()
         }
-
-        if (data.messageType === WorkerMessageResponseType.WorstPrice) {
-          orderbookStore.worstPrice = data.data.worstPrice
-        }
-      }
+      })
     } else {
       // console.error('Web worker is not supported')
     }

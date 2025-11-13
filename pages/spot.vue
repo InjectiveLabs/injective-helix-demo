@@ -128,7 +128,15 @@ provide(MarketKey, market)
   <div v-if="market" v-bind="{ market }">
     <PartialsTradeLayout v-bind="{ market }" is-spot>
       <template #form>
-        <PartialsTradeSpotForm />
+        <PartialsTradeCommonForm v-bind="{ market }" is-spot>
+          <template #standard>
+            <PartialsTradeSpotFormStandard />
+          </template>
+
+          <template #bots>
+            <PartialsTradeSpotFormTradingBots />
+          </template>
+        </PartialsTradeCommonForm>
       </template>
 
       <template #orders>

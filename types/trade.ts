@@ -192,3 +192,23 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
   [SpotGridTradingField.StrategyType]: SpotGridStrategyType
 }
+
+export type TradeDetails = {
+  margin: ComputedRef<BigNumberInBase>
+  feeRate: ComputedRef<BigNumberInBase>
+  notional: WritableComputedRef<string>
+  quantity: WritableComputedRef<string>
+  enoughLiquidity: ComputedRef<boolean>
+  feeAmount: ComputedRef<BigNumberInBase>
+  bestPrice: ComputedRef<BigNumberInBase>
+  hasSlippageWarning: ComputedRef<boolean>
+  worstPrice: ComputedRef<BigNumberInBase>
+  averagePrice: ComputedRef<BigNumberInBase>
+  marginWithFee: ComputedRef<BigNumberInBase>
+  slippagePrice: ComputedRef<BigNumberInBase>
+  executionPrice: ComputedRef<BigNumberInBase>
+  notionalWithFee: ComputedRef<BigNumberInBase>
+  calculatedNotional: ComputedRef<BigNumberInBase>
+  minimumAmountInQuote: ComputedRef<BigNumberInBase>
+  estSlippagePercentage: ComputedRef<BigNumberInBase>
+}

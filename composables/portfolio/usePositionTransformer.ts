@@ -12,8 +12,8 @@ export function usePositionTransformer(
   positionList: ComputedRef<PositionV2[]>
 ) {
   const authZStore = useAuthZStore()
-  const sharedTokenStore = useSharedTokenStore()
   const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
   const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 

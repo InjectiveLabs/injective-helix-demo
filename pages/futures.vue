@@ -209,7 +209,15 @@ provide(IsRWAMarketOpenKey, isRWAMarketOpen)
 <template>
   <PartialsTradeLayout v-if="market" v-bind="{ market }">
     <template #form>
-      <PartialsTradeFuturesForm />
+      <PartialsTradeCommonForm v-bind="{ market }">
+        <template #standard>
+          <PartialsTradeFuturesFormStandard />
+        </template>
+
+        <template #bots>
+          <PartialsTradeFuturesFormTradingBots />
+        </template>
+      </PartialsTradeCommonForm>
     </template>
 
     <template #orders>
