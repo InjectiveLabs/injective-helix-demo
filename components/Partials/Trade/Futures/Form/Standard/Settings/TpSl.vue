@@ -46,8 +46,8 @@ const { value: isTpSlEnabled } = useBooleanField({
 const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
   useStringField({
     name: DerivativesTradeFormField.TakeProfit,
-    initialValue: '',
     rule: '',
+    initialValue: '',
     dynamicRule: computed(() => {
       const formattedMarkPrice = new BigNumberInBase(markPrice.value).toFixed(
         market.value.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -65,8 +65,8 @@ const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
 const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
   useStringField({
     name: DerivativesTradeFormField.StopLoss,
-    initialValue: '',
     rule: '',
+    initialValue: '',
     dynamicRule: computed(() => {
       const formattedMarkPrice = new BigNumberInBase(markPrice.value).toFixed(
         market.value.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -78,16 +78,19 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
       )
 
       if (isBuy.value) {
-        const minValueRule = `liquidationValue:${formattedEstLiquidationPrice},true`
+        const aboveLiquidationRule = `liquidationValue:${formattedEstLiquidationPrice},true`
         const maxValueRule = `maxValue:${formattedMarkPrice}`
 
-        return [minValueRule, maxValueRule].join('|')
+        return [maxValueRule, aboveLiquidationRule].join('|')
       }
 
       const minValueRule = `minValue:${formattedMarkPrice}`
-      const maxValueRule = `liquidationValue:${formattedEstLiquidationPrice},false`
+      const belowLiquidationRule = `liquidationValue:${formattedEstLiquidationPrice},false`
 
-      return [minValueRule, maxValueRule].join('|')
+      return [
+        minValueRule,
+        ...(props.estLiquidationPrice.gt(0) ? [belowLiquidationRule] : [])
+      ].join('|')
     })
   })
 
@@ -156,7 +159,7 @@ const onTakeProfitValueChange = useDebounceFn(() => {
   takeProfitPercentage.value = percentageAmount.toFixed(
     UI_DEFAULT_MIN_DISPLAY_DECIMALS
   )
-}, 500)
+}, 2000)
 
 const onTakeProfitPercentageChange = useDebounceFn(() => {
   const percentageInDecimals = new BigNumberInBase(
@@ -170,22 +173,22 @@ const onTakeProfitPercentageChange = useDebounceFn(() => {
         : new BigNumberInBase(1).minus(percentageInDecimals)
     )
     .toFixed(market.value.priceDecimals)
-}, 500)
+}, 2000)
 
 const onStopLossValueChange = useDebounceFn(() => {
-  const percentageAmount = new BigNumberInBase(stopLossValue.value)
+  let percentageAmount = new BigNumberInBase(stopLossValue.value)
     .dividedBy(markPrice.value)
     .minus(1)
     .times(100)
 
-  if (!isBuy.value) {
-    percentageAmount.times(-1)
+  if (isBuy.value) {
+    percentageAmount = percentageAmount.times(-1)
   }
 
   stopLossPercentage.value = percentageAmount.toFixed(
     UI_DEFAULT_MIN_DISPLAY_DECIMALS
   )
-}, 500)
+}, 2000)
 
 const onStopLossPercentageChange = useDebounceFn(() => {
   const percentageInDecimals = new BigNumberInBase(
@@ -199,7 +202,7 @@ const onStopLossPercentageChange = useDebounceFn(() => {
         : new BigNumberInBase(1).plus(percentageInDecimals)
     )
     .toFixed(market.value.priceDecimals)
-}, 500)
+}, 2000)
 </script>
 
 <template>
@@ -285,7 +288,6 @@ const onStopLossPercentageChange = useDebounceFn(() => {
             v-model="takeProfitPercentage"
             class="placeholder:font-sans"
             v-bind="{
-              max: 100,
               min: -100,
               placeholder: $t('trade.gain')
             }"
