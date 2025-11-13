@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  DEFAULT_TP_SL_PERCENTAGE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   MarketKey,
   PerpetualMarketCyTags,
@@ -135,14 +138,28 @@ function updateTpSl() {
 }
 
 function setInitialTpSl() {
-  takeProfitPercentage.value = '10'
+  takeProfitPercentage.value = new BigNumberInBase(DEFAULT_TP_SL_PERCENTAGE)
+    .times(100)
+    .toFixed()
+
+  stopLossPercentage.value = new BigNumberInBase(DEFAULT_TP_SL_PERCENTAGE)
+    .times(100)
+    .toFixed()
+
   takeProfitValue.value = new BigNumberInBase(markPrice.value)
-    .times(isBuy.value ? 1.1 : 0.9)
+    .times(
+      isBuy.value
+        ? new BigNumberInBase(1).plus(DEFAULT_TP_SL_PERCENTAGE)
+        : new BigNumberInBase(1).minus(DEFAULT_TP_SL_PERCENTAGE)
+    )
     .toFixed(market.value.priceDecimals)
 
-  stopLossPercentage.value = '10'
   stopLossValue.value = new BigNumberInBase(markPrice.value)
-    .times(isBuy.value ? 0.9 : 1.1)
+    .times(
+      isBuy.value
+        ? new BigNumberInBase(1).minus(DEFAULT_TP_SL_PERCENTAGE)
+        : new BigNumberInBase(1).plus(DEFAULT_TP_SL_PERCENTAGE)
+    )
     .toFixed(market.value.priceDecimals)
 }
 
