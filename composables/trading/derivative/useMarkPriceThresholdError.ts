@@ -13,6 +13,7 @@ export function useMarkPriceThresholdError({
   quantity,
   markPrice,
   triggerPrice,
+  isReduceOnly,
   marginWithFee
 }: {
   isBuy: Ref<boolean>
@@ -23,6 +24,7 @@ export function useMarkPriceThresholdError({
   triggerPrice: Ref<string | undefined>
   market: Ref<undefined | UiDerivativeMarket>
   type: Ref<undefined | DerivativeTradeTypes>
+  isReduceOnly?: ComputedRef<boolean | undefined>
 }) {
   /**
    * Computes whether the current Mark Price violates margin requirements.
@@ -38,6 +40,10 @@ export function useMarkPriceThresholdError({
    */
 
   const isMarkPriceThresholdError = computed(() => {
+    if (isReduceOnly?.value) {
+      return false
+    }
+
     const markPriceInBigNumber = new BigNumberInBase(
       safeAmount(markPrice.value)
     )

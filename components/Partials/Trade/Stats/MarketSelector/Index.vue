@@ -51,7 +51,6 @@ const isExpiryMarket = computed(
 
 const hasDocsTooltip = computed(
   () =>
-    props.market.slug === 'ton-usdt-perp' ||
     props.market.slug === 'h100-usdt-perp' ||
     props.market.slug === 'buidl-usdt-perp'
 )

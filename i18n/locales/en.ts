@@ -146,7 +146,12 @@ export default defineI18nLocale(() => ({
         connect: 'Connect',
         enterPrivateKey: 'Enter your private key',
         connectWithPrivateKey: 'Connect with private key',
-        enterInjectiveAddress: 'Enter your injective address'
+        enterInjectiveAddress: 'Enter your injective address',
+
+        txTimeout: 'Tx Timeout',
+        txTimeoutPlaceholder: 'Enter tx timeout (in blocks)',
+        txTimeoutCta: 'Set Tx Timeout',
+        txTimeoutToast: 'Tx timeout set to {txTimeout} blocks'
       },
 
       ninjaPass: {

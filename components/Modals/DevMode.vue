@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-base'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { msgBroadcaster } from '@shared/WalletService'
+import {
+  Status,
+  StatusType,
+  BigNumberInBase,
+  DEFAULT_BLOCK_TIMEOUT_HEIGHT
+} from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 enum ConnectType {
@@ -8,8 +14,8 @@ enum ConnectType {
   PrivateKey = 'privateKey'
 }
 
-const modalStore = useSharedModalStore()
 const walletStore = useWalletStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { resetForm } = useForm()
@@ -40,6 +46,12 @@ const { value: privateKey, errors: privateKeyErrors } = useStringField({
 
     return ''
   })
+})
+
+const { value: txTimeout, errors: txTimeoutErrors } = useNumberField({
+  name: 'txTimeout',
+  initialValue: DEFAULT_BLOCK_TIMEOUT_HEIGHT,
+  rule: `required|minValue:${DEFAULT_BLOCK_TIMEOUT_HEIGHT}`
 })
 
 const isDisabled = computed(() => {
@@ -119,6 +131,19 @@ function connectViaPrivateKey() {
       closeModal()
     })
 }
+
+function setTxTimeout() {
+  msgBroadcaster.setOptions({
+    txTimeout: new BigNumberInBase(txTimeout.value).dp(0).toNumber()
+  })
+
+  notificationStore.success({
+    title: t('common.modal.devMode.txTimeoutToast', {
+      txTimeout: txTimeout.value
+    })
+  })
+  closeModal()
+}
 </script>
 
 <template>
@@ -193,6 +218,35 @@ function connectViaPrivateKey() {
       >
         <div class="mt-2 text-left text-sm capitalize-phrase">
           <span class="text-red-500">{{ privateKeyErrors[0] }}</span>
+        </div>
+      </div>
+
+      <div class="border-b w-full my-6"></div>
+
+      <div>
+        <h3 class="mb-2">{{ $t('common.modal.devMode.txTimeout') }}</h3>
+
+        <div class="w-full rounded border border-brand-700">
+          <AppInputNumeric
+            v-model="txTimeout"
+            wrapper-classes="py-2 px-1"
+            :placeholder="$t('common.modal.devMode.txTimeoutPlaceholder')"
+          />
+        </div>
+
+        <span v-if="txTimeoutErrors.length" class="text-red-500 text-sm">
+          {{ txTimeoutErrors[0] }}
+        </span>
+
+        <div class="w-full mt-6 text-center">
+          <AppButton
+            is-lg
+            variant="primary"
+            :disabled="txTimeoutErrors.length > 0"
+            @click="setTxTimeout"
+          >
+            {{ $t('common.modal.devMode.txTimeoutCta') }}
+          </AppButton>
         </div>
       </div>
     </div>
