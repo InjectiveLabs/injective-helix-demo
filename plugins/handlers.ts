@@ -28,12 +28,8 @@ const reportToUser = (error: ThrownException) => {
     error.contextCode === GRPC_REQUEST_FAILED
   ) {
     return notificationStore.error({
-      // TODO: Uncomment this when the issue is resolved
-      // title: 'High demand detected',
-      // description: 'Engineers are improving performance and efficiency.',
-      title: 'Global provider outage',
-      description:
-        'Some features on Helix may load slowly or fail due to a Global provider outage.'
+      title: 'High demand detected',
+      description: 'Engineers are improving performance and efficiency.'
     })
   }
 
