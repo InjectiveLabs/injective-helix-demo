@@ -32,7 +32,7 @@ $ yarn dev
 
 ## 📖 Documentation
 
-The `injective-helix` is built using Nuxt and TailwindCSS and its powered by the [injective-ts monorepo](https://github.com/InjectiveLabs/injective-ts/).
+The `injective-helix` is built using Nuxt and TailwindCSS and it's powered by the [injective-ts monorepo](https://github.com/InjectiveLabs/injective-ts/).
 
 You can always boot the dex locally on your own laptop without having to set up a relayer. You can use the `public` network in your `VITE_NETWORK` `.env` configuration variable and run the `yarn run dev` command. You can find all of the available networks (i.e - predefined set of endpoints) [here](https://github.com/InjectiveLabs/injective-ts/blob/17b1aa5df39d5724baf6262b276980cf722a1cba/packages/networks/src/types.ts#L1). Using these endpoints (from the `public`) network gives the 40% of the trading fees to the community spend pool.
 
@@ -40,11 +40,11 @@ You can always boot the dex locally on your own laptop without having to set up 
 
 The `injective-helix` uses AWS for deployment. There is a CD pipeline set in the `.github/workflow/mainnet.yml` file. Deployment to AWS is done to a S3 bucket which is served through Cloudfront to the end user. Using `yarn generate` we are generating static html pages that are served through cloud front.
 
-More details about how to deploy a Nuxt project can be found on their docs.
+More details about how to deploy a Nuxt project can be found in their docs.
 
 ### Migration to Nuxt3
 
-We've migrated the `injective-helix` repo to Nuxt3 in January, 2023. To make the migration on your fork, there are couple of simple steps that you have to do:
+We've migrated the `injective-helix` repo to Nuxt3 in January, 2023. To make the migration on your fork, there are a couple of simple steps that you have to do:
 
 1. Pull the latest codebase from the `injective-dex` repo, `master` branch,
 2. Resolve merge conflicts on your fork,
