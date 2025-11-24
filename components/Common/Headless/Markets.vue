@@ -216,8 +216,8 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
     )
   }
 
-  if (props.activeCategory === MarketCategoryType.iAssets) {
-    return (jsonStore.helixMarketCategoriesMap.iAssets || []).includes(
+  if (props.activeCategory === MarketCategoryType.Stocks) {
+    return (jsonStore.helixMarketCategoriesMap.stocks || []).includes(
       market.marketId
     )
   }

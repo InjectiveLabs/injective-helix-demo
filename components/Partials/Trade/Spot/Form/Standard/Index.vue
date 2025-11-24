@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,
-  BusEvents,
   MarketKey,
   TradeTypes,
   SpotMarketCyTags,
+  TradeAmountOption,
   SpotTradeFormField
 } from '@/types'
 import type { UiSpotMarket, SpotTradeForm } from '@/types'
@@ -29,16 +29,48 @@ const { value: orderSideValue } = useStringField({
   initialValue: OrderSide.Buy
 })
 
-const {
-  total,
-  quantity,
-  feeAmount,
-  worstPrice,
-  totalWithFee,
-  feePercentage,
-  slippagePercentage,
-  minimumAmountInQuote
-} = useSpotWorstPrice(market)
+const { takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: market?.value?.takerFeeRate,
+  marketMakerFeeRate: market?.value?.makerFeeRate
+})
+
+const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
+
+const isLimitOrder = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
+
+const isBuy = computed(
+  () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+)
+
+const tradeDetails = useTradeDetails({
+  isBuy,
+  isLimitOrder,
+  takerFeeRate,
+  market: computed(() => market.value),
+  limitPrice: computed(
+    () => spotFormValues.value[SpotTradeFormField.Price] || '0'
+  ),
+  slippagePercentage: computed(
+    () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
+  ),
+  isPostOnly: computed(
+    () => spotFormValues.value[SpotTradeFormField.PostOnly] || false
+  )
+})
+
+const quantityToBigNumber = computed(
+  () => new BigNumberInBase(tradeDetails.quantity.value)
+)
+
+const totalWithFeeToBigNumber = computed(
+  () => new BigNumberInBase(tradeDetails.notionalWithFee.value)
+)
+
+const bypassPriceWarning = computed(
+  () => spotFormValues.value[SpotTradeFormField.BypassPriceWarning]
+)
 
 const isSwapEnabled = computed(() =>
   swapStore.routes.some(
@@ -48,10 +80,6 @@ const isSwapEnabled = computed(() =>
       (route.targetDenom === market.value.quoteDenom &&
         route.sourceDenom === market.value.baseDenom)
   )
-)
-
-const isLimit = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
 onMounted(() => {
@@ -65,19 +93,29 @@ onMounted(() => {
   )
 })
 
-function onOrderSideClicked() {
-  if (orderTypeValue.value !== TradeTypes.Limit) {
-    return
-  }
+watch(
+  [() => spotFormValues.value],
+  ([formValues]) => {
+    const amount = formValues[SpotTradeFormField.Amount] || '0'
+    const option =
+      formValues[SpotTradeFormField.AmountOption] || TradeAmountOption.Base
 
-  useEventBus(BusEvents.OrderSideToggled).emit()
-}
+    if (option === TradeAmountOption.Base) {
+      tradeDetails.quantity.value = amount
+
+      return
+    }
+
+    tradeDetails.notional.value = amount
+  },
+  { deep: true }
+)
 </script>
 
 <template>
-  <div class="p-4 lg:pb-8">
+  <div class="space-y-4 p-4 lg:pb-8">
     <div
-      class="border-b"
+      class="border-b max-lg:-mx-4 max-lg:-mt-2"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
     >
       <div class="flex items-center">
@@ -86,7 +124,7 @@ function onOrderSideClicked() {
           :key="value"
           v-bind="{ value }"
           v-model="orderTypeValue"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           active-classes="border-b border-blue-550 text-white"
         >
           {{ $t(`trade.${value}`) }}
@@ -94,7 +132,6 @@ function onOrderSideClicked() {
 
         <NuxtLink
           v-if="isSwapEnabled"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
             query: {
@@ -102,83 +139,55 @@ function onOrderSideClicked() {
               from: market.quoteDenom
             }
           }"
+          class="flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
         >
           {{ $t(`navigation.swap`) }}
         </NuxtLink>
       </div>
     </div>
 
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="side in [OrderSide.Buy, OrderSide.Sell]"
-        :key="side"
-        v-bind="{ value: side }"
-        v-model="orderSideValue"
-        class="flex-1"
-        :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
-        @click="onOrderSideClicked"
-      >
-        <AppButton
-          :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
-          :variant="
-            side === orderSideValue
-              ? side === OrderSide.Buy
-                ? 'success'
-                : 'danger'
-              : side === OrderSide.Buy
-                ? 'success-cta'
-                : 'danger-cta'
-          "
-        >
-          {{ $t(`trade.${side}`) }}
-        </AppButton>
-      </AppButtonSelect>
-    </div>
-
-    <div class="pt-4 space-y-4">
-      <PartialsTradeSpotFormStandardLimitPriceField
-        v-if="orderTypeValue === TradeTypes.Limit"
-      />
-
-      <PartialsTradeSpotFormStandardAmountField
-        v-bind="{
-          quantity,
-          totalWithFee,
-          minimumAmountInQuote
-        }"
-      />
-    </div>
-
-    <PartialsTradeSpotFormStandardSlippage
-      v-if="!isLimit"
-      class="my-4"
-      v-bind="{ worstPrice }"
+    <PartialsTradeCommonFormSideSelector
+      v-model="orderSideValue"
+      v-bind="{ isLimitOrder }"
     />
 
-    <PartialsTradeSpotFormStandardAdvancedSettings
-      v-if="isLimit"
-      class="my-4"
+    <PartialsTradeCommonFormLimitPriceField
+      v-if="isLimitOrder"
+      v-bind="{
+        isBuy,
+        lastTradedPrice,
+        bypassPriceWarning,
+        fieldName: SpotTradeFormField.Price
+      }"
     />
+
+    <PartialsTradeSpotFormStandardAmountField
+      v-bind="{
+        quantity: quantityToBigNumber,
+        totalWithFee: totalWithFeeToBigNumber,
+        minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
+      }"
+    />
+
+    <PartialsTradeSpotFormStandardAdvancedSettings v-if="isLimitOrder" />
 
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
-        total,
-        quantity,
-        feeAmount,
-        worstPrice,
-        feePercentage,
-        totalWithFee,
-        slippagePercentage
+        tradeDetails,
+        isLimitOrder
       }"
     />
 
     <PartialsTradeSpotFormStandardCreateOrder
       v-bind="{
-        quantity,
-        worstPrice
+        isLimitOrder,
+        quantity: quantityToBigNumber,
+        worstPrice: tradeDetails.executionPrice.value,
+        hasEnoughLiquidity: tradeDetails.enoughLiquidity.value,
+        hasSlippageWarning: tradeDetails.hasSlippageWarning.value
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity />
+    <PartialsTradeCommonFormAccountEquity class="border-t pt-5 !mt-6" />
   </div>
 </template>

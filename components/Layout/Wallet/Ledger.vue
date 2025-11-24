@@ -9,8 +9,8 @@ import type { SharedDropdownOption } from '@shared/types'
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
 const options = computed<SharedDropdownOption[]>(() => [

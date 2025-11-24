@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import type { UiDerivativeMarket } from '@/types'
 import type { Status } from '@injectivelabs/utils'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -91,7 +91,11 @@ function cancelTp() {
         <span v-if="!takeProfitValue || hasNoTpQuantity"> &mdash; </span>
         <span
           v-else
-          :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
+          :class="
+            getColorClassForChange(takeProfitPnl, {
+              zeroClass: 'text-green-500'
+            })
+          "
           class="font-bold inline-flex gap-1"
         >
           <SharedAmount

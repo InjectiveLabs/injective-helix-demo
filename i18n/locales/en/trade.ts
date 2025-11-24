@@ -4,18 +4,21 @@ export default {
   trade: {
     tp: 'TP',
     sl: 'SL',
+    mid: 'Mid',
     fee: 'Fee',
     buy: 'Buy',
     max: 'Max',
+    fees: 'Fees',
     size: 'Size',
     info: 'Info',
     long: 'Long',
     sell: 'Sell',
     spot: 'Spot',
+    gain: 'Gain',
+    loss: 'Loss',
     time: 'Time',
     open: 'Open',
     sold: 'Sold',
-    tpSl: 'TP/SL',
     chase: 'Chase',
     price: 'Price',
     total: 'Total',
@@ -31,17 +34,20 @@ export default {
     margin: 'Margin',
     volume: 'Volume',
     bought: 'Bought',
+    adjust: 'Adjust',
     markets: 'Markets',
     details: 'Details',
     quantity: 'Quantity',
+    advanced: 'Advanced',
     leverage: 'Leverage',
     standard: 'Standard',
+    slippage: 'Slippage',
+    tpPrice: 'TP Price',
+    slPrice: 'SL Price',
     addTpSl: 'Add TP/SL',
     tickSize: 'Tick Size',
     stopLoss: 'Stop Loss',
     postOnly: 'Post Only',
-    noTrades: 'No trades',
-    noOrders: 'No orders',
     notAvailableNA: 'N/A',
     sharePnl: 'Share PNL',
     avgPrice: 'Avg. Price',
@@ -54,7 +60,10 @@ export default {
     cancelAll: 'Cancel All',
     addMargin: 'Add Margin',
     viewOrder: 'View Order',
+    orderType: 'Order type',
     'pro-chart': 'Pro Chart',
+    showOrders: 'Show Orders',
+    placeOrder: 'Place Order',
     allMarkets: 'All Markets',
     marketName: 'Market Name',
     takeProfit: 'Take Profit',
@@ -69,9 +78,9 @@ export default {
     'stop-limit': 'Stop-Limit',
     derivatives: 'Derivatives',
     liquidation: 'Liquidation',
+    maxSlippage: 'Max: {max}%',
     tickerOnly: '{ticker} only',
     cancelOrder: 'Cancel Order',
-    showHistory: 'Show History',
     makerRate: 'Maker Fee Rate',
     maxLeverage: 'Max. Leverage',
     'stop-market': 'Stop-Market',
@@ -81,7 +90,6 @@ export default {
     'trading-bots': 'Trading Bots',
     emptyOrders: 'No orders found',
     emptyTrades: 'No trades found',
-    noOpenOrders: 'No Open Orders',
     totalNotional: 'Total Notional',
     closePosition: 'Close Position',
     estFeeRebate: 'Est. Fee Rebate',
@@ -96,6 +104,7 @@ export default {
     pnlPercent: 'PnL% (Open Position)',
     stopLossMarket: 'Stop-Loss Market',
     cancelStopLoss: 'Cancel Stop Loss',
+    estSlippage: 'Est: {estSlippage}%',
     availableMargin: 'Available Margin',
     partiallyFilled: 'Partially Filled',
     noOpenPositions: 'No Open Positions',
@@ -119,9 +128,12 @@ export default {
     takeProfitQuantity: 'Take Profit Quantity',
     disqualifiedMarkets: 'Disqualified Markets',
     estLiquidationPrice: 'Est. Liquidation Price',
+    takeProfitOrStopLoss: 'Take Profit / Stop Loss',
     stopLossTriggerPrice: 'Stop Loss Trigger Price',
     emptyAdvancedOrders: 'No Advanced Orders Found',
     takeProfitTriggerPrice: 'Take Profit Trigger Price',
+    slippageTooltip: 'Click to adjust slippage tolerance',
+    increaseSlippageTolerance: 'Increase Slippage Tolerance',
     modifyTakeProfitStopLoss: 'Modify Take Profit / Stop Loss',
     postOnlyWarning: 'Temporarily post-only due to chain upgrade',
     minNotionalError: 'Minimum order value > {minNotional} {symbol}',
@@ -133,10 +145,10 @@ export default {
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     markPriceInvalid:
       'Please modify price, amount, or leverage to meet mark price requirement',
+    makerTakerRateTooltip:
+      'Maker orders pay {makerFeeRate}% fee. Taker orders pay {takerFeeRate}% fee.',
     eip712Warning:
       'Due to extremely high usage, gas-free transactions are currently unavailable',
-    slippageTooltip:
-      'Slippage tolerance is the maximum price change allowed before a trade is canceled.',
     stopLossDetails:
       'When Mark Price reaches {price}, it will trigger a Stop Loss Market order for {quantity}.',
     takeProfitDetails:
@@ -184,15 +196,12 @@ export default {
         'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
     },
     stats: {
-      low: '24h Low',
-      high: '24h High',
       usdValue: 'USD Value',
       marketCap: 'Market Cap',
       annualized: 'Annualized',
-      nextFunding: 'Next Funding',
       volumeInUsd: 'Volume USD (24h)',
       marketVolume24h: 'Volume (24h)',
-      estFundingRate: 'Est. Funding Rate',
+      fundingOrCountdown: 'Funding / Countdown',
       // openInterest: 'Open Interest (USDT)',
 
       marketCapTooltip:
@@ -239,9 +248,9 @@ export default {
         'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.'
     },
 
-    iAssetModal: {
+    stocksModal: {
       cta: 'Start Trading',
-      title: 'Unlock the Power of iAssets!',
+      title: 'Unlock the Power of Stocks!',
       description:
         "Be one of the first to trade onchain stock futures with 25x leverage, only on the world's premier decentralized exchange."
     },
@@ -273,14 +282,29 @@ export default {
 
     sharePnlModal: {
       markPrice: 'Mark price',
+      exitPrice: 'Exit price',
       entryPrice: 'Entry price',
       mobileDownloadNote: 'Download is available on desktop'
+    },
+
+    leverageModal: {
+      title: 'Adjust leverage',
+      upTo: 'Up to {leverageAmount}x',
+      leverageAt: 'Leverage at {leverageAmount}x',
+      description:
+        'Higher leverage magnifies returns, but can also make it easier to get liquidated.'
+    },
+
+    slippageModal: {
+      title: 'Adjust max slippage',
+      description:
+        'Set the maximum slippage you are willing to accept. If the price changes by more than this percentage, your order will not be executed.'
     },
 
     partialClosePositionModal: {
       limitClose: 'Limit Close',
       marketClose: 'Market Close',
-      marketTitle: 'Partial close position',
+      marketTitle: 'Close position',
       totalPositionSize: 'Total position size'
     },
 

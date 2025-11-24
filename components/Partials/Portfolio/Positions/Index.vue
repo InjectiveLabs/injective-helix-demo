@@ -60,7 +60,6 @@ function resetSelectedPosition() {
 
   <div class="overflow-x-auto divide-y border-b">
     <PartialsPositionsTable
-      v-if="filteredPosition.length"
       :positions="filteredPosition"
       :is-trading-bots="hasActiveStrategy"
       @margin:add="addMargin"
@@ -68,11 +67,6 @@ function resetSelectedPosition() {
       @position:share="onSharePosition"
     />
   </div>
-
-  <CommonEmptyList
-    v-if="!filteredPosition.length"
-    :message="$t('portfolio.noPositionsOpen')"
-  />
 
   <ModalsAddMargin
     v-if="selectedPosition"
@@ -85,7 +79,7 @@ function resetSelectedPosition() {
     @on:close="resetSelectedPosition"
   />
 
-  <ModalsSharePositionPnl
+  <ModalsSharePnlPosition
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
     @on:close="resetSelectedPosition"

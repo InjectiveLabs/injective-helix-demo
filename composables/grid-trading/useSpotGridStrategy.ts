@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
-import { indexerSpotApi } from '@shared/Service'
 import { ExitType } from '@injectivelabs/sdk-ts'
+import { getIndexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
@@ -14,8 +14,8 @@ import {
   StrategyStatus,
   IndexerGridStrategyType
 } from '@/types'
-import type { StopReason, AccountBalance } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+import type { StopReason, AccountBalance } from '@/types'
 
 export const useSpotGridStrategies = (
   strategiesArg: ComputedRef<undefined | TradingStrategy | TradingStrategy[]>,
@@ -301,6 +301,8 @@ export const useSpotGridStrategies = (
   )
 
   async function fetchSpotLastTradedPrices() {
+    const indexerSpotApi = await getIndexerSpotApi()
+
     const marketIds = Array.from(
       new Set(filteredStrategies.value.map((strategy) => strategy.marketId))
     )

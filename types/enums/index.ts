@@ -375,6 +375,7 @@ export enum SpotTradeFormField {
   Amount = 'amount',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
+  TempSlippage = 'tempSlippage',
   AmountOption = 'amountOption',
   BypassPriceWarning = 'bypassPriceWarning'
 }
@@ -406,23 +407,24 @@ export enum MarketCategoryType {
   Trending = 'trending',
   Injective = 'injective',
   Layer1 = 'layer-1',
-  iAssets = 'iAssets',
+  Stocks = 'stocks',
   RWA = 'rwa',
   AI = 'ai',
   DeFi = 'deFi'
 }
 
 export enum NoticeBanner {
-  IAssets = 'i-assets',
+  Stocks = 'stocks',
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
+  MKRMigration = 'mkr-migration',
+  ExpiryFutures = 'expiry-futures',
   TeslaCampaign = 'tesla-campaign',
   PointsS1Ended = 'points-s1-ended',
   DeprecatedWallet = 'deprecated-wallet',
   PerpSettleMarket = 'perp-settle-market',
-  PostChainUpgrade = 'post-chain-upgrade',
-  UpcomingChainUpgrade = 'upcoming-chain-upgrade',
-  OwnYourAssetCampaign = 'own-your-asset-campaign'
+  PreLaunchFutures = 'pre-launch-futures',
+  VolumeVictoryCampaign = 'volume-victory-campaign'
 }
 
 export enum SpotGridMessages {
@@ -443,6 +445,8 @@ export enum DerivativesTradeFormField {
   LimitPrice = 'limitPrice',
   ReduceOnly = 'reduceOnly',
   TakeProfit = 'takeProfit',
+  TempLeverage = 'tempLeverage',
+  TempSlippage = 'tempSlippage',
   AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
   isTpSlEnabled = 'isTpSlEnabled',
@@ -508,6 +512,7 @@ export enum StreamType {
   GridStrategies = 'grid-strategies',
   DerivativesTrades = 'derivatives-trades',
   SubaccountBalances = 'subaccount-balances',
+  SpotAverageEntries = 'spot-average-entries',
   SpotOrderbookUpdate = 'spot-orderbook-update',
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
@@ -551,10 +556,12 @@ export enum BusEvents {
 export enum Modal {
   Terms = 'terms',
   QrCode = 'qrcode',
+  Stocks = 'stocks',
   Connect = 'connect',
   Onboard = 'onboard',
   DevMode = 'dev-mode',
-  IAsset = 'iasset-modal',
+  Slippage = 'slippage',
+  Leverage = 'leverage',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
   AddGrantee = 'add-grantee',
@@ -569,8 +576,10 @@ export enum Modal {
   GeoRestricted = 'geo-restricted',
   ShareReferral = 'share-referral',
   ConnectMobile = 'connect-mobile',
+  ShareTradePnl = 'share-trade-pnl',
   SgtBalancedFees = 'sgtBalancedFees',
   ConfirmReferral = 'confirm-referral',
+  ShareBalancePnl = 'share-balance-pnl',
   ClosedRWAMarket = 'closed-rwa-market',
   NinjaPassWinner = 'ninja-pass-winner',
   MarketRestricted = 'market-restricted',

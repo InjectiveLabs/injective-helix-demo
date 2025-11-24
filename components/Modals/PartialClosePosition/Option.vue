@@ -20,7 +20,7 @@ const selectOption = () => {
 
 <template>
   <span
-    class="font-mono text-coolGray-450 cursor-pointer hover:text-coolGray-200 transition-colors"
+    class="text-coolGray-450 cursor-pointer hover:text-coolGray-200 transition-colors"
     @click="selectOption"
     :data-cy="`${dataCyTag(PerpetualMarketCyTags.PartialClosePositionOption)}-${label}`"
   >

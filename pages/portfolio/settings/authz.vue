@@ -8,7 +8,11 @@ definePageMeta({
     () => {
       const sharedWalletStore = useSharedWalletStore()
 
-      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+      if (
+        ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+          sharedWalletStore.wallet
+        )
+      ) {
         return navigateTo({ name: MainPage.Index })
       }
     }
@@ -72,7 +76,7 @@ function openGranteeModal() {
       </div>
     </div>
 
-    <div class="border-y">
+    <div class="border-t">
       <NuxtPage />
     </div>
 

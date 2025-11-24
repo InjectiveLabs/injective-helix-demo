@@ -14,14 +14,17 @@ export enum PointsPeriod {
 export type AccountPoints = {
   rank: string
   league: string
-  totalPoints: string
   updatedAt: string
+  totalPoints: string
+  pointsBonus: number
+  pointsSeason1: number
+  totalPointsPrecise: number
 }
 
 export type HistoricalPoints = {
-  points: string
-  pointsPrecise: number
-  volume: number
-  week: string
   day: string
+  week: string
+  points: string
+  volume: number
+  pointsPrecise: number
 }

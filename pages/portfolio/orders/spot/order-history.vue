@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOrderHistoryFilterField } from '@/types'
+import type { TradeExecutionType } from '@/types'
 import type { SpotOrderHistoryFilterForm } from '@/types'
-import type { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
+import type { TradeDirection } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -90,7 +91,7 @@ onSubaccountChange(fetchOrders)
 </script>
 
 <template>
-  <div class="divide-y border-y mb-8">
+  <div class="divide-y border-t mb-8">
     <PartialsPortfolioOrdersSpotOrderHistoryTabs
       @form:reset="fetchOrders"
       @market:update="fetchOrders"
@@ -107,7 +108,6 @@ onSubaccountChange(fetchOrders)
 
     <template v-else>
       <PartialsPortfolioOrdersSpotOrderHistoryTable
-        v-if="spotStore.subaccountOrderHistory.length"
         :orders="spotStore.subaccountOrderHistory"
       />
 
@@ -121,11 +121,6 @@ onSubaccountChange(fetchOrders)
         }"
         @update:limit="handleLimitChange"
         @update:page="handlePageChange"
-      />
-
-      <CommonEmptyList
-        v-if="!spotStore.subaccountOrderHistory.length"
-        :message="$t('trade.emptyOrders')"
       />
     </template>
   </div>

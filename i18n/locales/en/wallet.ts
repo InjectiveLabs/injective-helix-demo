@@ -57,6 +57,7 @@ export default {
       [Wallet.Leap]: 'Leap',
       [Wallet.Keplr]: 'Keplr',
       [Wallet.Ninji]: 'Ninji',
+      [Wallet.Rabby]: 'Rabby',
       [Wallet.Ledger]: 'Ledger',
       [Wallet.Phantom]: 'Phantom',
       [Wallet.Rainbow]: 'Rainbow',

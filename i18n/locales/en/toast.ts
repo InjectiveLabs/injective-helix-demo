@@ -36,8 +36,8 @@ export default {
       autoSign: {
         disabledToast: 'Auto sign disabled',
         enabledToast: {
-          title: 'Auto sign enabled',
-          description: 'Auto sign enabled for 3 days.'
+          title: 'Auto sign enabled for 3 days.',
+          description: ''
         },
         enable: {
           title: 'Auto Sign',

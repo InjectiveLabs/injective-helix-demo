@@ -90,7 +90,7 @@ onSubaccountChange(fetchData)
 </script>
 
 <template>
-  <div class="divide-y border-y">
+  <div class="divide-y border-t">
     <PartialsPortfolioOrdersFuturesOrderHistoryTabs
       @form:reset="fetchData"
       @market:update="fetchData"
@@ -107,7 +107,6 @@ onSubaccountChange(fetchData)
 
     <template v-else>
       <PartialsPortfolioOrdersFuturesOrderHistoryTable
-        v-if="derivativeStore.subaccountOrderHistory.length"
         :orders="derivativeStore.subaccountOrderHistory"
       />
 
@@ -121,11 +120,6 @@ onSubaccountChange(fetchData)
         }"
         @update:limit="handleLimitChange"
         @update:page="handlePageChange"
-      />
-
-      <CommonEmptyList
-        v-if="!derivativeStore.subaccountOrderHistory.length"
-        :message="$t('trade.emptyOrders')"
       />
     </template>
   </div>

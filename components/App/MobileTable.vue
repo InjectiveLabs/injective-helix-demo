@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UTableColumn } from '@/types'
+import type { UTableColumn } from '@/types'
 
 const { sm } = useSharedBreakpoints()
 
@@ -40,7 +40,7 @@ function alignmentClass(index: number) {
 </script>
 
 <template>
-  <div :class="[extraClass || 'py-6 px-4']">
+  <div :class="[extraClass || 'py-6 px-4 border-b last:border-b-0']">
     <slot name="header" />
 
     <div class="text-xs" :class="gridClass">

@@ -2,7 +2,10 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UTableColumn, TransformedPosition } from '@/types'
@@ -191,10 +194,7 @@ function onSetPosition(value: TransformedPosition) {
       <div class="flex items-center space-x-1">
         <div
           class="space-y-1 text-right"
-          :class="{
-            'text-green-500': position.pnl.gte(0),
-            'text-red-500': position.pnl.lt(0)
-          }"
+          :class="getColorClassForChange(position.pnl)"
         >
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
@@ -202,10 +202,9 @@ function onSetPosition(value: TransformedPosition) {
           >
             <SharedAmount
               v-bind="{
-                useSubscript: true,
                 shouldAbbreviate: false,
                 amount: position.pnl.toFixed(),
-                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_DISPLAY_DECIMALS
               }"
             />
 
@@ -226,10 +225,9 @@ function onSetPosition(value: TransformedPosition) {
           </p>
         </div>
 
-        <UIcon
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="sharePosition"
+        <PartialsPositionsTableShare
+          :position="position.position"
+          @position:share="sharePosition"
         />
       </div>
     </template>

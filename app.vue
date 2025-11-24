@@ -20,14 +20,18 @@ const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
 onMounted(async () => {
+  if (route.query.automation === 'true') {
+    ;(window as any).ethereum = new CustomEip1193Provider()
+  }
+
   handleGoogleOAuth()
   sharedTokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
-    sharedSpotStore.fetchMarkets(),
+    sharedSpotStore.fetchAllMarkets(),
     sharedGeoStore.fetchGeoLocation(),
-    sharedDerivativeStore.fetchMarkets(),
+    sharedDerivativeStore.fetchAllMarkets(),
     sharedTokenStore.fetchTokensUsdPriceMap()
   ])
     .catch($onError)

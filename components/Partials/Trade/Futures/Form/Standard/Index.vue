@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
   Modal,
   MarketKey,
-  BusEvents,
+  TradeAmountOption,
   DerivativeTradeTypes,
-  PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
@@ -15,6 +15,7 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const positionStore = usePositionStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -32,30 +33,106 @@ const { value: orderSide } = useStringField({
   initialValue: TradeDirection.Long
 })
 
-const {
-  margin,
-  quantity,
-  feeAmount,
-  worstPrice,
-  feePercentage,
-  marginWithFee,
-  totalNotional,
-  minimumAmountInQuote
-} = useDerivativeWorstPrice(market)
+const isMarketOrder = computed(() =>
+  [DerivativeTradeTypes.Market].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
 
-const estLiquidationPrice = computed(() => {
-  const isBuy =
+const isLimitOrder = computed(() =>
+  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const isTriggerOrder = computed(() =>
+  [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
+
+const { takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: market.value.takerFeeRate,
+  marketMakerFeeRate: market.value.makerFeeRate
+})
+
+const isBuy = computed(
+  () =>
     derivativeFormValues.value[DerivativesTradeFormField.Side] ===
     TradeDirection.Long
+)
 
+const tradeDetails = useTradeDetails({
+  isBuy,
+  isLimitOrder,
+  takerFeeRate,
+  isTriggerOrder,
+  market: computed(() => market.value),
+  limitPrice: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
+  ),
+  isPostOnly: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.PostOnly] || false
+  ),
+  triggerPrice: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
+  ),
+  leverage: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.Leverage] ||
+      UI_DEFAULT_LEVERAGE
+  ),
+  slippagePercentage: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
+  )
+})
+
+const limitPriceShouldSkipAutoSet = computed(
+  () => orderType.value === DerivativeTradeTypes.StopLimit
+)
+
+const bypassPriceWarning = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.BypassPriceWarning]
+)
+
+const quantityToBigNumber = computed(
+  () => new BigNumberInBase(tradeDetails.quantity.value)
+)
+
+const feeAmountToBigNumber = computed(
+  () => new BigNumberInBase(tradeDetails.feeAmount.value)
+)
+
+const totalNotionalToBigNumber = computed(
+  () => new BigNumberInBase(tradeDetails.notionalWithFee.value)
+)
+
+const estLiquidationPrice = computed(() => {
   return calculateLiquidationPrice({
-    price: worstPrice.value.toFixed(),
-    quantity: quantity.value.toFixed(),
-    notionalWithLeverage: margin.value.toFixed(),
-    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
-    market: market.value
+    market: market.value,
+    quantity: tradeDetails.quantity.value,
+    price: tradeDetails.executionPrice.value.toFixed(),
+    orderType: isBuy.value ? OrderSide.Buy : OrderSide.Sell,
+    notionalWithLeverage: tradeDetails.margin.value.toFixed()
   })
 })
+
+const currentMarketPosition = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === market.value.marketId
+  )
+)
 
 onMounted(() => {
   setFormValues(
@@ -68,7 +145,7 @@ onMounted(() => {
   )
 })
 
-function addTpSl(position: PositionV2) {
+function updateTpSl(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
 }
@@ -86,147 +163,135 @@ function onTradeTypeChange() {
   )
 }
 
-function onOrderSideChange() {
-  if (
-    ![DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-      orderType.value as DerivativeTradeTypes
-    )
-  ) {
-    return
-  }
-
-  useEventBus(BusEvents.OrderSideToggled).emit()
-}
-
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
+
+function openLeverageModal() {
+  modalStore.openModal(Modal.Leverage)
+}
+
+watch(
+  [() => derivativeFormValues.value],
+  ([formValues]) => {
+    const amount = formValues[DerivativesTradeFormField.Amount] || '0'
+    const option =
+      formValues[DerivativesTradeFormField.AmountOption] ||
+      TradeAmountOption.Base
+
+    if (option === TradeAmountOption.Base) {
+      tradeDetails.quantity.value = amount
+
+      return
+    }
+
+    tradeDetails.notional.value = amount
+  },
+  { deep: true }
+)
 </script>
 
 <template>
-  <div class="p-4 lg:pb-8">
-    <div class="border-b">
-      <AppButtonSelect
-        v-for="value in Object.values(DerivativeTradeTypes)"
-        :key="value"
-        v-bind="{ value }"
-        v-model="orderType"
-        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
-        active-classes="border-b border-blue-550 text-white"
-        :data-cy="`${dataCyTag(
-          PerpetualMarketCyTags.DerivativeTradeType
-        )}-${value}`"
-        @click="onTradeTypeChange"
-      >
-        {{ $t(`trade.${value}`) }}
-      </AppButtonSelect>
-    </div>
+  <div class="space-y-4 p-4 lg:pb-8">
+    <PartialsTradeFuturesFormStandardNavigation
+      v-model="orderType"
+      @trade-type:change="onTradeTypeChange"
+    />
 
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="side in [TradeDirection.Long, TradeDirection.Short]"
-        :key="side"
-        v-bind="{ value: side }"
-        v-model="orderSide"
-        class="flex-1"
-        :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
-        @click="onOrderSideChange"
-      >
-        <AppButton
-          :variant="
-            orderSide === side
-              ? side === TradeDirection.Long
-                ? 'success'
-                : 'danger'
-              : side === TradeDirection.Long
-                ? 'success-cta'
-                : 'danger-cta'
-          "
-          :class="[
-            'w-full py-1.5 leading-relaxed focus-within:ring-0',
-            side === TradeDirection.Long ? 'hover:bg-green-500' : ''
-          ]"
-        >
-          <span>
-            {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
-          </span>
-        </AppButton>
-      </AppButtonSelect>
-    </div>
-
-    <div class="space-y-4 pt-4">
-      <PartialsTradeFuturesFormStandardTriggerField
-        v-if="
-          [
-            DerivativeTradeTypes.StopLimit,
-            DerivativeTradeTypes.StopMarket
-          ].includes(orderType as DerivativeTradeTypes)
-        "
-      />
-
-      <PartialsTradeFuturesFormStandardLimitPriceField
-        v-if="
-          [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
-            orderType as DerivativeTradeTypes
-          )
-        "
-      />
-
-      <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
-      />
-
-      <PartialsTradeFuturesFormStandardLeverage v-bind="{ worstPrice }" />
-    </div>
-
-    <PartialsTradeFuturesFormStandardSlippage
-      v-if="
-        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-          derivativeFormValues[
-            DerivativesTradeFormField.Type
-          ] as DerivativeTradeTypes
-        )
-      "
-      v-bind="{ worstPrice }"
+    <PartialsTradeCommonFormSideSelector
+      v-model="orderSide"
       class="mt-4"
+      v-bind="{
+        isLimitOrder
+      }"
+    />
+
+    <AppButton
+      is-full-width
+      variant="primary-outline"
+      class="rounded-lg p-2.5 w-full text-sm font-medium"
+      @click="openLeverageModal"
+    >
+      {{
+        $t('trade.leverageModal.leverageAt', {
+          leverageAmount:
+            derivativeFormValues[DerivativesTradeFormField.Leverage]
+        })
+      }}
+    </AppButton>
+
+    <PartialsTradeFuturesFormStandardTriggerField v-if="isTriggerOrder" />
+
+    <PartialsTradeCommonFormLimitPriceField
+      v-if="isLimitOrder"
+      v-bind="{
+        isBuy,
+        lastTradedPrice,
+        bypassPriceWarning,
+        shouldSkipAutoSet: limitPriceShouldSkipAutoSet,
+        fieldName: DerivativesTradeFormField.LimitPrice
+      }"
+    />
+
+    <PartialsTradeFuturesFormStandardAmountField
+      v-bind="{
+        isLimitOrder,
+        quantity: quantityToBigNumber,
+        worstPrice: tradeDetails.executionPrice.value,
+        marginWithFee: tradeDetails.marginWithFee.value,
+        minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
+      }"
+    />
+
+    <PartialsTradeFuturesFormStandardSettingsTpSl
+      v-if="isMarketOrder || (isLimitOrder && currentMarketPosition)"
+      v-bind="{ estLiquidationPrice, currentMarketPosition }"
+      @tpsl:update="updateTpSl"
     />
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
-      class="mt-4"
-      v-bind="{ estLiquidationPrice }"
-      @tpsl:add="addTpSl"
+      v-bind="{
+        isLimitOrder,
+        isMarketOrder,
+        estLiquidationPrice
+      }"
     />
 
     <PartialsTradeFuturesFormStandardDetails
       v-bind="{
-        margin,
-        quantity,
-        feeAmount,
-        worstPrice,
-        marginWithFee,
-        totalNotional,
+        tradeDetails,
+        isLimitOrder,
+        isTriggerOrder,
         estLiquidationPrice
       }"
     />
 
     <PartialsTradeFuturesFormStandardCreateOrder
       v-bind="{
-        margin,
-        quantity,
-        feeAmount,
-        worstPrice,
-        feePercentage,
-        marginWithFee,
-        totalNotional
+        isLimitOrder,
+        isTriggerOrder,
+        quantity: quantityToBigNumber,
+        feeAmount: feeAmountToBigNumber,
+        margin: tradeDetails.margin.value,
+        totalNotional: totalNotionalToBigNumber,
+        feePercentage: tradeDetails.feeRate.value,
+        worstPrice: tradeDetails.executionPrice.value,
+        marginWithFee: tradeDetails.marginWithFee.value,
+        hasEnoughLiquidity: tradeDetails.enoughLiquidity.value,
+        hasSlippageWarning: tradeDetails.hasSlippageWarning.value
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity />
+    <PartialsTradeCommonFormAccountEquity class="border-t pt-5 !mt-6" />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
       v-bind="{ position: selectedPosition }"
       @on:close="resetSelectedPosition"
+    />
+
+    <ModalsLeverage
+      v-bind="{ worstPrice: tradeDetails.executionPrice.value }"
     />
   </div>
 </template>

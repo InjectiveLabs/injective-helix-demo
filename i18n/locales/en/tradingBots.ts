@@ -60,7 +60,7 @@ export default {
     lowerPriceStop: 'Lower Price Stop',
     upperPriceStop: 'Upper Price Stop',
     saveOnFees: 'Adjust Deposit Amounts',
-    noStrategies: 'No Strategies found.',
+    noStrategies: 'No Strategies found',
     optimizedAmounts: 'Optimized Amounts',
     totalBotsCreated: 'Total Bots Created',
     replicateStrategy: 'Replicate Strategy',

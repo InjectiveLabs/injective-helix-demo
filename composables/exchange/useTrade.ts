@@ -1,70 +1,39 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { TradeDirection } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
-export function useTrade(
-  trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
-  isSpot: boolean
-) {
-  const spotStore = useSpotStore()
+export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
   const derivativeStore = useDerivativeStore()
   const { t } = useLang()
 
   const market = computed(() =>
-    isSpot
-      ? spotStore.marketByIdOrSlug(trade.value.marketId)
-      : derivativeStore.marketByIdOrSlug(trade.value.marketId)
+    derivativeStore.marketByIdOrSlug(trade.value.marketId)
   )
 
-  /** Unifying both spot and derivative to spot trade type */
-  const tradeToSpotTrade = computed(() => {
-    if (isSpot) {
-      return trade.value as SharedUiSpotTrade
-    }
-
-    const derivativeTrade = trade.value as SharedUiDerivativeTrade
-
-    return {
-      ...derivativeTrade,
-      price: derivativeTrade.executionPrice,
-      quantity: derivativeTrade.executionQuantity,
-      timestamp: derivativeTrade.executedAt
-    } as SharedUiSpotTrade
-  })
-
   const price = computed(() => {
-    if (!market.value || !tradeToSpotTrade.value.price) {
+    if (!market.value || !trade.value.executionPrice) {
       return ZERO_IN_BASE
     }
 
-    return isSpot
-      ? new BigNumberInBase(
-          new BigNumberInBase(tradeToSpotTrade.value.price).toWei(
-            market.value.baseToken.decimals - market.value.quoteToken.decimals
-          )
-        )
-      : new BigNumberInWei(tradeToSpotTrade.value.price).toBase(
-          market.value.quoteToken.decimals
-        )
+    return sharedToBalanceInTokenInBase({
+      value: trade.value.executionPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const quantity = computed(() => {
-    if (!market.value || !tradeToSpotTrade.value.quantity) {
+    if (!market.value || !trade.value.executionQuantity) {
       return ZERO_IN_BASE
     }
 
-    return isSpot
-      ? new BigNumberInWei(tradeToSpotTrade.value.quantity).toBase(
-          market.value.baseToken.decimals
-        )
-      : new BigNumberInBase(tradeToSpotTrade.value.quantity)
+    return new BigNumberInBase(trade.value.executionQuantity)
   })
 
   const total = computed(() => quantity.value.times(price.value))
@@ -75,14 +44,8 @@ export function useTrade(
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   )
 
-  const quantityDecimals = computed(() =>
-    market.value
-      ? market.value.quantityDecimals
-      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  )
-
   const time = computed(() => {
-    if (!market.value || !trade.value.executedAt) {
+    if (!trade.value.executedAt) {
       return ''
     }
 
@@ -94,15 +57,51 @@ export function useTrade(
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(trade.value.fee).toBase(
-      market.value.quoteToken.decimals
+    return sharedToBalanceInTokenInBase({ value: trade.value.fee })
+  })
+
+  const pnl = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return sharedToBalanceInTokenInBase({
+      value: trade.value.pnl,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
+  })
+
+  const entryPrice = computed(() => {
+    if (!market.value || quantity.value.isZero()) {
+      return ZERO_IN_BASE
+    }
+
+    if (trade.value.tradeDirection === TradeDirection.Sell) {
+      return new BigNumberInBase(
+        price.value.minus(pnl.value.plus(fee.value).dividedBy(quantity.value))
+      )
+    }
+
+    return new BigNumberInBase(
+      price.value.plus(pnl.value.minus(fee.value).dividedBy(quantity.value))
     )
   })
 
-  const tradeExecutionType = computed<string>(() => {
-    const derivativeTrade = trade.value as SharedUiDerivativeTrade
+  const percentagePnl = computed(() => {
+    if (!market.value || pnl.value.isNaN()) {
+      return ZERO_IN_BASE
+    }
 
-    if (!isSpot && derivativeTrade.isLiquidation) {
+    const denominator = price.value.times(quantity.value).plus(fee.value.abs())
+    if (denominator.isZero()) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(pnl.value.dividedBy(denominator).times(100))
+  })
+
+  const tradeExecutionType = computed<string>(() => {
+    if (trade.value.isLiquidation) {
       return t('trade.liquidation')
     }
 
@@ -121,14 +120,16 @@ export function useTrade(
   })
 
   return {
+    pnl,
     fee,
     time,
     price,
     total,
     market,
     quantity,
+    entryPrice,
+    percentagePnl,
     priceDecimals,
-    quantityDecimals,
     tradeExecutionType
   }
 }

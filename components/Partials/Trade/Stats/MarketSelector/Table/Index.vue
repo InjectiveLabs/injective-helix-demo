@@ -177,12 +177,12 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
             </span>
             <span
               v-else
-              :class="{
-                'text-green-500':
-                  row[MarketsSelectorTableColumn.FundingRate].gte(0),
-                'text-red-500':
-                  row[MarketsSelectorTableColumn.FundingRate].lt(0)
-              }"
+              :class="
+                getColorClassForChange(
+                  row[MarketsSelectorTableColumn.FundingRate],
+                  { zeroClass: 'text-green-500' }
+                )
+              "
               class="cursor-pointer flex"
             >
               <SharedAmount

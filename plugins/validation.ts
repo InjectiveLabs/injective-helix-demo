@@ -94,11 +94,36 @@ export const defineGlobalRules = () => {
   })
 
   defineRule(
+    'liquidationValue',
+    (value: string, [liquidationValue, isBuy]: string[]) => {
+      const isBuyOrder = isBuy === 'true'
+
+      if (
+        !value ||
+        (isBuyOrder && Number(value) > Number(liquidationValue)) ||
+        (!isBuyOrder && Number(value) < Number(liquidationValue))
+      ) {
+        return true
+      }
+
+      if (isBuyOrder && Number(value) < Number(liquidationValue)) {
+        return 'Should be higher than liquidation price'
+      }
+
+      return 'Should be lower than liquidation price'
+    }
+  )
+
+  defineRule(
     'required',
     (value: string | number, _, { field }: { field: string }) => {
       if (!value || !value.toString().length || Number(value) === 0) {
         if (field.toLowerCase().includes('amount')) {
           return 'amount is required'
+        }
+
+        if (field.toLowerCase().includes('leverage')) {
+          return 'Leverage is required'
         }
 
         if (field.toLowerCase().includes('positionquantity')) {

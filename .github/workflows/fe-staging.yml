@@ -1,0 +1,224 @@
+name: Frontend Staging Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Select deployment network'
+        required: false
+        default: 'Mainnet'
+        type: choice
+        options:
+          - Mainnet
+          - Testnet
+          - Devnet
+      branch:
+        description: 'Branch to deploy from (cannot be: dev, testnet, staging, master)'
+        required: true
+        type: string
+      description:
+        description: 'Deployment description (e.g., "resolve IL-1588, requires partial regression testing on login flow")'
+        required: true
+        type: string
+        default: 'Manual deployment via workflow dispatch'
+
+env:
+  VITE_ENV: mainnet
+  VITE_NETWORK: mainnetSentry
+  VITE_CHAIN_ID: injective-1
+  VITE_ETHEREUM_CHAIN_ID: 1
+
+  VITE_PRODUCT: helix
+  VITE_SHOW_REDEEM_VOUCHER: true
+  VITE_MAINTENANCE_DISABLED: false
+  VITE_IS_ONRAMPER_DEV_MODE: false
+
+  VITE_VPN_CHECKS_ENABLED: false
+  VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+  VITE_GOOGLE_MAPS_KEY: ${{ secrets.VITE_GOOGLE_MAPS_KEY }}
+  VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
+
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  NUXT_CLARITY_ID: ${{ secrets.NUXT_CLARITY_ID }}
+  VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+
+  VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+  VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
+  VITE_FAUCET_MAINNET_API: ${{ secrets.VITE_FAUCET_MAINNET_API }}
+
+  VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
+  VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
+  VITE_TURNKEY_ORGID: ${{ secrets.VITE_TURNKEY_ORGID }}
+  VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
+  VITE_ALCHEMY_KEY: ${{ secrets.VITE_STAGING_ALCHEMY_KEY }}
+  VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_STAGING_ALCHEMY_KEY }}
+  VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
+  VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
+  VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
+  VITE_ONRAMPER_API_KEY_DEV: ${{ secrets.VITE_ONRAMPER_API_KEY_DEV }}
+  VITE_ONRAMPER_API_KEY_PROD: ${{ secrets.VITE_ONRAMPER_API_KEY_PROD }}
+  VITE_TURNKEY_GOOGLE_CLIENT_ID: ${{ secrets.VITE_TURNKEY_GOOGLE_CLIENT_ID }}
+  VITE_WALLET_CONNECT_PROJECT_ID: ${{ secrets.VITE_WALLET_CONNECT_PROJECT_ID }}
+
+  VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
+  VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
+
+  VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+  VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
+
+  NODE_OPTIONS: '--max_old_space_size=30720'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check protected branches before proceeding
+      - name: Validate branch
+        run: |
+          BRANCH_NAME="${{ github.event.inputs.branch }}"
+
+          # Define protected branches
+          PROTECTED_BRANCHES=("dev" "testnet" "staging" "master")
+
+          for protected in "${PROTECTED_BRANCHES[@]}"; do
+            if [ "$BRANCH_NAME" = "$protected" ]; then
+              echo "❌ ERROR: Cannot deploy from protected branch '$BRANCH_NAME'"
+              exit 1
+            fi
+          done
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+          fetch-tags: true
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Setup Node.js
+        uses: useblacksmith/setup-node@v5
+        with:
+          node-version: '24.4.0'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli@17.36.4 -g
+
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+
+      - name: Set environment variables based on network
+        id: set_env
+        run: |
+          NETWORK="${{ github.event.inputs.network }}"
+
+          if [ "$NETWORK" = "Testnet" ]; then
+            echo "VITE_ENV=testnet" >> $GITHUB_ENV
+            echo "VITE_NETWORK=testnetSentry" >> $GITHUB_ENV
+            echo "VITE_CHAIN_ID=injective-888" >> $GITHUB_ENV
+            echo "VITE_ETHEREUM_CHAIN_ID=11155111" >> $GITHUB_ENV
+            echo "network_display=Testnet" >> $GITHUB_ENV
+          elif [ "$NETWORK" = "Devnet" ]; then
+            echo "VITE_ENV=devnet" >> $GITHUB_ENV
+            echo "VITE_NETWORK=devnet" >> $GITHUB_ENV
+            echo "VITE_CHAIN_ID=injective-777" >> $GITHUB_ENV
+            echo "VITE_ETHEREUM_CHAIN_ID=11155111" >> $GITHUB_ENV
+            echo "network_display=Devnet" >> $GITHUB_ENV
+          else
+            echo "network_display=Mainnet" >> $GITHUB_ENV
+          fi
+
+      - name: Build app
+        run: |
+          pnpm install
+          pnpm clean-up
+          pnpm generate
+
+      - name: Deploy to Netlify
+        id: netlify_deploy
+        run: |
+          OUTPUT=$(netlify deploy \
+            --dir ./.output/public \
+            --auth ${{ env.NETLIFY_TOKEN }} \
+            --site ${{ env.NETLIFY_SITE_ID }})
+
+          echo "$OUTPUT"
+
+          # Extract the Website draft URL from the output
+          STAGING_URL=$(echo "$OUTPUT" | grep "Website draft URL:" | sed 's/Website draft URL: //')
+          echo "staging_url=$STAGING_URL" >> $GITHUB_OUTPUT
+        env:
+          NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # Replace the extracted steps with the reusable action
+      - name: Send deployment notification
+        id: deployment_notification
+        uses: InjectiveLabs/github-fe/actions/fe-staging-notification@master
+        with:
+          repo: 'Helix'
+          network: ${{ env.network_display }}
+          description: ${{ github.event.inputs.description || 'Staging deployment' }}
+          staging_url: ${{ steps.netlify_deploy.outputs.staging_url }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-user-token: ${{ secrets.SLACK_USER_TOKEN }}
+
+      # Trigger helix dapp-tests workflow with staging URL and timestamp
+      - name: Trigger helix dapp-tests workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
+
+          gh workflow run "Helix Functional Tests - UI - Custom" \
+            --repo InjectiveLabs/dapp-tests \
+            --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
+            --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
+
+          echo "✅ Successfully triggered dapp-tests workflow"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      # Optional: Use the outputs from the action
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "🚀 Deployment completed!"
+          echo "Network: ${{ env.network_display }}"
+          echo "Branch: ${{ steps.deployment_notification.outputs.branch_name }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Slack Channel: #${{ steps.deployment_notification.outputs.channel_name }}"
+
+          if [ "${{ steps.deployment_notification.outputs.jira_tickets }}" != "" ]; then
+            echo "Jira tickets: ${{ steps.deployment_notification.outputs.jira_tickets }}"
+          fi
+
+          if [ "${{ steps.deployment_notification.outputs.message_found }}" = "true" ]; then
+            echo "Slack message timestamp: ${{ steps.deployment_notification.outputs.message_ts }}"
+            echo "Threaded to existing message"
+          else
+            echo "Slack message timestamp: ${{ steps.deployment_notification.outputs.message_ts }}"
+            echo "Created new Slack message"
+          fi
+
+      # Trigger fe-staging-testnet workflow
+      - name: Trigger fe-staging-testnet workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering fe-staging-testnet workflow"
+
+          gh workflow run "Frontend Staging Deployment - Testnet" \
+            --repo InjectiveLabs/injective-helix \
+            --field branch="${{ github.event.inputs.branch }}" \
+            --field description="Triggered from main staging deployment - ${{ github.event.inputs.description }}"
+
+          echo "✅ Successfully triggered fe-staging-testnet workflow"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

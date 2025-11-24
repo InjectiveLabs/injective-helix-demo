@@ -7,8 +7,10 @@ import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
+const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
+const referralStore = useReferralStore()
 const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
@@ -49,6 +51,32 @@ function onDeposit() {
 function onOpenBankTransferModal() {
   modalStore.openModal(Modal.BankTransfer)
 }
+
+onWalletConnected(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  referralStore.fetchUserReferralDetails()
+
+  spotStore.streamAccountAverageEntries({
+    account: sharedWalletStore.authZOrInjectiveAddress
+  })
+})
+
+onWalletDisconnected(() => {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  spotStore.resetAccountAverageEntries()
+  spotStore.cancelAccountAverageEntriesStream()
+})
+
+onUnmounted(() => {
+  spotStore.resetAccountAverageEntries()
+  spotStore.cancelAccountAverageEntriesStream()
+})
 </script>
 
 <template>
@@ -113,7 +141,9 @@ function onOpenBankTransferModal() {
         >
           <template
             v-if="
-              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+              !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+                sharedWalletStore.wallet
+              )
             "
           >
             <PartialsCommonBridgeRedirection

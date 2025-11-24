@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SharedMarketStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
@@ -10,7 +11,9 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const swapStore = useSwapStore()
 const positionStore = usePositionStore()
+const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -36,7 +39,10 @@ onMounted(async () => {
     await spotStore.appendMarketId(route.query.marketId as string)
   }
 
-  if (!market.value) {
+  if (
+    !market.value ||
+    market.value.marketStatus !== SharedMarketStatus.Active
+  ) {
     return navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
   }
 
@@ -86,10 +92,32 @@ useHead({
   })
 })
 
+onWalletConnected(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  referralStore.fetchUserReferralDetails()
+
+  spotStore.streamAccountAverageEntries({
+    account: sharedWalletStore.authZOrInjectiveAddress
+  })
+})
+
+onWalletDisconnected(() => {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  spotStore.cancelAccountAverageEntriesStream()
+  spotStore.resetAccountAverageEntries()
+})
+
 onUnmounted(() => {
   spotStore.reset()
   spotStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
+  spotStore.cancelAccountAverageEntriesStream()
 })
 
 provide(IsSpotKey, true)
@@ -100,7 +128,15 @@ provide(MarketKey, market)
   <div v-if="market" v-bind="{ market }">
     <PartialsTradeLayout v-bind="{ market }" is-spot>
       <template #form>
-        <PartialsTradeSpotForm />
+        <PartialsTradeCommonForm v-bind="{ market }" is-spot>
+          <template #standard>
+            <PartialsTradeSpotFormStandard />
+          </template>
+
+          <template #bots>
+            <PartialsTradeSpotFormTradingBots />
+          </template>
+        </PartialsTradeCommonForm>
       </template>
 
       <template #orders>
@@ -108,7 +144,7 @@ provide(MarketKey, market)
       </template>
     </PartialsTradeLayout>
 
-    <ModalsIAssets />
+    <ModalsStocks />
     <ModalsMarketNotOnHelix v-if="!market.isVerified" />
     <ModalsMarketRestricted v-bind="{ market, isSpot: true }" />
   </div>

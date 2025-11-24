@@ -11,7 +11,7 @@ export const STAKING_CONTRACT_ADDRESS = IS_MAINNET
   ? 'inj1gtze7qm07nky47n7mwgj4zatf2s77xqvh3k2n8'
   : IS_TESTNET
     ? 'inj17yk350dhnct9pc4pvswn02243wg8h6x65pr5xt'
-    : 'inj1qa4hswlcjmttulj0q9qa46jf64f93pecxar5pu'
+    : 'inj1guczj53xxl4347adagh23eelyhnxvugwwgqn0q'
 
 const CAMPAIGN_ENDPOINT =
   IS_MAINNET && !IS_STAGING
@@ -23,7 +23,14 @@ const NINJA_PASS_ENDPOINT: string =
   import.meta.env.VITE_NINJA_PASS_ENDPOINT ||
   'https://api.ninjapass.injective.dev'
 
+const ARCHIVER_ENDPOINT = IS_MAINNET
+  ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
+  : IS_TESTNET
+    ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
+    : ENDPOINTS.indexer
+
 export const HELIX_ENDPOINTS = {
+  archiver: ARCHIVER_ENDPOINT,
   campaign: CAMPAIGN_ENDPOINT,
   ninjaPass: NINJA_PASS_ENDPOINT
 }
@@ -32,7 +39,7 @@ export const SHOW_REDEEM_VOUCHER =
   import.meta.env.VITE_SHOW_REDEEM_VOUCHER === 'true'
 
 export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
-  ? 'inj1qk00h5atutpsv900x202pxx42npjr9thrzhgxn'
+  ? 'inj14hj2tavq8fpesdwxxcu44rty3hh90vhujaxlnz'
   : IS_TESTNET
     ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
     : IS_STAGING

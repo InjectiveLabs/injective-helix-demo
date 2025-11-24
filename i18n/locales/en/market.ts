@@ -3,7 +3,7 @@ import { MarketCategoryType } from '@/types'
 export default {
   markets: {
     vol: 'Vol',
-    iAsset: 'iAsset',
+    stocks: 'Stocks',
     marketId: 'Market ID',
     showLowVol: 'Show low vol.',
     newMarkets: '🐤 New Markets',
@@ -11,8 +11,10 @@ export default {
     closePositionWarningTitle: 'High price impact detected',
     indexMarketTooltip:
       'This market follows the {label}. More details can be found {link}.',
-    buidlTooltip:
+    docsTooltip:
       'This product is an Index Perp. For more information, please refer to the {docs}.',
+    expiryDocsTooltip:
+      'This product is an Expiry Futures contract. For more information, please refer to the {docs}.',
     closePositionWarningDescription:
       'Closing this open position with a market order may result in an unfavorable execution price. You may want to consider closing with a limit order instead.',
     '2024ElectionTooltip':
@@ -28,7 +30,7 @@ export default {
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
       [MarketCategoryType.RWA]: 'RWA',
-      [MarketCategoryType.iAssets]: 'iAssets'
+      [MarketCategoryType.Stocks]: 'Stocks'
     }
   }
 }

@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import { intervalToDuration } from 'date-fns'
 import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -335,11 +334,13 @@ export function mergeObjects<T extends Record<any, any>>(
  *
  * @param number - The number to quantize.
  * @param precision - The precision to quantize the number to.
+ * @param rounding - The rounding mode to use (down by default)
  * @returns The quantized number.
  */
 export function quantizeNumber(
   number: number | BigNumberInBase,
-  tensMultiplier: number
+  tensMultiplier: number,
+  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN
 ): BigNumberInBase {
   const numberInBigNumber = new BigNumberInBase(number)
 
@@ -352,7 +353,7 @@ export function quantizeNumber(
   return new BigNumberInBase(
     new BigNumberInBase(number)
       .dividedBy(divideBy)
-      .dp(0, BigNumber.ROUND_DOWN)
+      .dp(0, rounding)
       .times(divideBy)
   )
 }
@@ -587,12 +588,36 @@ export const getTradingBotLinkFromStrategy = (
       }
 }
 
-export function generateOnRamperSignature(
+export async function generateOnRamperSignature(
   secretKey: string,
   data: string
-): string {
-  const hmac = crypto.createHmac('sha256', secretKey)
-  hmac.update(data)
+): Promise<string> {
+  const encoder = new TextEncoder()
+  const messageData = encoder.encode(data)
+  const keyData = encoder.encode(secretKey)
 
-  return hmac.digest('hex')
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageData)
+
+  const hashArray = Array.from(new Uint8Array(signature))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+
+  return hashHex
+}
+
+export function safeAmount(value: null | string | undefined) {
+  const isInvalid =
+    value === '' ||
+    value === null ||
+    value === undefined ||
+    new BigNumberInBase(value).isNaN()
+
+  return isInvalid ? '0' : value
 }

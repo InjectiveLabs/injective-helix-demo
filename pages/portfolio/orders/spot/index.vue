@@ -39,11 +39,11 @@ onSubaccountChange(fetchSubaccountOrders)
 </script>
 
 <template>
-  <div class="divide-y border-y">
+  <div class="divide-y border-t">
     <PartialsPortfolioOrdersSpotOpenOrdersTabs />
 
     <div class="overflow-x-auto">
-      <div class="divide-y border-b">
+      <div class="divide-y">
         <CommonSkeletonRow
           v-if="status.isLoading()"
           :rows="10"
@@ -51,18 +51,14 @@ onSubaccountChange(fetchSubaccountOrders)
           :height="57"
         />
 
-        <template v-else>
-          <PartialsPortfolioOrdersSpotOpenOrdersTable
-            v-if="filteredOrders.length"
-            :orders="filteredOrders"
-            :is-trading-bots="accountStore.isSgtSubaccount"
-          />
-
-          <CommonEmptyList
-            v-if="!filteredOrders.length"
-            :message="$t('trade.emptyOrders')"
-          />
-        </template>
+        <PartialsPortfolioOrdersSpotOpenOrdersTable
+          v-else
+          v-bind="{
+            isPortfolioPage: true,
+            orders: filteredOrders,
+            isTradingBots: accountStore.isSgtSubaccount
+          }"
+        />
       </div>
     </div>
   </div>

@@ -104,6 +104,12 @@ export type MaxAmountOnOrderbook = {
   totalQuantity: BigNumberInBase
 }
 
+export type ChangeColorClassOptions = {
+  zeroClass?: string
+  positiveClass?: string
+  negativeClass?: string
+}
+
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
   volumeInUsd: BigNumberInBase
 }
@@ -157,6 +163,7 @@ export type DerivativesTradeForm = {
   [DerivativesTradeFormField.LimitPrice]: string
   [DerivativesTradeFormField.TakeProfit]: string
   [DerivativesTradeFormField.ReduceOnly]: boolean
+  [DerivativesTradeFormField.TempLeverage]: string
   [DerivativesTradeFormField.Side]: TradeDirection
   [DerivativesTradeFormField.TriggerPrice]: string
   [DerivativesTradeFormField.isTpSlEnabled]: boolean
@@ -184,4 +191,24 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.QuoteInvestmentAmount]: string
   [SpotGridTradingField.InvestmentType]: InvestmentTypeGst
   [SpotGridTradingField.StrategyType]: SpotGridStrategyType
+}
+
+export type TradeDetails = {
+  margin: ComputedRef<BigNumberInBase>
+  feeRate: ComputedRef<BigNumberInBase>
+  notional: WritableComputedRef<string>
+  quantity: WritableComputedRef<string>
+  enoughLiquidity: ComputedRef<boolean>
+  feeAmount: ComputedRef<BigNumberInBase>
+  bestPrice: ComputedRef<BigNumberInBase>
+  hasSlippageWarning: ComputedRef<boolean>
+  worstPrice: ComputedRef<BigNumberInBase>
+  averagePrice: ComputedRef<BigNumberInBase>
+  marginWithFee: ComputedRef<BigNumberInBase>
+  slippagePrice: ComputedRef<BigNumberInBase>
+  executionPrice: ComputedRef<BigNumberInBase>
+  notionalWithFee: ComputedRef<BigNumberInBase>
+  calculatedNotional: ComputedRef<BigNumberInBase>
+  minimumAmountInQuote: ComputedRef<BigNumberInBase>
+  estSlippagePercentage: ComputedRef<BigNumberInBase>
 }

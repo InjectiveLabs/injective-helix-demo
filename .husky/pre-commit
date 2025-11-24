@@ -1,1 +1,2 @@
-yarn lint-staged
+pnpm lint-staged
+pnpm typecheck

@@ -1,6 +1,6 @@
 import { streamGridStrategies } from './stream'
 import { MarketType } from '@injectivelabs/sdk-ts'
-import { indexerGrpcTradingApi } from '@/app/Services'
+import { getIndexerGrpcTradingApi } from '@/app/Services'
 import { cancelGridStrategiesStream } from '@/app/client/streams/grid-strategies'
 import {
   removeStrategy,
@@ -11,8 +11,8 @@ import {
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { StrategyStatus, StrategyPerformance } from '@/types'
-import type { UiSpotMarket } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+import type { UiSpotMarket } from '@/types'
 
 type GridStrategyStoreState = {
   stats: any
@@ -148,6 +148,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {
+      const indexerGrpcTradingApi = await getIndexerGrpcTradingApi()
+
       const sharedWalletStore = useSharedWalletStore()
 
       const gridStrategyStore = useGridStrategyStore()
@@ -165,6 +167,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async fetchAllStrategies(params: { active?: boolean } = { active: false }) {
+      const indexerGrpcTradingApi = await getIndexerGrpcTradingApi()
+
       const { active } = params
 
       const gridStrategyStore = useGridStrategyStore()
@@ -184,6 +188,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async fetchStrategyWithPnl() {
+      const indexerGrpcTradingApi = await getIndexerGrpcTradingApi()
+
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         withPerformance: true,
         withTvl: true,
@@ -196,6 +202,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     async fetchStrategyStats() {
+      const indexerGrpcTradingApi = await getIndexerGrpcTradingApi()
+
       const gridStrategyStore = useGridStrategyStore()
 
       const stats = await indexerGrpcTradingApi.fetchTradingStats()

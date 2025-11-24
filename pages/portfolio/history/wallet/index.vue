@@ -69,7 +69,7 @@ async function handleLimitChange(limit: number) {
       <h3 class="portfolio-title">{{ $t('navigation.subaccountHistory') }}</h3>
     </div>
 
-    <div class="border-y divide-y">
+    <div class="border-t divide-y">
       <PartialsPortfolioHistoryWalletTabs
         @form:reset="fetchWalletTransfers"
         @token:update="fetchWalletTransfers"

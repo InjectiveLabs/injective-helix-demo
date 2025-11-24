@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { MarkPriceStatusKey } from '@/types'
-import type { UiMarketWithToken } from '@/types'
+import { MarkPriceStatusKey, PerpetualMarketCyTags } from '@/types'
 import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
+import type { UiMarketWithToken } from '@/types'
 
 const sharedDerivativeStore = useSharedDerivativeStore()
 
@@ -86,6 +87,10 @@ const { valueToString: annualizedFundingRateToString } =
 //   )
 // )
 
+const isExpiryMarket = computed(
+  () => props.market.subType === SharedMarketType.Futures
+)
+
 watch(countdown, (countdown) => {
   if (countdown === '00:00:01') {
     sharedDerivativeStore.fetchMarketsSummary()
@@ -94,13 +99,16 @@ watch(countdown, (countdown) => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem class="xl:hidden 2xl:flex">
+  <PartialsTradeStatsHeaderItem class="lg:hidden xl:flex">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.markPriceTooltip')"
-        text-color-class="text-coolGray-400"
+        v-bind="{
+          textColorClass: 'text-coolGray-400',
+          tooltip: $t('trade.stats.markPriceTooltip'),
+          popper: { strategy: 'fixed', placement: 'bottom' }
+        }"
       >
-        {{ $t('trade.markPrice') }}
+        <span class="whitespace-nowrap">{{ $t('trade.markPrice') }}</span>
       </CommonHeaderTooltip>
     </template>
 
@@ -118,57 +126,67 @@ watch(countdown, (countdown) => {
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
 
-  <PartialsTradeStatsHeaderItem>
+  <PartialsTradeStatsHeaderItem v-if="!isExpiryMarket">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.fundingRateTooltip')"
-        text-color-class="text-coolGray-400"
+        v-bind="{
+          textColorClass: 'text-coolGray-400',
+          tooltip: $t('trade.stats.fundingRateTooltip'),
+          popper: { strategy: 'fixed', placement: 'bottom' }
+        }"
       >
-        {{ $t('trade.stats.estFundingRate') }}
+        <span class="whitespace-nowrap">{{
+          $t('trade.stats.fundingOrCountdown')
+        }}</span>
       </CommonHeaderTooltip>
     </template>
 
-    <div v-if="!fundingRateToBigNumber.isNaN()" class="lg:text-right block">
-      <AppTooltip
-        :ui="{
-          width: 'w-auto',
-          popper: {
-            placement: 'bottom'
-          }
-        }"
-        :content="`${$t('trade.stats.annualized')}: ${
-          fundingRateToBigNumber.gt(0) ? '+' : ''
-        }${annualizedFundingRateToString}%`"
-      >
-        <span
-          :class="{
-            'text-green-500': fundingRateToBigNumber.gte(0),
-            'text-red-500': fundingRateToBigNumber.lt(0)
+    <div class="flex gap-3 justify-end items-center">
+      <div v-if="!fundingRateToBigNumber.isNaN()">
+        <AppTooltip
+          :ui="{
+            width: 'w-auto',
+            popper: {
+              placement: 'bottom'
+            }
           }"
-          class="cursor-pointer flex"
+          :content="`${$t('trade.stats.annualized')}: ${
+            fundingRateToBigNumber.gt(0) ? '+' : ''
+          }${annualizedFundingRateToString}%`"
         >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: fundingRateToFixed,
-              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
-            }"
+          <span
+            class="cursor-pointer flex"
+            :class="
+              getColorClassForChange(fundingRateToBigNumber, {
+                zeroClass: 'text-green-500'
+              })
+            "
           >
-            <template #prefix>
-              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
-            </template>
-          </SharedAmount>
-          <span>%</span>
-        </span>
-      </AppTooltip>
-    </div>
-    <span v-else class="lg:text-right block"> &mdash; </span>
-  </PartialsTradeStatsHeaderItem>
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
+                cyValue: fundingRateToFixed,
+                amount: fundingRateToFixed,
+                decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS,
+                dataCy: dataCyTag(
+                  PerpetualMarketCyTags.TradeStatsInfoFundingRate
+                )
+              }"
+            >
+              <template #prefix>
+                <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
+            <span>%</span>
+          </span>
+        </AppTooltip>
+      </div>
+      <span v-else> &mdash; </span>
 
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.nextFunding')">
-    <p class="lg:text-right">
-      {{ countdown }}
-    </p>
+      <p class="tabular-nums">
+        {{ countdown }}
+      </p>
+    </div>
   </PartialsTradeStatsHeaderItem>
 </template>

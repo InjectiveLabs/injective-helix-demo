@@ -4,6 +4,7 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { countZerosAfterDecimal } from '@/app/utils/helpers'
+import { presetMarketAggregations } from '@/app/data/aggregation'
 import { IsSpotKey, MarketKey, TradeCyTags, AggregationKey } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
@@ -25,6 +26,20 @@ const lastTradedPrice = computed(() =>
 const zerosAfterDecimal = computed(() =>
   countZerosAfterDecimal(lastTradedPrice.value.toFixed())
 )
+
+onMounted(() => {
+  const marketId = market?.value?.marketId
+
+  if (!marketId) {
+    return
+  }
+
+  const presetAggregation = presetMarketAggregations[marketId]
+
+  if (presetAggregation) {
+    aggregation.value = presetAggregation
+  }
+})
 
 const value = computed({
   get: () => aggregation.value.toString(),

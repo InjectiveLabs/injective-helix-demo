@@ -1,5 +1,5 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { indexerRestExplorerApi } from '@shared/Service'
+import { getIndexerRestExplorerApi } from '@shared/Service'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 
 type Attribute = {
@@ -13,6 +13,8 @@ const getAttributeValue = (attributes: Attribute, key: string) =>
 export const getSwapAmountAndTokenFromTxHash = async (
   txHash: string
 ): Promise<undefined | Record<string, string>> => {
+  const indexerRestExplorerApi = await getIndexerRestExplorerApi()
+
   const sharedTokenStore = useSharedTokenStore()
 
   /* Wait 3 seconds for indexer to process the tsx */

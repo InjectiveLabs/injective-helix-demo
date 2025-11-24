@@ -81,12 +81,12 @@ function fetchCampaigns() {
     />
 
     <div
-      class="container lg:px-[120px] max-lg:px-4 mx-auto text-center relative"
+      class="container lg:px-24 3xl:px-[120px] max-lg:px-4 mx-auto text-center relative"
     >
       <AppHocLoading v-bind="{ status, isFullScreen: true }">
         <section class="flex flex-col space-y-2 pt-12 pb-7 md:py-40">
           <div
-            class="uppercase font-rubik font-black text-3xl md:text-6xl"
+            class="uppercase font-black text-3xl md:text-6xl tracking-[3.6px]"
             :data-cy="dataCyTag(LeaderBoardCyTags.title)"
           >
             {{ $t('leaderboard.title') }}
@@ -101,15 +101,15 @@ function fetchCampaigns() {
             class="flex flex-col md:flex-row flex-wrap gap-3 max-md:space-y-4 justify-between mb-6 md:mb-10"
           >
             <div
-              class="max-md:flex max-md:gap-4 max-md:flex-wrap overflow-x-auto max-sm:max-w-full"
+              class="flex gap-4 md:gap-8 max-md:flex-wrap overflow-x-auto max-sm:max-w-full"
             >
               <NuxtLink
                 v-for="page in leaderboardSubpages"
                 :key="page.pageName"
                 :to="page.isDisabled ? '' : { name: page.pageName }"
-                class="capitalize md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
+                class="capitalize text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
                 :class="{
-                  'hidden': page.isDisabled,
+                  hidden: page.isDisabled,
                   'text-coolGray-200': route.name !== page.pageName
                 }"
               >

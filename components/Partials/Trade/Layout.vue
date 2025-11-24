@@ -11,17 +11,11 @@ withDefaults(
 </script>
 
 <template>
-  <div class="[grid-area:stats] border-b bg-brand-900 z-30">
+  <div class="border-b bg-brand-900 z-30">
     <PartialsTradeCommonMarketMultiplierBanner v-bind="{ market }" />
-
-    <slot name="stats">
-      <PartialsTradeStats v-bind="{ market }" />
-    </slot>
   </div>
 
-  <div
-    class="lg:trade-layout-right w-full min-h-[calc(100vh-140px)] max-lg:divide-y"
-  >
+  <div class="lg:trade-layout-right w-full min-h-vhMinusHeader max-lg:divide-y">
     <div class="[grid-area:chart]">
       <slot name="chart">
         <PartialsTradeChart v-bind="{ market, isSpot }" />
@@ -32,7 +26,7 @@ withDefaults(
       <slot name="form" />
     </div>
 
-    <div class="[grid-area:orderbook] border-r">
+    <div class="[grid-area:orderbook] border-r border-l">
       <slot name="orderbook">
         <PartialsTradeOrderbook v-bind="{ market, isSpot }" />
       </slot>

@@ -1,31 +1,33 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+  safeAmount,
+  calculateWorstPrice,
+  calculateTotalQuantity
+} from '@/app/utils/helpers'
 import {
   ONE_IN_BASE,
   ZERO_IN_BASE,
   DEFAULT_ASSET_DECIMALS
 } from '@shared/utils/constant'
 import {
-  calculateWorstPrice,
-  calculateTotalQuantity
-} from '@/app/utils/helpers'
+  UI_DEFAULT_LEVERAGE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
-  MarketCyTags,
   TradeAmountOption,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import {
+  calculateNotional,
+  calculateSlippagePrice
+} from '@/app/utils/trading/calculations'
 
 const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
@@ -42,10 +44,10 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
+    isLimitOrder?: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
     marginWithFee: BigNumberInBase
@@ -107,32 +109,35 @@ const activePositionQuantity = computed(() => {
     .toFixed()
 })
 
-const selectedSymbol = computed(
-  () => options.find((item) => item.id === typeValue.value)?.label || ''
+const isStopMarket = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+    DerivativeTradeTypes.StopMarket
 )
 
-const {
-  valueToString: quoteBalanceToString,
-  valueToBigNumber: quoteBalanceToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() => {
-    const balance = activeSubaccountBalancesWithToken.value.find(
-      (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.availableBalance
-
-    return new BigNumberInWei(balance || 0).toBase(
-      market.value.quoteToken.decimals
-    )
-  }),
-  {
-    decimalPlaces: DEFAULT_ASSET_DECIMALS
-  }
+const leveragedBalanceInBigNumber = computed(() =>
+  calculateAmountFromPercentage(100)
 )
+
+const { valueToBigNumber: quoteBalanceToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      const balance = activeSubaccountBalancesWithToken.value.find(
+        (balance) => balance.token.denom === market.value.quoteToken.denom
+      )?.availableBalance
+
+      return sharedToBalanceInToken({
+        value: balance || 0,
+        decimalPlaces: market.value.quoteToken.decimals
+      })
+    })
+  )
 
 const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
   isBuy,
   market,
   markPrice,
+  isReduceOnly,
   price: computed(() => props.worstPrice),
   quantity: computed(() => props.quantity),
   marginWithFee: computed(() => props.marginWithFee),
@@ -146,7 +151,7 @@ const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
 
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
-  initialValue: TradeAmountOption.Base
+  initialValue: TradeAmountOption.Quote
 })
 
 const {
@@ -174,47 +179,19 @@ const {
   })
 })
 
-async function setFromPercentage(percentage: number) {
-  const isLimit =
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit ||
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
-
-  const isStopMarket =
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-    DerivativeTradeTypes.StopMarket
-
-  if (isLimit) {
-    const { valid } = await validateLimitField()
-
-    if (!valid) {
-      return
-    }
-  }
-
-  if (isStopMarket) {
-    const { valid } = await validateTriggerField()
-
-    if (!valid) {
-      return
-    }
-  }
-
-  const slippage =
-    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+function calculateAmountFromPercentage(percentage: number) {
+  const slippageTolerance = new BigNumberInBase(
+    safeAmount(derivativeFormValues.value[DerivativesTradeFormField.Slippage])
+  ).div(100)
 
   if (
     isReduceOnly.value &&
     activePositionQuantity.value &&
     typeValue.value === TradeAmountOption.Base
   ) {
-    amountValue.value = new BigNumberInBase(activePositionQuantity.value)
+    return new BigNumberInBase(activePositionQuantity.value)
       .times(percentage)
       .div(100)
-      .toFixed(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
-
-    return
   }
 
   if (
@@ -230,40 +207,41 @@ async function setFromPercentage(percentage: number) {
     )
 
     const executionPrice = new BigNumberInBase(
-      isStopMarket
-        ? derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
-          0
+      isStopMarket.value
+        ? safeAmount(
+            derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+          )
         : worstPrice
     )
 
     const limitPrice = new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+      safeAmount(
+        derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
+      )
     )
 
-    const executionPriceWithSlippage = isBuy.value
-      ? executionPrice.times(1 + Number(slippage) / 100)
-      : executionPrice.times(1 - Number(slippage) / 100)
+    const executionPriceWithSlippage = calculateSlippagePrice({
+      slippageTolerance,
+      isBuy: isBuy.value,
+      price: executionPrice
+    })
 
-    const totalNotional = isLimit
-      ? limitPrice.times(activePositionQuantity.value)
-      : executionPriceWithSlippage.times(activePositionQuantity.value)
+    const totalNotional = calculateNotional({
+      quantity: new BigNumberInBase(activePositionQuantity.value),
+      price: props.isLimitOrder ? limitPrice : executionPriceWithSlippage
+    })
 
-    amountValue.value = totalNotional
-      .times(percentage)
-      .div(100)
-      .toFixed(market.value.priceDecimals, BigNumber.ROUND_DOWN)
-
-    return
+    return totalNotional.times(percentage).div(100)
   }
 
   let executionPrice
 
-  if (isLimit) {
+  if (props.isLimitOrder) {
     executionPrice =
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
   }
 
-  if (isStopMarket) {
+  if (isStopMarket.value) {
     executionPrice =
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
   }
@@ -273,7 +251,8 @@ async function setFromPercentage(percentage: number) {
   }
 
   const leverage =
-    derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
+    derivativeFormValues.value[DerivativesTradeFormField.Leverage] ||
+    UI_DEFAULT_LEVERAGE
 
   const fee = new BigNumberInBase(market.value.takerFeeRate)
   const feeLeveraged = fee.times(leverage)
@@ -283,49 +262,29 @@ async function setFromPercentage(percentage: number) {
   )
 
   if (typeValue.value === TradeAmountOption.Quote) {
-    amountValue.value = maxMargin
-      .times(percentage)
-      .div(100)
-      .times(leverage)
-      .toFixed(market.value.priceDecimals, BigNumber.ROUND_DOWN)
-
-    return
+    return maxMargin.times(percentage).div(100).times(leverage)
   }
 
-  if (typeValue.value === TradeAmountOption.Base && isLimit) {
-    const quantity = maxMargin
+  if (typeValue.value === TradeAmountOption.Base && props.isLimitOrder) {
+    return maxMargin
       .times(leverage)
       .div(executionPrice)
       .times(percentage)
       .div(100)
-
-    amountValue.value = quantity.toFixed(
-      market.value.quantityDecimals,
-      BigNumber.ROUND_DOWN
-    )
-
-    return
   }
 
-  if (typeValue.value === TradeAmountOption.Base && isStopMarket) {
-    const slippagePercentage = isBuy.value
-      ? new BigNumberInBase(1).plus(Number(slippage) / 100)
-      : new BigNumberInBase(1).minus(Number(slippage) / 100)
+  if (typeValue.value === TradeAmountOption.Base && isStopMarket.value) {
+    const worstPriceWithSlippage = calculateSlippagePrice({
+      slippageTolerance,
+      isBuy: isBuy.value,
+      price: new BigNumberInBase(executionPrice)
+    })
 
-    const worstPriceWithSlippage = new BigNumberInBase(executionPrice).times(
-      slippagePercentage
-    )
-
-    const quantity = maxMargin
+    return maxMargin
       .times(leverage)
       .div(worstPriceWithSlippage)
       .times(percentage)
       .div(100)
-      .toFixed(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
-
-    amountValue.value = quantity
-
-    return
   }
 
   const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
@@ -335,20 +294,48 @@ async function setFromPercentage(percentage: number) {
     records
   )
 
-  const slippagePercentage = isBuy.value
-    ? new BigNumberInBase(1).plus(Number(slippage) / 100)
-    : new BigNumberInBase(1).minus(Number(slippage) / 100)
+  const worstPriceWithSlippage = calculateSlippagePrice({
+    slippageTolerance,
+    price: worstPrice,
+    isBuy: isBuy.value
+  })
 
-  const worstPriceWithSlippage = worstPrice.times(slippagePercentage)
-
-  const quantity = maxMargin
+  return maxMargin
     .times(leverage)
     .div(worstPriceWithSlippage)
     .times(percentage)
     .div(100)
-    .toFixed(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
+}
 
-  amountValue.value = quantity
+async function setFromPercentage(percentage: number) {
+  const isBase = typeValue.value === TradeAmountOption.Base
+
+  if (props.isLimitOrder) {
+    const { valid } = await validateLimitField()
+
+    if (!valid) {
+      return
+    }
+  }
+
+  if (isStopMarket.value) {
+    const { valid } = await validateTriggerField()
+
+    if (!valid) {
+      return
+    }
+  }
+
+  const value = calculateAmountFromPercentage(percentage)
+
+  if (!value) {
+    return
+  }
+
+  amountValue.value = value.toFixed(
+    isBase ? market.value.quantityDecimals : market.value.priceDecimals,
+    BigNumber.ROUND_DOWN
+  )
 }
 
 onMounted(() => {
@@ -368,13 +355,7 @@ onMounted(() => {
 
 <template>
   <div ref="el" class="space-y-2">
-    <div class="flex justify-between items-center">
-      <p class="field-label">{{ $t('trade.amount') }}</p>
-
-      <PartialsTradeCommonFormPercentage
-        @percentage:change="setFromPercentage"
-      />
-    </div>
+    <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField
       v-bind="{ decimals }"
@@ -387,43 +368,10 @@ onMounted(() => {
       :data-cy="dataCyTag(PerpetualMarketCyTags.LimitAmountInputField)"
     >
       <template #right>
-        <USelectMenu
+        <PartialsTradeCommonFormAmountFieldTokenSelector
           v-model="typeValue"
-          v-bind="{
-            options,
-            variant: 'none',
-            valueAttribute: 'id',
-            uiMenu: { width: 'w-auto' },
-            popper: { offsetDistance: 12 }
-          }"
-        >
-          <div
-            class="flex items-center gap-2"
-            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
-          >
-            <span>
-              {{ selectedSymbol }}
-            </span>
-
-            <UIcon
-              :name="NuxtUiIcons.ChevronDown"
-              class="size-3 transition-all text-gray-500 -mb-0.5"
-            />
-          </div>
-
-          <template #option="{ option }">
-            <span
-              class="mr-1"
-              :data-cy="
-                option.id === TradeAmountOption.Base
-                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
-                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
-              "
-            >
-              {{ option.label }}
-            </span>
-          </template>
-        </USelectMenu>
+          :options="options"
+        />
       </template>
 
       <template #bottom>
@@ -437,17 +385,28 @@ onMounted(() => {
                 $t('trade.availableAmount', {
                   amount: isReduceOnly
                     ? activePositionQuantity
-                    : quoteBalanceToString
+                    : leveragedBalanceInBigNumber.isFinite()
+                      ? leveragedBalanceInBigNumber.toFixed(
+                          typeValue === TradeAmountOption.Base
+                            ? DEFAULT_ASSET_DECIMALS
+                            : UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+                          BigNumber.ROUND_DOWN
+                        )
+                      : '&mdash;'
                 })
               }}
             </span>
 
             <PartialsCommonBalanceDisplay
               v-bind="{
-                token: isReduceOnly ? market.baseToken : market.quoteToken,
-                value: isReduceOnly
-                  ? market.baseToken.symbol
-                  : market.quoteToken.symbol
+                token:
+                  isReduceOnly || typeValue === TradeAmountOption.Base
+                    ? market.baseToken
+                    : market.quoteToken,
+                value:
+                  isReduceOnly || typeValue === TradeAmountOption.Base
+                    ? market.baseToken.symbol
+                    : market.quoteToken.symbol
               }"
             />
           </div>
@@ -469,16 +428,6 @@ onMounted(() => {
       {{ amountErrorMessage }}
     </p>
 
-    <p
-      v-else-if="isNotionalLessThanMinNotional"
-      class="error-message first-letter:capitalize"
-    >
-      {{
-        $t('trade.minNotionalError', {
-          symbol: market.quoteToken.symbol,
-          minNotional: market.minNotionalInToken
-        })
-      }}
-    </p>
+    <PartialsTradeCommonFormPercentage @percentage:change="setFromPercentage" />
   </div>
 </template>

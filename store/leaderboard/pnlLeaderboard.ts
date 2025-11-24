@@ -1,10 +1,12 @@
-import { indexerGrpcArchiverApi } from '@/app/Services'
+import { getIndexerGrpcArchiverApi } from '@/app/Services'
 import { LeaderboardType } from '@/types'
 
 export const fetchPnlLeaderboard = async (
   resolution: string,
   account?: string
 ) => {
+  const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
   const leaderboardStore = useLeaderboardStore()
 
   leaderboardStore.$patch({
@@ -21,32 +23,41 @@ export const fetchCompetitionLeaderboard = async ({
   account,
   duration
 }: {
-  type: LeaderboardType
   account?: string
+  type: LeaderboardType
   duration: {
-    startDate: string
     endDate: string
+    startDate: string
   }
 }) => {
+  const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
   const leaderboardStore = useLeaderboardStore()
 
   if (type === LeaderboardType.Pnl) {
-    leaderboardStore.$patch({
-      competitionLeaderboard: await indexerGrpcArchiverApi.fetchPnlLeaderboard({
+    const pnlLeaderboardData = await indexerGrpcArchiverApi.fetchPnlLeaderboard(
+      {
         account,
         endDate: duration.endDate,
         startDate: duration.startDate
-      })
+      }
+    )
+
+    leaderboardStore.$patch({
+      competitionLeaderboard: pnlLeaderboardData
     })
 
     return
   }
 
-  leaderboardStore.$patch({
-    competitionLeaderboard: await indexerGrpcArchiverApi.fetchVolLeaderboard({
+  const volumeLeaderboardData =
+    await indexerGrpcArchiverApi.fetchVolLeaderboard({
       account,
       endDate: duration.endDate,
       startDate: duration.startDate
     })
+
+  leaderboardStore.$patch({
+    competitionLeaderboard: volumeLeaderboardData
   })
 }

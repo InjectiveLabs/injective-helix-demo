@@ -66,6 +66,7 @@ function fetchPastCampaigns() {
             v-model="selectedCampaignName"
             :options="options"
             value-attribute="id"
+            :ui="{ wrapper: 'min-w-52' }"
           />
         </Teleport>
 

@@ -8,7 +8,9 @@ export const getBridgeRedirectionUrl = (suffix?: string) => {
 
   if (
     !sharedWalletStore.isUserConnected ||
-    [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+    ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+      sharedWalletStore.wallet
+    )
   ) {
     return `${url}/?origin=helix`
   }

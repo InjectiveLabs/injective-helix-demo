@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-base'
-import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
-import { NuxtUiIcons, SharedMarketType } from '@shared/types'
-import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { TRADING_MESSAGES } from '@/app/data/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
+import { SharedMarketType } from '@shared/types'
 import {
   Modal,
   BusEvents,
   MarketKey,
-  HelixCtaToast,
-  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   IsRWAMarketOpenKey,
@@ -33,6 +28,7 @@ const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { showAutosignCta } = useAutosignCta()
 
 const isRWAMarketOpen = inject(IsRWAMarketOpenKey) as Ref<boolean>
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -40,15 +36,17 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
-const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
-  useDerivativeWorstPrice(derivativeMarket)
 
 const props = withDefaults(
   defineProps<{
+    isLimitOrder?: boolean
+    isTriggerOrder?: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
     worstPrice: BigNumberInBase
+    hasEnoughLiquidity?: boolean
+    hasSlippageWarning?: boolean
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
   }>(),
@@ -91,7 +89,7 @@ const isAuthorized = computed(() => {
     return true
   }
 
-  const msg = isLimitOrder.value
+  const msg = props.isLimitOrder
     ? MsgType.MsgCreateDerivativeLimitOrder
     : MsgType.MsgCreateDerivativeMarketOrder
 
@@ -127,14 +125,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isTriggerOrder: [
-      DerivativeTradeTypes.StopLimit,
-      DerivativeTradeTypes.StopMarket
-    ].includes(
-      derivativeFormValues.value[
-        DerivativesTradeFormField.Type
-      ] as DerivativeTradeTypes
-    )
+    isTriggerOrder: props.isTriggerOrder
   })
 )
 
@@ -155,10 +146,6 @@ const takeProfitValue = computed(() =>
 )
 
 const isDisabled = computed(() => {
-  const tradeType = derivativeFormValues.value[
-    DerivativesTradeFormField.Type
-  ] as DerivativeTradeTypes
-
   if (!isPostOnlyEnable.value && jsonStore.isPostUpgradeMode) {
     return true
   }
@@ -175,27 +162,23 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (!hasEnoughLiquidity.value) {
+  if (!props.hasEnoughLiquidity) {
     return true
   }
 
-  if (isNotionalLessThanMinNotional.value) {
+  if (props.hasSlippageWarning) {
     return true
   }
 
   if (
-    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-      tradeType
-    ) &&
+    props.isLimitOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
   ) {
     return true
   }
 
   if (
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
-      tradeType
-    ) &&
+    props.isTriggerOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
   ) {
     return true
@@ -274,13 +257,15 @@ async function submitLimitOrder() {
       margin: props.margin,
       price: limitPrice.value,
       quantity: props.quantity,
+      stopLoss: stopLossValue.value,
       market: derivativeMarket?.value,
+      takeProfit: takeProfitValue.value,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -319,7 +304,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -362,7 +347,7 @@ function submitStopLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -405,7 +390,7 @@ function submitStopMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(derivativeStore.subaccountTradesCount)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -426,60 +411,19 @@ function submitStopMarketOrder() {
       status.setIdle()
     })
 }
-
-function showAutosignCta() {
-  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
-    return
-  }
-
-  if (!derivativeStore.subaccountTradesCount) {
-    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
-    notificationStore.success({
-      title: t('toast.portfolio.autoSign.enable.title'),
-      description: t('toast.portfolio.autoSign.enable.description'),
-      icon: NuxtUiIcons.RotateAuto,
-      timeout: MAX_TOAST_TIMEOUT,
-      key: HelixCtaToast.EnableAutoSign,
-      actions: [
-        {
-          label: t('common.enable'),
-          callback: () => {
-            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
-
-            sharedWalletStore
-              .connectAutoSign(
-                TRADING_MESSAGES
-                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
-              )
-              .then(() => {
-                notificationStore.update({
-                  title: t('toast.portfolio.autoSign.enabledToast.title'),
-                  description: t(
-                    'toast.portfolio.autoSign.enabledToast.description'
-                  )
-                })
-              })
-              .catch($onError)
-              .finally(() => status.setIdle())
-          }
-        }
-      ]
-    })
-  }
-}
 </script>
 
 <template>
   <div>
     <div>
       <AppButton
+        class="w-full"
+        :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         v-bind="{
           status,
-          disabled: isDisabled
+          disabled: isDisabled,
+          variant: isBuy ? 'success' : 'danger'
         }"
-        :key="derivativeFormValues[DerivativesTradeFormField.Side]"
-        :variant="isBuy ? 'success' : 'danger'"
-        class="w-full"
         @click="onSubmit"
       >
         <span v-if="!isAuthorized">
@@ -490,10 +434,12 @@ function showAutosignCta() {
           {{ $t('swap.insufficientLiquidity') }}
         </span>
 
+        <span v-else-if="hasSlippageWarning">
+          {{ $t('trade.increaseSlippageTolerance') }}
+        </span>
+
         <span v-else>
-          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-          /
-          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+          {{ $t('trade.placeOrder') }}
         </span>
       </AppButton>
 
