@@ -20,7 +20,7 @@ import tradeAndEarn from './en/tradeAndEarn'
 import institutional from './en/institutional'
 import { TimeDuration } from '@/types'
 
-export default {
+export default defineI18nLocale(() => ({
   ...home,
   ...swap,
   ...guild,
@@ -47,13 +47,16 @@ export default {
     and: 'and',
     pnl: 'PnL',
     max: 'Max',
+    roi: 'ROI',
     docs: 'docs',
     back: 'Back',
     base: 'Base',
+    blog: 'Blog',
     copy: 'Copy',
     here: 'here',
     link: 'link',
     view: 'View',
+    ended: 'Ended',
     total: 'Total',
     quote: 'Quote',
     value: 'Value',
@@ -73,6 +76,7 @@ export default {
     claimed: 'Claimed',
     deposit: 'Deposit',
     confirm: 'Confirm',
+    noItems: 'No Items',
     download: 'Download',
     disabled: 'Disabled',
     inactive: 'inactive',
@@ -122,7 +126,7 @@ export default {
         acknowledge_5:
           'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
         disclaimerNote:
-          'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix {0} and the Injective Labs {1}.'
+          'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by the Helix Terms & Conditions available {here}.'
       },
 
       postOnlyMode: {
@@ -142,7 +146,12 @@ export default {
         connect: 'Connect',
         enterPrivateKey: 'Enter your private key',
         connectWithPrivateKey: 'Connect with private key',
-        enterInjectiveAddress: 'Enter your injective address'
+        enterInjectiveAddress: 'Enter your injective address',
+
+        txTimeout: 'Tx Timeout',
+        txTimeoutPlaceholder: 'Enter tx timeout (in blocks)',
+        txTimeoutCta: 'Set Tx Timeout',
+        txTimeoutToast: 'Tx timeout set to {txTimeout} blocks'
       },
 
       ninjaPass: {
@@ -174,4 +183,4 @@ export default {
     backToHome: 'Back to home page',
     description: 'The page you are looking for does not exist.'
   }
-}
+}))

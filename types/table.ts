@@ -1,11 +1,5 @@
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type {
-  UiSpotMarket,
-  UiMarketWithToken,
-  UiDerivativeMarket,
-  UiSubaccountTransactionWithToken
-} from '@/types'
-import type {
   SharedUiSpotTrade,
   SharedUiMarketSummary,
   SharedBalanceWithToken,
@@ -20,8 +14,15 @@ import type {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
+import type {
+  UiSpotMarket,
+  UiMarketWithToken,
+  UiDerivativeMarket,
+  UiSubaccountTransactionWithToken
+} from '@/types'
 
 export enum BalanceTableColumn {
+  Pnl = 'pnl',
   Total = 'total',
   Action = 'action',
   Assets = 'assets',
@@ -29,7 +30,6 @@ export enum BalanceTableColumn {
   TotalUsd = 'total-usd',
   Available = 'available',
   StakedUsd = 'staked-usd',
-  UnrealizedPnl = 'unrealized-pnl',
   UsedOrReserved = 'used-or-reserved'
 }
 
@@ -261,10 +261,10 @@ export interface TransformedBalances {
   isBridgable: boolean
   isStakingRow: boolean
   hasNoActionButtons: boolean
+  [BalanceTableColumn.Pnl]: BigNumberInBase
   [BalanceTableColumn.Total]: BigNumberInBase
   [BalanceTableColumn.TotalUsd]: BigNumberInBase
   [BalanceTableColumn.Available]: BigNumberInBase
-  [BalanceTableColumn.UnrealizedPnl]: BigNumberInBase
   [BalanceTableColumn.UsedOrReserved]: BigNumberInBase
 }
 

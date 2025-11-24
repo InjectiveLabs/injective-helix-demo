@@ -1,27 +1,43 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  toBigNumber
+} from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { PointsPeriod } from '@/types'
 
-const { $onError } = useNuxtApp()
 const pointsStore = usePointsStore()
 const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 
+const isSeeMoreDescription = ref(false)
 const selectedPeriod = ref(PointsPeriod.Day)
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
-function fetchAccountPoints() {
-  fetchStatus.setLoading()
+const totalPoints = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
+)
 
-  const action =
-    selectedPeriod.value === PointsPeriod.Day
-      ? pointsStore.fetchAccountDailyPoints
-      : pointsStore.fetchAccountWeeklyPoints
+const pointsSeason1 = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
+)
 
-  action()
-    .catch($onError)
-    .finally(() => fetchStatus.setIdle())
-}
+const bonusPoints = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
+)
 
 onWalletConnected(() => {
   status.setLoading()
@@ -46,22 +62,58 @@ useIntervalFn(() => {
       : pointsStore.fetchAccountWeeklyPoints()
   ])
 }, 60 * 1000)
+
+function toggleIsSeeMoreDescription() {
+  isSeeMoreDescription.value = !isSeeMoreDescription.value
+}
+
+function fetchAccountPoints() {
+  fetchStatus.setLoading()
+
+  const action =
+    selectedPeriod.value === PointsPeriod.Day
+      ? pointsStore.fetchAccountDailyPoints
+      : pointsStore.fetchAccountWeeklyPoints
+
+  action()
+    .catch($onError)
+    .finally(() => fetchStatus.setIdle())
+}
 </script>
 
 <template>
-  <div
-    class="pt-12 pb-32 px-40 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px] 5xl:max-w-[90%] mx-auto"
-  >
-    <div class="flex flex-col gap-4 max-xs:gap-1">
-      <h1 class="text-3xl max-xs:text-2xl">{{ $t('points.title') }}</h1>
-      <p class="text-base tracking-wide max-xs:text-sm">
-        {{ $t('points.description') }}
-      </p>
+  <div class="pt-12 pb-32 px-8 max-w-[1104px] mx-auto">
+    <div>
+      <h1 class="text-3xl text-white">
+        {{ $t('points.title') }}
+      </h1>
+      <h6 class="text-2xl max-sm:text-xl my-2 text-white">
+        {{ $t('points.subtitle') }}
+      </h6>
+
+      <i18n-t
+        tag="p"
+        keypath="points.description1"
+        class="tracking-wide max-sm:text-sm"
+      >
+        <template #seeMore>
+          <span
+            v-if="!isSeeMoreDescription"
+            class="text-azure-blue-350 hover:opacity-80 transition-opacity cursor-pointer"
+            @click="toggleIsSeeMoreDescription"
+          >
+            {{ $t('points.seeMore') }}
+          </span>
+          <template v-else>
+            {{ $t('points.description2') }}
+          </template>
+        </template>
+      </i18n-t>
     </div>
 
-    <PartialsPointsStats />
+    <PartialsPointsStats v-bind="{ totalPoints }" />
 
-    <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
+    <div class="flex gap-8 max-lg:flex-col max-lg:items-center">
       <USkeleton
         v-if="fetchStatus.isLoading()"
         class="flex-1 w-full max-lg:basis-52"
@@ -75,7 +127,59 @@ useIntervalFn(() => {
         @update:model-value="fetchAccountPoints"
       />
 
-      <PartialsPointsScoreCard />
+      <div class="w-96 max-lg:w-full flex flex-col gap-8">
+        <div class="p-4 bg-brand-925 rounded-2xl">
+          <div class="flex gap-2 items-center max-sm:mb-2">
+            <h6 class="text-coolGray-375 text-[22px] max-sm:text-lg">
+              {{ $t('points.season1Points') }}
+            </h6>
+            <UPopover
+              :popper="{ placement: 'top' }"
+              :mode="lg ? 'hover' : 'click'"
+            >
+              <UIcon
+                :name="NuxtUiIcons.Info2"
+                class="size-5 text-coolGray-375"
+              />
+              <template #panel>
+                <span
+                  class="flex flex-col gap-2 text-xs py-1 px-2 rounded bg-[#2D3135] tracking-wide"
+                >
+                  {{ $t('points.seasonOneTooltipContent') }}
+                </span>
+              </template>
+            </UPopover>
+          </div>
+          <p class="text-3xl max-sm:text-2xl">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: pointsSeason1,
+                showZeroAsEmDash: true,
+                shouldAbbreviate: false
+              }"
+            />
+          </p>
+        </div>
+
+        <div class="p-4 bg-brand-925 rounded-2xl">
+          <h6 class="text-coolGray-375 text-[22px] max-sm:text-lg max-sm:mb-2">
+            {{ $t('points.bonusPoints') }}
+          </h6>
+          <p class="text-3xl max-sm:text-2xl">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: bonusPoints,
+                showZeroAsEmDash: true,
+                shouldAbbreviate: false
+              }"
+            />
+          </p>
+        </div>
+
+        <PartialsPointsScoreCard />
+      </div>
     </div>
   </div>
 </template>

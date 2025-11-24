@@ -13,7 +13,6 @@ import type {
 
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const { lg } = useSharedBreakpoints()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
 
@@ -66,7 +65,7 @@ function fetchAdvancedOrders() {
 </script>
 
 <template>
-  <div class="divide-y" :class="`${lg ? 'border-y' : 'border-t'}`">
+  <div class="divide-y border-t">
     <PartialsPortfolioOrdersFuturesAdvancedOrdersTabs />
 
     <CommonSkeletonRow
@@ -76,16 +75,9 @@ function fetchAdvancedOrders() {
       :height="57"
     />
 
-    <template v-else>
-      <PartialsPortfolioOrdersFuturesAdvancedOrdersTable
-        v-if="filteredAdvancedOrders.length"
-        :advanced-orders="filteredAdvancedOrders"
-      />
-
-      <CommonEmptyList
-        v-if="!derivativeStore.subaccountConditionalOrders.length"
-        :message="$t('trade.emptyAdvancedOrders')"
-      />
-    </template>
+    <PartialsPortfolioOrdersFuturesAdvancedOrdersTable
+      v-else
+      :advanced-orders="filteredAdvancedOrders"
+    />
   </div>
 </template>

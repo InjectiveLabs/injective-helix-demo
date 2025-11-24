@@ -34,27 +34,17 @@ function closeModal() {
 
     <div class="relative">
       <i18n-t
-        keypath="common.modal.terms.disclaimerNote"
         tag="p"
         class="text-sm"
+        keypath="common.modal.terms.disclaimerNote"
       >
-        <template #terms>
+        <template #here>
           <NuxtLink
             target="_blank"
-            class="text-blue-500 hover:text-opacity-80"
             :to="{ name: MainPage.Terms }"
-          >
-            {{ $t('common.modal.terms.termsAndCondition') }}
-          </NuxtLink>
-        </template>
-
-        <template #policy>
-          <NuxtLink
-            target="_blank"
             class="text-blue-500 hover:text-opacity-80"
-            to="https://injectivelabs.org/privacy"
           >
-            {{ $t('common.modal.terms.privacyPolicy') }}
+            {{ $t('common.here') }}
           </NuxtLink>
         </template>
       </i18n-t>

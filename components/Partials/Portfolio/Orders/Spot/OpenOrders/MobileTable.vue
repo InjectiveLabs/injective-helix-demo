@@ -58,7 +58,9 @@ const filteredColumns = computed(() =>
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
             v-if="
               !isTradingBots &&
-              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+              !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+                sharedWalletStore.wallet
+              )
             "
             v-bind="{
               order: order.order,

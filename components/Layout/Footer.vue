@@ -130,7 +130,7 @@ const communityList = computed(() => [
         <div class="flex items-center mt-4">
           <a
             class="w-6 h-6 mr-4"
-            href="https://x.com/helixapp_"
+            href="https://x.com/HelixMarkets"
             target="_blank"
           >
             <div

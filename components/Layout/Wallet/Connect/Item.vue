@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import type { WalletOption } from '@/types'
+import type { SharedWalletOption } from '@shared/types'
 
 const walletStore = useWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -12,7 +12,7 @@ const props = withDefaults(
   defineProps<{
     isCompact?: boolean
     isBackButton?: boolean
-    walletOption: WalletOption
+    walletOption: SharedWalletOption
   }>(),
   {
     isCompact: false,
@@ -25,7 +25,7 @@ const emit = defineEmits<{
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
 }>()
 
-const hardwareWallets = [Wallet.Ledger, Wallet.TrezorBip32]
+const hardwareWallets = [Wallet.Ledger, Wallet.TrezorBip32] as Wallet[]
 
 function handleConnect() {
   if (props.isBackButton) {

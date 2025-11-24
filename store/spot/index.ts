@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { indexerSpotApi } from '@shared/Service'
+import { getIndexerSpotApi } from '@shared/Service'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
@@ -15,14 +15,19 @@ import {
   streamOrderbookUpdate,
   streamSubaccountTrades,
   streamSubaccountOrders,
+  streamAccountAverageEntries,
   cancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
   streamSubaccountOrderHistory,
+  cancelAccountAverageEntriesStream,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import type { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
-import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import type {
+  SpotLimitOrder,
+  SpotAverageEntry,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
 import type {
   OrderSide,
   TradeExecutionSide,
@@ -33,6 +38,7 @@ import type {
   SharedUiSpotMarket,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
+import type { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
 type SpotStoreState = {
   trades: SharedUiSpotTrade[]
@@ -44,6 +50,7 @@ type SpotStoreState = {
   subaccountTrades: SharedUiSpotTrade[]
   orderbook?: SharedUiOrderbookWithSequence
   subaccountOrderHistory: SpotOrderHistory[]
+  accountAverageEntries: Record<string, SpotAverageEntry>
 }
 
 const initialStateFactory = (): SpotStoreState => ({
@@ -55,7 +62,8 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as SpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as SpotOrderHistory[],
-  subaccountOrderHistoryCount: 0
+  subaccountOrderHistoryCount: 0,
+  accountAverageEntries: {}
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -144,8 +152,10 @@ export const useSpotStore = defineStore('spot', {
     streamOrderbookUpdate,
     streamSubaccountOrders,
     streamSubaccountTrades,
+    streamAccountAverageEntries,
     cancelOrderbookUpdateStream,
     streamSubaccountOrderHistory,
+    cancelAccountAverageEntriesStream,
 
     cancelOrder,
     cancelSubaccountOrdersStream,
@@ -165,6 +175,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -197,6 +209,8 @@ export const useSpotStore = defineStore('spot', {
       marketIds: string[]
       subaccountId: string
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -219,6 +233,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -247,6 +263,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchOrderHistoryForSubaccount(options: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       if (!options?.subaccountId) {
@@ -273,6 +291,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchOrderbook(marketId: string) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
@@ -309,6 +329,8 @@ export const useSpotStore = defineStore('spot', {
       marketId: string
       executionSide?: TradeExecutionSide
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       const { trades } = await indexerSpotApi.fetchTrades({
@@ -328,6 +350,8 @@ export const useSpotStore = defineStore('spot', {
       marketId: string
       executionSide?: TradeExecutionSide
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const { trades } = await indexerSpotApi.fetchTrades({
         marketIds: [marketId],
         executionSide,
@@ -338,6 +362,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -363,6 +389,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchTradesForSubaccount(options: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       if (!options?.subaccountId) {
@@ -383,6 +411,18 @@ export const useSpotStore = defineStore('spot', {
         subaccountTrades: trades,
         subaccountTradesCount: pagination.total
       })
+    },
+
+    setAccountAverageEntry(averageEntry: SpotAverageEntry) {
+      this.accountAverageEntries[averageEntry.marketId] = averageEntry
+    },
+
+    deleteAccountAverageEntry(marketId: string) {
+      delete this.accountAverageEntries[marketId]
+    },
+
+    resetAccountAverageEntries() {
+      this.accountAverageEntries = {}
     },
 
     cancelSubaccountStream() {
@@ -427,14 +467,20 @@ export const useSpotStore = defineStore('spot', {
     reset() {
       const spotStore = useSpotStore()
 
-      const { trades, orderbook, subaccountOrders, subaccountTrades } =
-        initialStateFactory()
+      const {
+        trades,
+        orderbook,
+        subaccountOrders,
+        subaccountTrades,
+        accountAverageEntries
+      } = initialStateFactory()
 
       spotStore.$patch({
         trades,
         orderbook,
         subaccountOrders,
-        subaccountTrades
+        subaccountTrades,
+        accountAverageEntries
       })
     }
   }

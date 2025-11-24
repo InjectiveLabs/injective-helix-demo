@@ -1,15 +1,31 @@
 <script setup lang="ts">
+import { Modal } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
+
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
+
+const selectedTrade = ref<undefined | SharedUiDerivativeTrade>(undefined)
+
+function resetSelectedTrade() {
+  selectedTrade.value = undefined
+}
+
+function onShareTrade(trade: SharedUiDerivativeTrade) {
+  selectedTrade.value = trade
+  modalStore.openModal(Modal.ShareTradePnl)
+}
 </script>
 
 <template>
   <PartialsPortfolioOrdersFuturesTradeHistoryTable
-    v-if="derivativeStore.subaccountTrades.length"
     :trades="derivativeStore.subaccountTrades"
+    @trade:share="onShareTrade"
   />
 
-  <CommonEmptyList
-    v-if="!derivativeStore.subaccountTrades.length"
-    :message="$t('trade.noTradeHistory')"
+  <ModalsSharePnlDerivativeTrade
+    v-if="selectedTrade"
+    v-bind="{ trade: selectedTrade }"
+    @on:close="resetSelectedTrade"
   />
 </template>

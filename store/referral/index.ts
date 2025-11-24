@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
-import { indexerGrpcReferralApi } from '@/app/Services'
+import { getIndexerGrpcReferralApi } from '@/app/Services'
 import { registerInvitee, createReferralLink } from '@/store/referral/message'
 import type { ReferralDetails } from '@injectivelabs/sdk-ts'
 
@@ -32,6 +32,8 @@ export const useReferralStore = defineStore('referral', {
     createReferralLink,
 
     async checkCodeAvailability(referralCode: string) {
+      const indexerGrpcReferralApi = await getIndexerGrpcReferralApi()
+
       try {
         const response =
           await indexerGrpcReferralApi.fetchReferrerByCode(referralCode)
@@ -43,6 +45,8 @@ export const useReferralStore = defineStore('referral', {
     },
 
     async fetchUserReferrer() {
+      const indexerGrpcReferralApi = await getIndexerGrpcReferralApi()
+
       const referralStore = useReferralStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -65,6 +69,8 @@ export const useReferralStore = defineStore('referral', {
     },
 
     async fetchUserReferralDetails() {
+      const indexerGrpcReferralApi = await getIndexerGrpcReferralApi()
+
       const referralStore = useReferralStore()
       const sharedWalletStore = useSharedWalletStore()
 

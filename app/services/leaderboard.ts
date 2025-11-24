@@ -1,5 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { CompetitionResult } from '@/types'
+import type { CompetitionResult } from '@/types'
 
 const httpClient = new HttpClient('https://api.express.injective.dev/')
 
@@ -49,7 +49,7 @@ export const fetchLeaderboardCompetitionResults = async (
     }
 
     return data.result
-  } catch (e) {
+  } catch {
     //
   }
 }

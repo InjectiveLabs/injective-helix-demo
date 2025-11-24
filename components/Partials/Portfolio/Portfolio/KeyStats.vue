@@ -43,11 +43,9 @@ const allTimePnl = computed(
           :class="[
             appStore.userState.preferences.isHideBalances
               ? 'text-gray-200'
-              : allTimePnl.isZero()
-                ? 'text-gray-200'
-                : allTimePnl.gt(0)
-                  ? 'text-green-500'
-                  : 'text-red-500'
+              : getColorClassForChange(allTimePnl, {
+                  zeroClass: 'text-gray-200'
+                })
           ]"
         >
           <span class="mt-0.5 text-[13px]">$</span>

@@ -335,7 +335,7 @@ async function createStrategy() {
       lowerPrice: spotFormValues.value[SpotGridTradingField.LowerPrice],
       upperPrice: spotFormValues.value[SpotGridTradingField.UpperPrice],
       grids: Number(spotFormValues.value[SpotGridTradingField.Grids]),
-      exitType: spotFormValues.value[SpotGridTradingField.ExitType],
+      exitType: spotFormValues.value[SpotGridTradingField.ExitType] as ExitType,
       trailingParams: trailingParams.value,
       strategyType: strategyType.value,
       takeProfit: takeProfit.value,

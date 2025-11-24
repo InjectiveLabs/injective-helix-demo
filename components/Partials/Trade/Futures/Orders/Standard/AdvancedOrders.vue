@@ -4,12 +4,6 @@ const derivativeStore = useDerivativeStore()
 
 <template>
   <PartialsPortfolioOrdersFuturesAdvancedOrdersTable
-    v-if="derivativeStore.subaccountConditionalOrders.length"
     :advanced-orders="derivativeStore.subaccountConditionalOrders"
-  />
-
-  <CommonEmptyList
-    v-if="!derivativeStore.subaccountConditionalOrders.length"
-    :message="$t('trade.emptyAdvancedOrders')"
   />
 </template>

@@ -41,7 +41,7 @@ const toggleFavorite = () => {
   <AppMobileTable :columns="filteredColumns" extra-class="py-6">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="w-full flex items-center truncate">
+        <div class="flex items-center truncate">
           <PartialsMarketsCommonMarketInfo
             include-name
             :market="market.market"
@@ -52,7 +52,7 @@ const toggleFavorite = () => {
           :market="market.market"
           class="flex items-center"
         >
-          <div class="w-full flex items-center space-x-2 justify-end">
+          <div class="flex items-center space-x-2 justify-end">
             <NuxtLink
               class="flex items-center leading-none gap-1.5 py-2 px-3 text-xs bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-500/70 hover:border-blue-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700 rounded-lg font-medium"
               :data-cy="`${dataCyTag(MarketCyTags.MarketTrade)}-${

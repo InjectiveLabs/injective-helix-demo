@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SharedMarketStatus } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -33,10 +34,10 @@ const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() => {
-  const iAssetsMarkets = derivativeStore.marketsWithSummary.reduce(
+  const stocksMarkets = derivativeStore.marketsWithSummary.reduce(
     (acc, { market }) => {
       if (
-        (jsonStore?.helixMarketCategoriesMap?.iAssets || []).includes(
+        (jsonStore?.helixMarketCategoriesMap?.stocks || []).includes(
           market.marketId
         )
       ) {
@@ -49,10 +50,10 @@ const market = computed(() => {
   )
 
   if (
-    iAssetsMarkets.length > 0 &&
+    stocksMarkets.length > 0 &&
     route.path.startsWith(TradeSubPagePath.Stocks)
   ) {
-    return iAssetsMarkets[0]
+    return stocksMarkets[0]
   }
 
   return (
@@ -107,6 +108,13 @@ onWalletConnected(async () => {
     } else {
       return
     }
+  }
+
+  if (market.value.marketStatus !== SharedMarketStatus.Active) {
+    return navigateTo({
+      name: 'futures-slug',
+      params: { slug: 'btc-usdt-perp' }
+    })
   }
 
   status.setLoading()
@@ -201,7 +209,15 @@ provide(IsRWAMarketOpenKey, isRWAMarketOpen)
 <template>
   <PartialsTradeLayout v-if="market" v-bind="{ market }">
     <template #form>
-      <PartialsTradeFuturesForm />
+      <PartialsTradeCommonForm v-bind="{ market }">
+        <template #standard>
+          <PartialsTradeFuturesFormStandard />
+        </template>
+
+        <template #bots>
+          <PartialsTradeFuturesFormTradingBots />
+        </template>
+      </PartialsTradeCommonForm>
     </template>
 
     <template #orders>
@@ -209,6 +225,6 @@ provide(IsRWAMarketOpenKey, isRWAMarketOpen)
     </template>
   </PartialsTradeLayout>
 
-  <ModalsIAssets />
+  <ModalsStocks />
   <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
 </template>

@@ -4,6 +4,7 @@ import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { Modal, PerpOrdersTradingBotsView } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
@@ -21,6 +22,8 @@ const props = withDefaults(
 const view = ref(PerpOrdersTradingBotsView.ActiveStrategies)
 const status = reactive(new Status(StatusType.Loading))
 const selectedPosition = ref<undefined | PositionV2>(undefined)
+const selectedTrade = ref<undefined | SharedUiDerivativeTrade>(undefined)
+
 const { $onError } = useNuxtApp()
 
 onWalletConnected(fetchStrategies)
@@ -53,6 +56,11 @@ function onSharePosition(position: PositionV2) {
   modalStore.openModal(Modal.SharePositionPnl)
 }
 
+function onShareTrade(trade: SharedUiDerivativeTrade) {
+  selectedTrade.value = trade
+  modalStore.openModal(Modal.ShareTradePnl)
+}
+
 function fetchStrategies() {
   if (!sharedWalletStore.address) {
     return
@@ -80,69 +88,80 @@ function fetchStrategies() {
     })
 }
 
+function resetSelectedTrade() {
+  selectedTrade.value = undefined
+}
+
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PartialsTradeFuturesOrdersTradingBotsHeader
-      v-bind="{
-        positionsLength: positions.length
-      }"
       v-model="view"
+      v-bind="{ positionsLength: positions.length }"
     />
 
-    <PartialsTradingBotsGridStrategiesRunningTable
-      v-if="view === PerpOrdersTradingBotsView.ActiveStrategies"
-    />
+    <div class="w-full h-screenMinusHeader">
+      <PartialsTradingBotsGridStrategiesRunningTable
+        v-if="view === PerpOrdersTradingBotsView.ActiveStrategies"
+      />
 
-    <PartialsTradingBotsGridStrategiesHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.RemovedStrategies"
-    />
+      <PartialsTradingBotsGridStrategiesHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.RemovedStrategies"
+      />
 
-    <PartialsPositionsTable
-      v-else-if="view === PerpOrdersTradingBotsView.Positions"
-      v-bind="{ positions }"
-      is-trading-bots
-      @margin:add="addMargin"
-      @tpsl:add="addTakeProfitStopLoss"
-      @position:share="onSharePosition"
-    />
+      <PartialsPositionsTable
+        v-else-if="view === PerpOrdersTradingBotsView.Positions"
+        v-bind="{ positions, isTradingBots: true }"
+        @margin:add="addMargin"
+        @tpsl:add="addTakeProfitStopLoss"
+        @position:share="onSharePosition"
+      />
 
-    <PartialsPortfolioOrdersFuturesOpenOrdersTable
-      v-else-if="view === PerpOrdersTradingBotsView.OpenOrders"
-      v-bind="{ orders: derivativeStore.subaccountOrders }"
-      is-trading-bots
-    />
+      <PartialsPortfolioOrdersFuturesOpenOrdersTable
+        v-else-if="view === PerpOrdersTradingBotsView.OpenOrders"
+        v-bind="{
+          isTradingBots: true,
+          orders: derivativeStore.subaccountOrders
+        }"
+      />
 
-    <PartialsPortfolioOrdersFuturesOrderHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.OrderHistory"
-      v-bind="{ orders: derivativeStore.subaccountOrderHistory }"
-    />
+      <PartialsPortfolioOrdersFuturesOrderHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.OrderHistory"
+        v-bind="{ orders: derivativeStore.subaccountOrderHistory }"
+      />
 
-    <PartialsPortfolioOrdersFuturesTradeHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.TradeHistory"
-      v-bind="{ trades: derivativeStore.subaccountTrades }"
-    />
+      <PartialsPortfolioOrdersFuturesTradeHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.TradeHistory"
+        v-bind="{ trades: derivativeStore.subaccountTrades }"
+        @trade:share="onShareTrade"
+      />
 
-    <ModalsAddMargin
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      is-pgt
-    />
+      <ModalsAddMargin
+        v-if="selectedPosition"
+        v-bind="{ isPgt: true, position: selectedPosition }"
+      />
 
-    <ModalsAddTakeProfitStopLoss
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      @on:close="resetSelectedPosition"
-    />
+      <ModalsAddTakeProfitStopLoss
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
+        @on:close="resetSelectedPosition"
+      />
 
-    <ModalsSharePositionPnl
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      @on:close="resetSelectedPosition"
-    />
+      <ModalsSharePnlPosition
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
+        @on:close="resetSelectedPosition"
+      />
+
+      <ModalsSharePnlDerivativeTrade
+        v-if="selectedTrade"
+        v-bind="{ trade: selectedTrade }"
+        @on:close="resetSelectedTrade"
+      />
+    </div>
   </div>
 </template>

@@ -22,9 +22,7 @@ const { status: lastTradedPriceStatus, formattedStrategies: strategies } =
 
 const strategy = computed(() => strategies.value[0])
 
-const isPositivePnl = computed(() =>
-  new BigNumberInBase(strategy.value.pnl).gte(0)
-)
+const pnlToBigNumber = computed(() => new BigNumberInBase(strategy.value.pnl))
 
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
@@ -76,11 +74,11 @@ const percentagePnl = computed(() =>
       <div
         v-else
         class="font-bold flex"
-        :class="{
-          'text-green-500': isPositivePnl,
-          'text-red-500': !isPositivePnl && !strategy.isZeroPnl,
-          'text-coolGray-400': strategy.isZeroPnl
-        }"
+        :class="
+          getColorClassForChange(pnlToBigNumber, {
+            zeroClass: 'text-coolGray-400'
+          })
+        "
       >
         <SharedAmount
           v-bind="{
@@ -90,7 +88,7 @@ const percentagePnl = computed(() =>
           }"
         >
           <template #prefix>
-            <span>{{ isPositivePnl ? '+' : '' }}</span>
+            <span>{{ pnlToBigNumber.gt(0) ? '+' : '' }}</span>
           </template>
         </SharedAmount>
         <span>

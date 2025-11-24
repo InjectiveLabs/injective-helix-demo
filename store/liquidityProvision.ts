@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { mitoApi } from '@shared/Service'
-import { MitoVault, MitoStakingPool } from '@injectivelabs/sdk-ts'
+import { getIndexerMitoApi } from '@shared/Service'
 import { STAKING_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import type { MitoVault, MitoStakingPool } from '@injectivelabs/sdk-ts'
 
 type LiquidityProvisionStoreState = {
   vaults: MitoVault[]
@@ -18,6 +18,8 @@ export const useLiquidityProvisionStore = defineStore('liquidityProvision', {
 
   actions: {
     async fetchMitoVaults() {
+      const mitoApi = await getIndexerMitoApi()
+
       const liquidityProvisionStore = useLiquidityProvisionStore()
 
       const { vaults } = await mitoApi.fetchVaults({})
@@ -28,6 +30,8 @@ export const useLiquidityProvisionStore = defineStore('liquidityProvision', {
     },
 
     async fetchMitoStakingPools() {
+      const mitoApi = await getIndexerMitoApi()
+
       const liquidityProvisionStore = useLiquidityProvisionStore()
 
       const { pools } = await mitoApi.fetchStakingPools({

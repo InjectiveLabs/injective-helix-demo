@@ -11,14 +11,14 @@ import {
   NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
 import {
-  stakingApi,
   web3Client,
-  indexerRestExplorerApi,
-  indexerAccountPortfolioApi
+  getStakingApi,
+  getIndexerRestExplorerApi,
+  getIndexerAccountPortfolioApi
 } from '@shared/Service'
 import { DEFAULT_MIN_GAS } from '@/app/utils/constants'
 import { getAccountDetails } from '@/app/services/account'
-import { neptuneService, indexerGrpcArchiverApi } from '@/app/Services'
+import { neptuneService, getIndexerGrpcArchiverApi } from '@/app/Services'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   getDefaultAccountBalances,
@@ -43,9 +43,9 @@ import {
   cancelSubaccountBalanceStream
 } from '@/store/account/stream'
 import { BusEvents } from '@/types'
-import type { SubaccountBalance } from '@/types'
 import type { Coin } from '@injectivelabs/ts-types'
 import type { Delegation, AccountStats } from '@injectivelabs/sdk-ts'
+import type { SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
   pubKey?: string
@@ -189,6 +189,8 @@ export const useAccountStore = defineStore('account', {
     },
 
     async fetchSignerInjBalance() {
+      const indexerAccountPortfolioApi = await getIndexerAccountPortfolioApi()
+
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -212,6 +214,8 @@ export const useAccountStore = defineStore('account', {
     },
 
     async fetchAccountPortfolioBalances() {
+      const indexerAccountPortfolioApi = await getIndexerAccountPortfolioApi()
+
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -253,6 +257,8 @@ export const useAccountStore = defineStore('account', {
     },
 
     async fetchCw20Balances() {
+      const indexerRestExplorerApi = await getIndexerRestExplorerApi()
+
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -319,8 +325,8 @@ export const useAccountStore = defineStore('account', {
         const walletStrategy = new WalletStrategy({
           wallet,
           chainId: CHAIN_ID,
-          ethereumOptions: {
-            ethereumChainId: ETHEREUM_CHAIN_ID,
+          evmOptions: {
+            evmChainId: ETHEREUM_CHAIN_ID,
             rpcUrl: alchemyRpcEndpoint
           },
           strategies: {}
@@ -346,7 +352,11 @@ export const useAccountStore = defineStore('account', {
       const sharedWalletStore = useSharedWalletStore()
 
       try {
-        if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+        if (
+          ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+            sharedWalletStore.wallet
+          )
+        ) {
           const accountDetails = await getAccountDetails(address)
           const publicKeyBase64 = accountDetails.pubKey.key
 
@@ -391,6 +401,8 @@ export const useAccountStore = defineStore('account', {
     },
 
     async fetchAccountStats() {
+      const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -402,6 +414,8 @@ export const useAccountStore = defineStore('account', {
     },
 
     async fetchInjDelegations() {
+      const stakingApi = await getStakingApi()
+
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 

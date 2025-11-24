@@ -26,7 +26,7 @@ export const getEip712TypedData = (signer: string, message: string) => {
   const eip712TypedData = getEip712TypedDataV2({
     msgs,
     tx,
-    ethereumChainId: ETHEREUM_CHAIN_ID
+    evmChainId: ETHEREUM_CHAIN_ID
   })
 
   return eip712TypedData

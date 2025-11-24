@@ -1,8 +1,15 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   OrderState,
   StreamOperation,
   TradeExecutionSide
 } from '@injectivelabs/ts-types'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import {
+  streamSpotAverageEntries as grpcStreamSpotAverageEntries,
+  cancelSpotAverageEntriesStream as grpcCancelSpotAverageEntriesStream
+} from '@/app/client/streams/archiver'
 import {
   streamTrades as grpcStreamTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -15,14 +22,14 @@ import {
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
-import { combineOrderbookRecords } from '@/app/utils/market'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
 export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
+export const cancelAccountAverageEntriesStream =
+  grpcCancelSpotAverageEntriesStream
 export const cancelSubaccountOrdersHistoryStream =
   grpcCancelSubaccountOrdersHistoryStream
 
@@ -140,9 +147,9 @@ export const streamSubaccountOrders = ({
       }
 
       switch (order.state) {
-        case OrderState.Booked:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked: {
           const subaccountOrders = [
             order,
             ...spotStore.subaccountOrders.filter(
@@ -200,10 +207,10 @@ export const streamSubaccountOrderHistory = ({
       }
 
       switch (order.state) {
-        case OrderState.Booked:
-        case OrderState.Filled:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Filled: {
           const subaccountOrderHistory = [
             order,
             ...spotStore.subaccountOrderHistory.filter(
@@ -301,6 +308,40 @@ export const streamSubaccountTrades = ({
             subaccountTradesCount: subaccountTrades.length
           })
 
+          break
+        }
+      }
+    }
+  })
+}
+
+export const streamAccountAverageEntries = ({
+  account,
+  onResetCallback
+}: {
+  account: string
+  onResetCallback?: Function
+}) => {
+  const spotStore = useSpotStore()
+
+  grpcStreamSpotAverageEntries({
+    account,
+    onResetCallback,
+    callback: ({ averageEntry, operation }) => {
+      if (!averageEntry) {
+        return
+      }
+
+      switch (operation) {
+        case StreamOperation.Update: {
+          const quantity = new BigNumberInBase(averageEntry.quantity)
+
+          if (quantity.isZero()) {
+            spotStore.deleteAccountAverageEntry(averageEntry.marketId)
+            return
+          }
+
+          spotStore.setAccountAverageEntry(averageEntry)
           break
         }
       }

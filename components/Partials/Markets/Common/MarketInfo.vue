@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
-import { rwaMarketsInIAssets } from '@/app/data/market'
+import { rwaMarketsInStocks } from '@/app/data/market'
 import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { TradePage, TradeSubPage, TradingInterface } from '@/types'
@@ -63,7 +63,7 @@ const isRwaMarket = computed(() =>
 const showRwaTooltip = computed(
   () =>
     jsonStore.helixMarketCategoriesMap.rwa.includes(props.market.marketId) ||
-    rwaMarketsInIAssets.includes(props.market.marketId)
+    rwaMarketsInStocks.includes(props.market.marketId)
 )
 
 const indexMarketInfo = computed(() =>

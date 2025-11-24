@@ -78,24 +78,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Using Node ${{ matrix.node-version }}
         uses: useblacksmith/setup-node@v5
         with:
-          node-version: 20.x
+          node-version-file: '.nvmrc'
 
-      - name: Setup libudev-dev
-        run: |
-          sudo apt-get update
-          sudo apt-get install libudev-dev
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Build app
         run: |
-          yarn install --force
-          yarn clean-up
-          yarn generate
+          pnpm install
+          pnpm clean-up
+          pnpm generate
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1

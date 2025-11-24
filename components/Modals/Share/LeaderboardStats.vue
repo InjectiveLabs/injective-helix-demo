@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEBOUNCE_DEFAULT_PERIOD } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 import type { LeaderboardDuration } from '@/types'
 
@@ -86,7 +87,7 @@ watchDebounced(
       onCloseModal()
     }
   },
-  { debounce: 200, immediate: true }
+  { debounce: DEBOUNCE_DEFAULT_PERIOD, immediate: true }
 )
 </script>
 
@@ -144,10 +145,11 @@ watchDebounced(
           <div
             v-else
             class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl md:text-5xl leading-[3rem] truncate"
-            :class="{
-              'text-green-500': pnlToBigNumber.gte(0),
-              'text-red-500': pnlToBigNumber.lt(0)
-            }"
+            :class="
+              getColorClassForChange(pnlToBigNumber, {
+                zeroClass: 'text-green-500'
+              })
+            "
           >
             <SharedAmountUsd
               v-bind="{

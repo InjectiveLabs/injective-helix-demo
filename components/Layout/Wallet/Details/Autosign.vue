@@ -35,10 +35,6 @@ function toggleAutoSign() {
     return
   }
 
-  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
-    return
-  }
-
   trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
   notificationStore.success({
     title: t('toast.portfolio.autoSign.enable.title'),
@@ -78,8 +74,12 @@ function toggleAutoSign() {
 
 <template>
   <div
-    v-if="![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)"
-    class="mx-3 w-6 h-6 flex items-center justify-center"
+    v-if="
+      !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+        sharedWalletStore.wallet
+      )
+    "
+    class="mx-3 w-6 h-6 items-center justify-center flex lg:hidden xl:flex"
   >
     <AppSpinner v-if="status.isLoading()" is-sm is-white />
 

@@ -3,7 +3,6 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PartialsMarketsIAssetsBanner } from '#components'
 import { MarketCyTags, NoticeBanner, MarketCategoryType } from '@/types'
 
 const route = useRoute()
@@ -11,7 +10,6 @@ const appStore = useAppStore()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const sharedTokenStore = useSharedTokenStore()
-const { sm } = useSharedBreakpoints()
 
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
@@ -71,10 +69,10 @@ function setCategoryFromQuery() {
   return MarketCategoryType.All
 }
 
-function closeIAssetsBanner() {
+function closeStocksBanner() {
   appStore.setUserState({
     ...appStore.userState,
-    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.IAssets]
+    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.Stocks]
   })
 }
 </script>
@@ -94,43 +92,39 @@ function closeIAssetsBanner() {
         class="mt-8"
       />
 
-      <PartialsMarketsIAssetsBanner
-        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.IAssets)"
-        @banner:close="closeIAssetsBanner"
+      <PartialsMarketsStocksBanner
+        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.Stocks)"
+        @banner:close="closeStocksBanner"
       />
 
       <div class="max-w-full mt-4 lg:mb-2">
-        <div
-          class="flex sm:gap-4 lg:gap-2 justify-between flex-wrap max-sm:flex-col"
-        >
+        <div class="flex gap-2 justify-between flex-wrap max-sm:flex-col">
           <div
-            class="sm:flex max-sm:w-full items-center flex-wrap gap-2"
+            class="flex flex-nowrap max-sm:w-full items-center lg:flex-wrap gap-2 max-lg:overflow-x-auto max-lg:pb-2"
             :data-cy="dataCyTag(MarketCyTags.MarketsCategoryType)"
           >
-            <template v-if="sm">
-              <AppButtonSelect
-                v-for="value in Object.values(MarketCategoryType)"
-                :key="value"
-                v-model="activeCategory"
-                v-bind="{ value }"
-                :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
-                @update:model-value="resetSearch"
-              >
-                <template #default="{ isActive }">
-                  <AppButton
-                    variant="primary"
-                    size="xs"
-                    :class="[
-                      isActive ? 'opacity-100' : 'opacity-50',
-                      value === MarketCategoryType.iAssets ? '' : 'capitalize',
-                      'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
-                    ]"
-                  >
-                    {{ $t(`markets.filters.${value}`) }}
-                  </AppButton>
-                </template>
-              </AppButtonSelect>
-            </template>
+            <AppButtonSelect
+              v-for="value in Object.values(MarketCategoryType)"
+              :key="value"
+              v-model="activeCategory"
+              v-bind="{ value }"
+              :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
+              @update:model-value="resetSearch"
+            >
+              <template #default="{ isActive }">
+                <AppButton
+                  variant="primary"
+                  size="xs"
+                  :class="[
+                    isActive ? 'opacity-100' : 'opacity-50',
+                    value === MarketCategoryType.Stocks ? '' : 'capitalize',
+                    'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
+                  ]"
+                >
+                  {{ $t(`markets.filters.${value}`) }}
+                </AppButton>
+              </template>
+            </AppButtonSelect>
           </div>
 
           <div class="flex justify-between max-xl:w-full">

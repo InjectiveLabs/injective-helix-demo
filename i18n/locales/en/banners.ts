@@ -1,5 +1,6 @@
 export default {
   banners: {
+    docs: 'docs',
     findOutMore: 'Find out more',
     stockTwits:
       'Want to learn how to place a trade or how trading tokenized stocks works? → {learnMore}',
@@ -7,22 +8,28 @@ export default {
       'This wallet is depreciated. Follow the migration guide to move your funds. {learnMore}',
     deprecatedWalletWithAddress:
       'This wallet is depreciated. Your new SSO address is {address}. Follow the migration guide to move your funds. {learnMore}',
-    postOnly:
-      'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}',
     settlePerpMarketBanner:
       'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.',
     settlePerpMarketBannerNewLaunch:
       'There is currently a live governance proposal to force settle the WTI PERP market. You are encouraged to close open positions, or your position will be force settled at the mark price at the time of settlement. After this market is settled, a new expiry futures market will be launched.',
     pointsS1Ended:
       'Helix Points Season 1 has wrapped up. Thank you for your participation, and stay tuned for more updates!',
+    expiryFuturesBanner:
+      'This is an expiry futures trading pair, which will settle at {date}. Any positions open after this time will be force settled at the mark price at the time of settlement.',
+
+    prelaunchFuturesBanner:
+      'This pair is a pre-launch perpetual futures (PLF) market. Beware of the risks involved. See the {docs} for more info.',
+
+    mkrExpiry:
+      'As part of the migration from MKR to SKY, this pair will be force settled (pending governance) on September 14. Any positions still open on that date will be force settled at the mark price at the time of settlement.',
 
     kado: {
       getStarted: 'Get started',
       title: 'Introducing Helix 2.0! Discover a whole new trading experience.'
     },
 
-    iAssets: {
-      title: 'Trade iAssets on Helix',
+    stocks: {
+      title: 'Trade Stocks on Helix',
       description:
         'Trade stocks with crypto for faster, cheaper, and more transparent transactions - combining traditional markets with the power of decentralized finance.'
     },
@@ -46,30 +53,29 @@ export default {
     },
 
     leaderboard: {
-      currentCompetitionLink: '$50K prize pool on Helix!',
+      currentCompetitionLink: 'See more',
       currentCompetitionTitle:
-        'Trade on Helix and compete for your share of a {linkDescription}',
+        'Join the Helix Trading Campaign - $25K in prizes, October 9–23! {linkDescription}',
 
       gwagon: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Trade Like a G',
         description:
           'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 22nd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the {blog}.'
       },
       tesla: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Win a Tesla!',
         description:
           'Trade for a chance to win a Tesla! From November 26th at 15:00 UTC to December 6th at 15:00 UTC, the top trader by PnL will win a Tesla Model 3. For more details, visit the {blog}.'
       },
       ownYourAsset: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Own Your Assets, Control Your Future.',
         description:
           'Compete for your share of a $50K prize pool on Helix. From February 21st, 2025 at 6pm UTC to March 3rd, 2025 at 6pm UTC, you can trade for a chance to win $1,000 from a $50k prize pool, through a random draw. Every $1,000 in trading volume earns an entry. For more details, visit the {blog}'
+      },
+      volumeVictory: {
+        title: 'Volume = Victory',
+        description:
+          'Every $1,000 traded on the Everything Exchange brings you closer to a slice of the $25k prize pool.'
       }
     }
   }

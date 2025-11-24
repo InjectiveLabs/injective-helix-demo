@@ -5,6 +5,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { TransformedBalances } from '@/types'
 
 const breakpoints = useSharedBreakpoints()
@@ -28,6 +29,10 @@ const props = withDefaults(
     tableHeaderClass: ''
   }
 )
+
+const emit = defineEmits<{
+  'balance:share': [token: TokenStatic]
+}>()
 
 const { rows } = useBalanceTransformer(
   computed(() =>
@@ -59,8 +64,8 @@ const columns = computed(() => {
       class: 'text-right'
     },
     {
-      key: BalanceTableColumn.UnrealizedPnl,
-      label: t(`portfolio.table.balance.${BalanceTableColumn.UnrealizedPnl}`),
+      key: BalanceTableColumn.Pnl,
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Pnl}`),
       class: 'text-right'
     },
     {
@@ -79,12 +84,12 @@ const columns = computed(() => {
     columnArray.push(
       {
         key: BalanceTableColumn.Staked,
-        label: t(`portfolio.table.${BalanceTableColumn.Staked}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.Staked}`),
         class: ''
       },
       {
         key: BalanceTableColumn.StakedUsd,
-        label: t(`portfolio.table.${BalanceTableColumn.StakedUsd}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.StakedUsd}`),
         class: ''
       }
     )
@@ -145,9 +150,9 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
+        [BalanceTableColumn.Pnl]: ZERO_IN_BASE,
         [BalanceTableColumn.Total]: ZERO_IN_BASE,
         [BalanceTableColumn.Available]: ZERO_IN_BASE,
-        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
         [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value,
         [BalanceTableColumn.UsedOrReserved]: stakedAmount.value
       } as TransformedBalances,
@@ -179,85 +184,92 @@ const filteredRows = computed(() =>
 function toggleStakingRow() {
   showStakingRow.value = !showStakingRow.value
 }
+
+function shareBalance(token: TokenStatic) {
+  emit('balance:share', token)
+}
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable
-      :rows="filteredRows"
-      :columns="columns"
-      :ui="{
-        th: {
-          color: `dark:text-coolGray-400 ${props.tableHeaderClass}`,
-          base: 'leading-5'
-        },
-        td: { padding: 'p-4', base: 'text-right' }
-      }"
-    >
-      <template #assets-data="{ row }">
-        <div
-          v-if="!row.isStakingRow"
-          class="flex items-center"
-          :class="[row.token.denom === injToken.denom ? 'gap-1' : 'gap-2']"
-        >
-          <div class="flex items-center gap-2 text-left">
-            <UAvatar size="xs" :src="row.token.logo" />
-            <div class="ml-2">
-              <p
-                class="font-medium text-sm mb-1 leading-none max-w-52 truncate"
-                :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
-              >
-                {{ row.token.symbol }}
-              </p>
-              <p class="text-xs text-coolGray-500 truncate max-w-52">
-                {{ row.token.name }}
-              </p>
-            </div>
+  <CommonEmptyList
+    v-if="filteredRows.length === 0"
+    :message="$t('common.noItems')"
+  />
 
-            <SharedIcon
-              v-if="row.isVerified"
-              name="check-shield"
-              is-md
-              class="text-green-500 ml-2"
-            />
-
-            <AppButton
-              v-if="row.token.denom === injToken.denom"
-              variant="primary-ghost"
-              size="xs"
-              class="text-coolGray-400 hover:bg-transparent hover:text-white focus-within:ring-0"
-              @click="toggleStakingRow"
+  <UTable
+    v-else-if="lg"
+    :rows="filteredRows"
+    :columns="columns"
+    :ui="{
+      th: {
+        base: 'leading-5',
+        color: `dark:text-coolGray-400 ${props.tableHeaderClass}`
+      },
+      td: { padding: 'p-4', base: 'text-right' }
+    }"
+  >
+    <template #assets-data="{ row }">
+      <div
+        v-if="!row.isStakingRow"
+        class="flex items-center"
+        :class="[row.token.denom === injToken.denom ? 'gap-1' : 'gap-2']"
+      >
+        <div class="flex items-center gap-2 text-left">
+          <UAvatar size="xs" :src="row.token.logo" />
+          <div class="ml-2">
+            <p
+              class="font-medium text-sm mb-1 leading-none max-w-52 truncate"
+              :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
             >
-              <UIcon
-                :name="
-                  showStakingRow
-                    ? NuxtUiIcons.ChevronUp
-                    : NuxtUiIcons.ChevronDown
-                "
-                class="size-4"
-              />
-            </AppButton>
+              {{ row.token.symbol }}
+            </p>
+            <p class="text-xs text-coolGray-500 truncate max-w-52">
+              {{ row.token.name }}
+            </p>
           </div>
 
-          <AppTablePopover v-if="!row.hasNoActionButtons && !fourXl">
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <PartialsPortfolioBalancesSubaccountTableActionBtns
-                v-if="!row.isStakingRow"
-                is-table-popover
-                v-bind="{
-                  token: row.token,
-                  isVerified: row.isVerified,
-                  isBridgable: row.isBridgable
-                }"
-              />
-            </div>
-          </AppTablePopover>
-        </div>
-      </template>
+          <SharedIcon
+            v-if="row.isVerified"
+            is-md
+            name="check-shield"
+            class="text-green-500 ml-2"
+          />
 
-      <template #available-data="{ row }">
+          <AppButton
+            v-if="row.token.denom === injToken.denom"
+            size="xs"
+            variant="primary-ghost"
+            class="text-coolGray-400 hover:bg-transparent hover:text-white focus-within:ring-0"
+            @click="toggleStakingRow"
+          >
+            <UIcon
+              class="size-4"
+              :name="
+                showStakingRow ? NuxtUiIcons.ChevronUp : NuxtUiIcons.ChevronDown
+              "
+            />
+          </AppButton>
+        </div>
+
+        <AppTablePopover v-if="!row.hasNoActionButtons && !fourXl">
+          <div class="rounded-lg p-2 bg-brand-800 min-w-28">
+            <PartialsPortfolioBalancesSubaccountTableActionBtns
+              v-if="!row.isStakingRow"
+              v-bind="{
+                token: row.token,
+                isTablePopover: true,
+                isVerified: row.isVerified,
+                isBridgable: row.isBridgable
+              }"
+            />
+          </div>
+        </AppTablePopover>
+      </div>
+    </template>
+
+    <template #available-data="{ row }">
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
         <PartialsCommonBalanceDisplay
-          v-if="!row.isStakingRow"
           v-bind="{
             token: row.token,
             isAlignRight: true,
@@ -272,14 +284,17 @@ function toggleStakingRow() {
             :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
           />
         </PartialsCommonBalanceDisplay>
-        <span v-else />
-      </template>
+      </CommonHideBalanceInfo>
 
-      <template #used-or-reserved-data="{ row }">
-        <span v-if="row.isStakingRow" class="mr-1 text-coolGray-400">
-          {{ $t('portfolio.staked') }}:
-        </span>
+      <span v-else />
+    </template>
 
+    <template #used-or-reserved-data="{ row }">
+      <span v-if="row.isStakingRow" class="mr-1 text-coolGray-400">
+        {{ $t('portfolio.staked') }}:
+      </span>
+
+      <CommonHideBalanceInfo>
         <SharedAmount
           v-bind="{
             showZeroAsEmDash: true,
@@ -287,68 +302,77 @@ function toggleStakingRow() {
           }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
-      </template>
+      </CommonHideBalanceInfo>
+    </template>
 
-      <template #unrealized-pnl-data="{ row }">
-        <SharedAmount
-          v-if="!row.isStakingRow"
+    <template #pnl-data="{ row }">
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <PartialsPortfolioBalancesSubaccountTablePnlCell
           v-bind="{
-            showZeroAsEmDash: true,
-            amount: row[BalanceTableColumn.UnrealizedPnl].toFixed()
+            token: row.token
           }"
-          :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
+          @balance:share="shareBalance"
         />
-        <span v-else />
-      </template>
+      </CommonHideBalanceInfo>
 
-      <template #total-data="{ row }">
+      <span v-else />
+    </template>
+
+    <template #total-data="{ row }">
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
         <SharedAmount
-          v-if="!row.isStakingRow"
           v-bind="{
             amount: row[BalanceTableColumn.Total].toFixed()
           }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
-        <span v-else />
-      </template>
+      </CommonHideBalanceInfo>
 
-      <template #total-usd-data="{ row }">
-        <div :class="{ 'text-coolGray-400': row.isStakingRow }">
-          <span v-if="!row.isVerified">&mdash;</span>
-          <template v-else>
-            <SharedAmountUsd
-              v-bind="{
-                amount: row[BalanceTableColumn.TotalUsd].toFixed()
-              }"
-              :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-            >
-              <template #prefix>
-                <span>$</span>
-              </template>
-            </SharedAmountUsd>
-          </template>
-        </div>
-      </template>
+      <span v-else />
+    </template>
 
-      <template #action-data="{ row }">
-        <div class="flex justify-center">
-          <PartialsPortfolioBalancesSubaccountTableActionBtns
-            v-if="!row.isStakingRow"
+    <template #total-usd-data="{ row }">
+      <div :class="{ 'text-coolGray-400': row.isStakingRow }">
+        <span v-if="!row.isVerified">&mdash;</span>
+        <CommonHideBalanceInfo v-else>
+          <SharedAmountUsd
             v-bind="{
-              token: row.token,
-              isBridgable: row.isBridgable
+              amount: row[BalanceTableColumn.TotalUsd].toFixed()
             }"
-          />
-        </div>
-      </template>
-    </UTable>
-  </template>
+            :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+          >
+            <template #prefix>
+              <span>$</span>
+            </template>
+          </SharedAmountUsd>
+        </CommonHideBalanceInfo>
+      </div>
+    </template>
+
+    <template #action-data="{ row }">
+      <div class="flex justify-center">
+        <PartialsPortfolioBalancesSubaccountTableActionBtns
+          v-if="!row.isStakingRow"
+          v-bind="{
+            token: row.token,
+            isBridgable: row.isBridgable
+          }"
+        />
+      </div>
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPortfolioBalancesSubaccountMobileTable
       v-for="balance in filteredRows"
       :key="balance.token.denom"
-      v-bind="{ balance, columns, stakedAmount, stakedAmountInUsd }"
+      v-bind="{
+        balance,
+        columns,
+        stakedAmount,
+        stakedAmountInUsd
+      }"
+      @balance:share="shareBalance"
     />
   </template>
 </template>

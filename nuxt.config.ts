@@ -1,4 +1,5 @@
 import { head, hooks } from './nuxt-config'
+import { metaTags } from './nuxt-config/meta'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -13,11 +14,7 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-09-09',
 
-  css: ['@/assets/css/tailwind.css'],
-
-  pinia: {
-    autoImports: ['defineStore']
-  },
+  // css: ['@/assets/css/tailwind.css'],
 
   sourcemap: {
     client: true,
@@ -25,9 +22,10 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@funken-studio/sitemap-nuxt-3',
     '@nuxt/ui',
     '@nuxt/eslint',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
     ...(isProduction && import.meta.env.NUXT_CLARITY_ID
       ? ['nuxt-clarity-analytics']
       : [])
@@ -45,43 +43,45 @@ export default defineNuxtConfig({
         code: 'en',
         name: 'En',
         longName: 'English',
-        file: './i18n/locales/en.ts'
+        file: './en.ts'
       },
       {
         code: 'zh',
         name: '中文',
         longName: '中文',
-        file: './i18n/locales/cn.ts'
+        file: './cn.ts'
       },
       {
         code: 'kr',
         name: 'Kr',
         longName: '한국어',
-        file: './i18n/locales/kr.ts'
+        file: './kr.ts'
       },
       {
         code: 'tr',
         name: 'Tr',
         longName: 'Türkçe',
-        file: './i18n/locales/tr.ts'
+        file: './tr.ts'
       }
     ]
   },
 
   extends: [
     isLocalLayer
-      ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      ? '../injective-ui'
+      : 'github:InjectiveLabs/injective-ui#master'
   ],
+  // @ts-ignore
+  site: {
+    url: 'https://helixapp.com',
+    name: metaTags.description
+  },
 
-  // @ts-expect-error - typing issue
-  sitemap: {
-    gzip: true,
-    hostname:
-      process.env.VITE_BASE_URL &&
-      !process.env.VITE_BASE_URL.includes('localhost')
-        ? process.env.VITE_BASE_URL
-        : 'https://helixapp.com'
+  postcss: {
+    plugins: {
+      autoprefixer: {},
+      tailwindcss: {}
+    }
   },
 
   colorMode: {

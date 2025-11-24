@@ -3,7 +3,10 @@ import { useIMask } from 'vue-imask'
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { calculateLeverage } from '@/app/utils/formatters'
-import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_LEVERAGE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   MarketKey,
   PerpetualMarketCyTags,
@@ -24,9 +27,11 @@ const maxLeverageAvailable = computed(() =>
 
 const futuresLeveragePreference = computed(() => {
   const leveragePreference =
-    appStore.userState.preferences.futuresLeverage || '1'
+    appStore.userState.preferences.futuresLeverage || UI_DEFAULT_LEVERAGE
 
-  const futuresLeverage = Math.round(parseFloat(leveragePreference) * 100) / 100
+  const futuresLeverage = new BigNumberInBase(leveragePreference)
+    .decimalPlaces(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    .toNumber()
 
   return futuresLeverage > Number(maxLeverageAvailable.value)
     ? maxLeverageAvailable.value

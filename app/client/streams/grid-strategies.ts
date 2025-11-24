@@ -1,7 +1,13 @@
-import { indexerGrpcTradingStream } from '@/app/Services'
+import { ENDPOINTS } from '@shared/utils/constant'
+import { IndexerGrpcTradingStream } from '@injectivelabs/sdk-ts'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 import type { GridStrategyStreamResponse } from '@injectivelabs/sdk-ts'
+
+export const indexerGrpcTradingStream = new IndexerGrpcTradingStream(
+  ENDPOINTS.indexer
+)
+
 export const streamGridStrategies = ({
   callback,
   marketId,

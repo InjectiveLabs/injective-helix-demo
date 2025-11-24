@@ -5,10 +5,13 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
-import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { TransformedPosition } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -179,7 +182,7 @@ function onClosePartialPosition() {
     const isBuy =
       selectedPositionDetails.value.position.direction === TradeDirection.Long
 
-    let orderTypeToSubmit = OrderSide.Buy
+    let orderTypeToSubmit = OrderSide.Buy as OrderSide
 
     if (jsonStore.isPostUpgradeMode) {
       orderTypeToSubmit = isBuy ? OrderSide.SellPO : OrderSide.BuyPO
@@ -210,265 +213,265 @@ function onClosePartialPosition() {
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable v-bind="{ rows, columns, ui }">
-      <template #market-data="{ row }">
-        <div class="flex items-center gap-1">
-          <PartialsCommonMarketRedirection
-            v-bind="{ market: row.market }"
-            class="flex items-center space-x-2 p-2 font-sans text-coolGray-200"
-          >
-            <CommonTokenIcon
-              v-bind="{ isMd: true, token: row.market.baseToken }"
-            />
-            <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
-              {{ row.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
+  <CommonEmptyList
+    v-if="rows.length === 0"
+    :message="$t('trade.noOpenPositions')"
+  />
 
-          <PartialsPositionsTableClosePositionButton
-            v-if="!sixXl && !isTradingBots"
-            :data-cy="
-              dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)
-            "
-            v-bind="{ row }"
-            @position:set="setSelectedPosition"
-          />
-        </div>
-      </template>
-
-      <template #side-data="{ row }">
-        <div class="flex items-center p-2">
-          <span
-            :class="{
-              'text-green-500': row.position.direction === TradeDirection.Long,
-              'text-red-500': row.position.direction === TradeDirection.Short
-            }"
-            :data-cy="`${dataCyTag(
-              PerpetualMarketCyTags.OpenPosTradeDirection
-            )}-${row.position.direction}`"
-          >
-            {{ $t(`trade.${row.position.direction}`) }}
-          </span>
-        </div>
-      </template>
-
-      <template #contracts-data="{ row }">
-        <div
-          class="flex items-center justify-end gap-1 p-2"
-          :class="[
-            row.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
-          ]"
+  <UTable v-else-if="lg" v-bind="{ rows, columns, ui }">
+    <template #market-data="{ row }">
+      <div class="flex items-center gap-1">
+        <PartialsCommonMarketRedirection
+          v-bind="{ market: row.market }"
+          class="flex items-center space-x-2 p-2 font-sans text-coolGray-200"
         >
-          <PartialsPositionsRemainingQuantity
-            v-if="row.usedQuantity.gt(0)"
-            v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
+          <CommonTokenIcon
+            v-bind="{ isMd: true, token: row.market.baseToken }"
           />
-
-          <p
-            class="flex gap-1"
-            :class="{
-              'line-through ': row.availableQuantity.lte(0)
-            }"
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                decimals: row.quantityDecimals,
-                amount: row.availableQuantity.toFixed()
-              }"
-            />
-            {{
-              row.market.baseToken.overrideSymbol || row.market.baseToken.symbol
-            }}
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
+            {{ row.market.ticker }}
           </p>
-        </div>
-      </template>
+        </PartialsCommonMarketRedirection>
 
-      <template #entry-data="{ row }">
-        <div class="flex items-center justify-end p-2 text-white">
-          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: row.price.toFixed(),
-                decimals: row.priceDecimals
-              }"
-            />
-          </p>
-        </div>
-      </template>
+        <PartialsPositionsTableClosePositionButton
+          v-if="!sixXl && !isTradingBots"
+          :data-cy="
+            dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)
+          "
+          v-bind="{ row }"
+          @position:set="setSelectedPosition"
+        />
+      </div>
+    </template>
 
-      <template #mark-data="{ row }">
-        <div class="flex items-center justify-end p-2">
-          <p>
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                decimals: row.priceDecimals,
-                amount: row.markPrice.toFixed()
-              }"
-              class="text-coolGray-475"
-            />
-          </p>
-        </div>
-      </template>
+    <template #side-data="{ row }">
+      <div class="flex items-center p-2">
+        <span
+          :class="{
+            'text-green-500': row.position.direction === TradeDirection.Long,
+            'text-red-500': row.position.direction === TradeDirection.Short
+          }"
+          :data-cy="`${dataCyTag(
+            PerpetualMarketCyTags.OpenPosTradeDirection
+          )}-${row.position.direction}`"
+        >
+          {{ $t(`trade.${row.position.direction}`) }}
+        </span>
+      </div>
+    </template>
 
-      <template #unrealized-pnl-data="{ row }">
-        <div class="flex items-center p-2 justify-end space-x-1">
-          <div
-            class="space-y-1 text-right"
-            :class="{
-              'text-green-500': row.pnl.gte(0),
-              'text-red-500': row.pnl.lt(0)
-            }"
-          >
-            <p
-              :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
-              class="flex gap-1"
-            >
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: row.pnl.toFixed(),
-                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-                }"
-              />
+    <template #contracts-data="{ row }">
+      <div
+        class="flex items-center justify-end gap-1 p-2"
+        :class="[
+          row.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
+        ]"
+      >
+        <PartialsPositionsRemainingQuantity
+          v-if="row.usedQuantity.gt(0)"
+          v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
+        />
 
-              <span class="text-coolGray-500">{{
-                row.market.quoteToken.symbol
-              }}</span>
-            </p>
-            <p class="flex">
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: row.percentagePnl.toFixed(),
-                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-                }"
-              />
-              %
-            </p>
-          </div>
-
-          <UIcon
-            :name="NuxtUiIcons.Share"
-            class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-            @click="sharePosition(row.position)"
-          />
-        </div>
-      </template>
-
-      <template #total-usd-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
-          <div class="space-y-1">
-            <p
-              :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
-              class="flex"
-            >
-              <SharedAmountUsd
-                class="text-white"
-                v-bind="{
-                  amount: row.quantityInUsd.toFixed()
-                }"
-              />
-            </p>
-          </div>
-        </div>
-      </template>
-
-      <template #margin-data="{ row }">
-        <div class="flex items-center p-2 space-x-2 justify-end">
-          <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: row.margin.toFixed(),
-                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-              }"
-              class="text-white"
-            />
-          </span>
-          <button
-            v-if="!appStore.isCountryRestricted"
-            class="flex p-2 rounded-full bg-coolGray-800"
-            @click="addMargin(row.position)"
-          >
-            <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
-          </button>
-        </div>
-      </template>
-
-      <template #liquidation-price-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
+        <p
+          class="flex gap-1"
+          :class="{
+            'line-through ': row.availableQuantity.lte(0)
+          }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
         >
           <SharedAmount
-            class="text-white"
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.quantityDecimals,
+              amount: row.availableQuantity.toFixed()
+            }"
+          />
+          {{
+            row.market.baseToken.overrideSymbol || row.market.baseToken.symbol
+          }}
+        </p>
+      </div>
+    </template>
+
+    <template #entry-data="{ row }">
+      <div class="flex items-center justify-end p-2 text-white">
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: row.price.toFixed(),
+              decimals: row.priceDecimals
+            }"
+          />
+        </p>
+      </div>
+    </template>
+
+    <template #mark-data="{ row }">
+      <div class="flex items-center justify-end p-2">
+        <p>
+          <SharedAmount
             v-bind="{
               useSubscript: true,
               shouldAbbreviate: false,
               decimals: row.priceDecimals,
-              amount: row.liquidationPrice.toFixed()
+              amount: row.markPrice.toFixed()
             }"
+            class="text-coolGray-475"
           />
-        </div>
-      </template>
+        </p>
+      </div>
+    </template>
 
-      <template #leverage-data="{ row }">
+    <template #unrealized-pnl-data="{ row }">
+      <div class="flex items-center p-2 justify-end space-x-1">
         <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
+          class="space-y-1 text-right"
+          :class="
+            getColorClassForChange(row.pnl, { zeroClass: 'text-green-500' })
+          "
         >
+          <p
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
+            class="flex gap-1"
+          >
+            <SharedAmount
+              v-bind="{
+                shouldAbbreviate: false,
+                amount: row.pnl.toFixed(),
+                decimals: UI_DEFAULT_DISPLAY_DECIMALS
+              }"
+            />
+
+            <span class="text-coolGray-500">{{
+              row.market.quoteToken.symbol
+            }}</span>
+          </p>
+          <p class="flex">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
+                amount: row.percentagePnl.toFixed(),
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
+            %
+          </p>
+        </div>
+
+        <PartialsPositionsTableShare
+          :position="row.position"
+          @position:share="sharePosition"
+        />
+      </div>
+    </template>
+
+    <template #total-usd-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <div class="space-y-1">
+          <p
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
+            class="flex"
+          >
+            <SharedAmountUsd
+              class="text-white"
+              v-bind="{
+                amount: row.quantityInUsd.toFixed()
+              }"
+            />
+          </p>
+        </div>
+      </div>
+    </template>
+
+    <template #margin-data="{ row }">
+      <div class="flex items-center p-2 space-x-2 justify-end">
+        <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
           <SharedAmount
-            class="text-white"
             v-bind="{
               useSubscript: true,
               shouldAbbreviate: false,
-              amount: row.effectiveLeverage.toFixed(),
+              amount: row.margin.toFixed(),
               decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
-          />x
-        </div>
-      </template>
-
-      <template #tp-or-sl-data="{ row }">
-        <div class="flex items-center p-2 justify-center">
-          <PartialsPositionsTableTpSlPrice
-            v-if="row.hasTpSl"
-            v-bind="{
-              position: row.position,
-              priceDecimals: row.priceDecimals,
-              tpTriggerPrice: row.tpTriggerPrice,
-              slTriggerPrice: row.slTriggerPrice
-            }"
-            @tpsl:update="addTpSl"
+            class="text-white"
           />
+        </span>
+        <button
+          v-if="!appStore.isCountryRestricted"
+          class="flex p-2 rounded-full bg-coolGray-800"
+          @click="addMargin(row.position)"
+        >
+          <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
+        </button>
+      </div>
+    </template>
 
-          <PartialsPositionsTableTpSlButton
-            v-else
-            v-bind="{ position: row.position }"
-            @tpsl:add="addTpSl"
-          />
-        </div>
-      </template>
-
-      <template #close-position-data="{ row }">
-        <PartialsPositionsTableClosePositionButton
-          v-bind="{ row }"
-          @position:set="setSelectedPosition"
+    <template #liquidation-price-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
+      >
+        <SharedAmount
+          class="text-white"
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: row.priceDecimals,
+            amount: row.liquidationPrice.toFixed()
+          }"
         />
-      </template>
-    </UTable>
-  </template>
+      </div>
+    </template>
+
+    <template #leverage-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
+      >
+        <SharedAmount
+          class="text-white"
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.effectiveLeverage.toFixed(),
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
+        />x
+      </div>
+    </template>
+
+    <template #tp-or-sl-data="{ row }">
+      <div class="flex items-center p-2 justify-center">
+        <PartialsPositionsTableTpSlPrice
+          v-if="row.hasTpSl"
+          v-bind="{
+            position: row.position,
+            priceDecimals: row.priceDecimals,
+            tpTriggerPrice: row.tpTriggerPrice,
+            slTriggerPrice: row.slTriggerPrice
+          }"
+          @tpsl:update="addTpSl"
+        />
+
+        <PartialsPositionsTableTpSlButton
+          v-else
+          v-bind="{ position: row.position }"
+          @tpsl:add="addTpSl"
+        />
+      </div>
+    </template>
+
+    <template #close-position-data="{ row }">
+      <PartialsPositionsTableClosePositionButton
+        v-bind="{ row }"
+        @position:set="setSelectedPosition"
+      />
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPositionsMobileTable

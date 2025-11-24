@@ -1,4 +1,5 @@
-import { BigNumber, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { BigNumber } from '@injectivelabs/utils'
+import { SECONDS_IN_A_DAY } from '@shared/utils/constant'
 import { formatDuration, intervalToDuration } from 'date-fns'
 
 export const tomorrow = (): BigNumber => {

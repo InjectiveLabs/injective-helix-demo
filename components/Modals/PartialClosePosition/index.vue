@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { indexerDerivativesApi } from '@shared/Service'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { getIndexerDerivativesApi } from '@shared/Service'
 import {
   Status,
   BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { HIGH_SLIPPAGE_THRESHOLD } from '@/app/utils/constants'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import { Modal, BusEvents, PartialLimitField } from '@/types'
 import type { TransformedPosition } from '@/types'
@@ -156,13 +157,18 @@ async function closePosition() {
 }
 
 async function validateSlippage() {
+  const indexerDerivativesApi = await getIndexerDerivativesApi()
+
   const orderbookRecords = await indexerDerivativesApi
     .fetchOrderbookV2(props.row.market.marketId)
     .catch($onError)
 
+  const isBuy = props.row.position.direction === TradeDirection.Short
+  const records = isBuy ? orderbookRecords?.sells : orderbookRecords?.buys
+
   const { worstPrice } = calculateWorstPriceFromPriceLevel(
     quantityValue.value,
-    orderbookRecords?.sells || []
+    records || []
   )
 
   const formattedWorstPrice = sharedToBalanceInTokenInBase({
@@ -178,7 +184,7 @@ async function validateSlippage() {
     )
     .times(100)
 
-  return slippagePercentage.gt(5)
+  return slippagePercentage.gt(HIGH_SLIPPAGE_THRESHOLD)
 }
 </script>
 
@@ -243,7 +249,7 @@ async function validateSlippage() {
         </div>
 
         <div v-if="!isMarketPositionClose" class="flex flex-col gap-2 mt-8">
-          <h5 class="font-semibold">{{ $t('trade.price') }}</h5>
+          <h5 class="font-semibold">{{ $t('trade.limitPrice') }}</h5>
 
           <div class="relative">
             <AppInputField

@@ -52,7 +52,7 @@ function disconnect() {
     >
       <template #default>
         <div
-          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
+          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-2 xl:px-6 rounded-lg"
         >
           <AppSpinner
             v-if="
@@ -65,7 +65,7 @@ function disconnect() {
           <div v-else class="flex items-center justify-center space-x-2">
             <UIcon
               :name="NuxtUiIcons.UserOutline"
-              class="lg:w-4 lg:h-4 w-5 h-5 rounded-md text-white"
+              class="max-lg:size-[18px] size-4 rounded-md text-white"
             />
           </div>
 

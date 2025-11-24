@@ -1,37 +1,41 @@
 <script lang="ts" setup>
-import { NuxtUiIcons } from '@shared/types'
-import { getHubUrl } from '@shared/utils/network'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { NOTIFI_LINK } from '@shared/utils/constant'
+import { format, isBefore, isWithinInterval } from 'date-fns'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
 import {
   DEFAULT_TRUNCATE_LENGTH,
   DEPRECATED_WALLET_DOCS_LINK
 } from '@/app/utils/constants'
-import { TradePage, UtmSource, NoticeBanner } from '@/types'
-
-type Banner = {
-  id: string
-  shouldDisplay: boolean
-  shouldPersist?: boolean
-}
+import type { SharedBanner } from '@shared/types'
+import { TradePage, UtmSource, NoticeBanner, LeaderboardSubPage } from '@/types'
 
 const perpSettlePairs = [
-  // {
-  //   slug: 'wti-usdt-perp',
-  //   marketId:
-  //     '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
-  //   newExpiryLaunch: true
-  // }
+  {
+    slug: 'nflx-usdt-perp',
+    marketId:
+      '0xe4fd69fb47edd3a7ca1436fae764055001139659d3e0df1eb7237f031737afde'
+  }
 ] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
+
+const preLaunchMarketPairs = [
+  {
+    slug: 'mon-usdt-perp',
+    marketId:
+      '0xf90a62bb82fdce5ae1a1388227999a78d24546541fd7c586e1e0d3f150eaf385'
+  }
+] as { slug: string; marketId: string }[]
 
 const route = useRoute()
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
+const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
+const now = useNow({ interval: 1000 })
 const { t } = useLang()
 const { copy } = useClipboard()
+const { banners: sharedBanners } = useSharedBanner()
 
 const isHideBanner = ref(false)
 const bannersToHide = ref<NoticeBanner[]>([])
@@ -43,7 +47,7 @@ const formattedTurnkeyInjectiveAddress = computed(() =>
   )
 )
 
-const deprecatedWarningBanner = computed<Banner[]>(() => [
+const deprecatedWarningBanner = computed<SharedBanner[]>(() => [
   {
     id: NoticeBanner.DeprecatedWallet,
     shouldDisplay:
@@ -60,7 +64,46 @@ const activePerpSettlePairs = computed(() =>
   )
 )
 
-const perpMarketSettleBanners = computed<Banner[]>(() => [
+const mkrMigrationBanner = computed<SharedBanner[]>(() => [
+  {
+    id: NoticeBanner.MKRMigration,
+    shouldDisplay:
+      route.params.slug === 'mkr-usdt-perp' ||
+      route.query.marketId ===
+        '0x142d0fa4506b5f404bcfdd54567797ff6767dce07afaedc90d379665f09f0520',
+    shouldPersist: true
+  }
+])
+
+const expiryFutureSettlementTimestamp = computed(() => {
+  if (!(route.name as string)?.startsWith(TradePage.Futures)) {
+    return undefined
+  }
+
+  const market = derivativeStore.marketByIdOrSlug(route.params.slug as string)
+
+  if (
+    !market ||
+    market.subType !== SharedMarketType.Futures ||
+    !market?.expiryFuturesMarketInfo?.expirationTimestamp
+  ) {
+    return undefined
+  }
+
+  return market.expiryFuturesMarketInfo.expirationTimestamp
+})
+
+const expiryFutureBanner = computed(() => [
+  {
+    id: NoticeBanner.ExpiryFutures,
+    shouldPersist: true,
+    shouldDisplay:
+      expiryFutureSettlementTimestamp.value &&
+      isBefore(now.value, expiryFutureSettlementTimestamp.value * 1000)
+  }
+])
+
+const perpMarketSettleBanner = computed<SharedBanner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PerpSettleMarket,
@@ -70,33 +113,31 @@ const perpMarketSettleBanners = computed<Banner[]>(() => [
   }
 ])
 
-const chainUpgradeBanners = computed<Banner[]>(() => [
+const activePreLaunchFuturesBanner = computed<SharedBanner[]>(() => [
   {
     shouldPersist: true,
-    id: NoticeBanner.PostChainUpgrade,
+    id: NoticeBanner.PreLaunchFutures,
     shouldDisplay:
-      jsonStore.isPostUpgradeMode && sharedWalletStore.isUserConnected
-  },
-  {
-    shouldPersist: true,
-    id: NoticeBanner.UpcomingChainUpgrade,
-    shouldDisplay:
-      jsonStore.hasUpcomingChainUpgrade && sharedWalletStore.isUserConnected
+      (route.name as string)?.startsWith(TradePage.Futures) &&
+      preLaunchMarketPairs.some(
+        ({ slug, marketId }) =>
+          slug === route.params.slug || marketId === route.query.marketId
+      )
   }
 ])
 
-const promotionalBanners = computed<Banner[]>(() => [
-  // {
-  //   id: NoticeBanner.OwnYourAssetCampaign,
-  //   shouldDisplay:
-  //     !appStore.userState.bannersViewed.includes(
-  //       NoticeBanner.OwnYourAssetCampaign
-  //     ) &&
-  //     isWithinInterval(now.value, {
-  //       end: new Date(1733497200000),
-  //       start: new Date(1732633200000)
-  //     })
-  // },
+const promotionalBanners = computed<SharedBanner[]>(() => [
+  {
+    id: NoticeBanner.VolumeVictoryCampaign,
+    shouldDisplay:
+      !appStore.userState.bannersViewed.includes(
+        NoticeBanner.VolumeVictoryCampaign
+      ) &&
+      isWithinInterval(now.value, {
+        end: new Date(1761242400000), // Thursday, October 23, 2025 6:00:00 PM UTC
+        start: new Date(1760032800000) // Thursday, October 9, 2025 6:00:00 PM UTC
+      })
+  },
   {
     id: NoticeBanner.StockTwits,
     shouldDisplay:
@@ -108,12 +149,17 @@ const promotionalBanners = computed<Banner[]>(() => [
 
 const bannerToDisplay = computed(
   () =>
-    [
-      ...deprecatedWarningBanner.value,
-      ...perpMarketSettleBanners.value,
-      ...chainUpgradeBanners.value,
-      ...promotionalBanners.value
-    ].filter(
+    (
+      [
+        ...mkrMigrationBanner.value,
+        ...deprecatedWarningBanner.value,
+        ...expiryFutureBanner.value,
+        ...perpMarketSettleBanner.value,
+        ...activePreLaunchFuturesBanner.value,
+        ...sharedBanners.value, // chain upgrade banners
+        ...promotionalBanners.value
+      ] as SharedBanner[]
+    ).filter(
       (banner) =>
         !bannersToHide.value.includes(banner.id as NoticeBanner) &&
         banner.shouldDisplay
@@ -181,14 +227,13 @@ function onClickStockTwitsCta() {
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    :class="[
-      jsonStore.isPostUpgradeMode ? 'justify-center' : 'justify-between'
-    ]"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold justify-between"
   >
     <div />
 
-    <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
+    <component v-if="bannerToDisplay.content" :is="bannerToDisplay.content" />
+
+    <template v-else-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
       <span v-if="activePerpSettlePairs?.newExpiryLaunch">
         {{ $t('banners.settlePerpMarketBannerNewLaunch') }}
       </span>
@@ -218,22 +263,22 @@ function onClickStockTwitsCta() {
           {{ $t('common.here') }}
         </NuxtLink>
       </template>
-    </i18n-t>
+    </i18n-t> -->
 
     <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.OwnYourAssetCampaign"
+      v-if="bannerToDisplay.id === NoticeBanner.VolumeVictoryCampaign"
       tag="p"
-      keypath="banners.leaderboard.currentCompetitionLink"
+      keypath="banners.leaderboard.currentCompetitionTitle"
     >
       <template #linkDescription>
         <NuxtLink
-          class="inline-flex font-semibold"
+          class="inline-flex font-semibold hover:text-black/70 underline transition-colors"
           :to="{ name: LeaderboardSubPage.Competition }"
         >
-          {{ $t('banners.leaderboard.currentCompetitionTitle') }}
+          {{ $t('banners.leaderboard.currentCompetitionLink') }}
         </NuxtLink>
       </template>
-    </i18n-t> -->
+    </i18n-t>
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.DeprecatedWallet"
@@ -268,26 +313,6 @@ function onClickStockTwitsCta() {
       </template>
     </i18n-t>
 
-    <div
-      v-if="
-        jsonStore.chainUpgradeConfig.proposalId &&
-        jsonStore.chainUpgradeConfig.proposalMsg &&
-        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade
-      "
-      class="flex items-center gap-1"
-    >
-      <p>{{ jsonStore.chainUpgradeConfig.proposalMsg }}</p>
-      <NuxtLink
-        target="_blank"
-        class="hover:opacity-80 underline cursor-pointer"
-        :to="`${getHubUrl()}/proposal/${
-          jsonStore.chainUpgradeConfig.proposalId
-        }`"
-      >
-        {{ $t('banners.findOutMore') }}
-      </NuxtLink>
-    </div>
-
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.StockTwits"
       tag="p"
@@ -306,17 +331,17 @@ function onClickStockTwitsCta() {
     </i18n-t>
 
     <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"
+      v-if="bannerToDisplay.id === NoticeBanner.PreLaunchFutures"
       tag="p"
-      keypath="banners.postOnly"
+      keypath="banners.prelaunchFuturesBanner"
     >
-      <template #link>
+      <template #docs>
         <NuxtLink
           target="_blank"
-          :to="NOTIFI_LINK"
+          to="https://docs.helixapp.com/trading/pre-launch-futures"
           class="hover:opacity-80 underline cursor-pointer"
         >
-          {{ $t('banners.findOutMore') }}
+          {{ $t('banners.docs') }}
         </NuxtLink>
       </template>
     </i18n-t>
@@ -327,9 +352,33 @@ function onClickStockTwitsCta() {
       </span>
     </template>
 
+    <template v-if="bannerToDisplay.id === NoticeBanner.MKRMigration">
+      <span>
+        {{ $t('banners.mkrExpiry') }}
+      </span>
+    </template>
+
+    <template
+      v-if="
+        bannerToDisplay.id === NoticeBanner.ExpiryFutures &&
+        expiryFutureSettlementTimestamp
+      "
+    >
+      <span>
+        {{
+          $t('banners.expiryFuturesBanner', {
+            date: format(
+              expiryFutureSettlementTimestamp * 1000,
+              "HH:mm 'on' MM/dd"
+            )
+          })
+        }}
+      </span>
+    </template>
+
     <UIcon
       :name="NuxtUiIcons.Close"
-      class="h-4 w-4 min-w-4 hover:text-white"
+      class="h-4 w-4 min-w-4 hover:text-white cursor-pointer"
       @click="onHideBanner"
     />
   </div>

@@ -1,4 +1,4 @@
-import keccak256 from 'keccak256'
+import { keccak256 } from 'js-sha3'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { TimeDuration } from '@/types'
@@ -90,7 +90,7 @@ export const generateUniqueHash = ({
   value: string
   limit: number
 }) => {
-  return keccak256(value).toString('hex').replace('0x', '').slice(0, limit)
+  return keccak256(value).slice(0, limit)
 }
 
 export const formatSecondsToDisplay = ({

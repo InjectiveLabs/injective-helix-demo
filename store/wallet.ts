@@ -72,50 +72,43 @@ export const useWalletStore = defineStore('wallet', {
       const modalStore = useSharedModalStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (wallet === Wallet.Metamask) {
-        await sharedWalletStore.connectMetamask()
+      if (
+        (
+          [
+            Wallet.Rabby,
+            Wallet.BitGet,
+            Wallet.Rainbow,
+            Wallet.Phantom,
+            Wallet.Metamask,
+            Wallet.OkxWallet,
+            Wallet.TrustWallet
+          ] as Wallet[]
+        ).includes(wallet)
+      ) {
+        await sharedWalletStore.connectEvmWallet(wallet)
       }
 
-      if (wallet === Wallet.Keplr) {
-        await sharedWalletStore.connectKeplr()
+      if (([Wallet.Leap, Wallet.Keplr] as Wallet[]).includes(wallet)) {
+        await sharedWalletStore.connectCosmosWallet(wallet)
       }
 
-      if (wallet === Wallet.Leap) {
-        await sharedWalletStore.connectLeap()
-      }
-
-      if ([Wallet.Ledger, Wallet.LedgerLegacy].includes(wallet) && address) {
+      if (
+        ([Wallet.Ledger, Wallet.LedgerLegacy] as Wallet[]).includes(wallet) &&
+        address
+      ) {
         await sharedWalletStore.connectLedger({
           wallet,
           address
         })
       }
 
-      if (wallet === Wallet.Phantom) {
-        await sharedWalletStore.connectPhantomWallet()
-      }
-
-      if (wallet === Wallet.Ninji) {
-        await sharedWalletStore.connectNinji()
-      }
-
-      if (wallet === Wallet.Cosmostation) {
-        await sharedWalletStore.connectCosmosStation()
-      }
-
       if (
-        [Wallet.TrezorBip32, Wallet.TrezorBip44].includes(wallet) &&
+        ([Wallet.TrezorBip32, Wallet.TrezorBip44] as Wallet[]).includes(
+          wallet
+        ) &&
         address
       ) {
         await sharedWalletStore.connectTrezor({ wallet, address })
-      }
-
-      if (wallet === Wallet.BitGet) {
-        await sharedWalletStore.connectBitGet()
-      }
-
-      if (wallet === Wallet.OkxWallet) {
-        await sharedWalletStore.connectOkxWallet()
       }
 
       if (wallet === Wallet.WalletConnect) {
@@ -123,10 +116,6 @@ export const useWalletStore = defineStore('wallet', {
         await msgBroadcaster.setOptions({
           txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT * 5
         })
-      }
-
-      if (wallet === Wallet.Rainbow) {
-        await sharedWalletStore.connectRainbow()
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
@@ -260,7 +249,11 @@ export const useWalletStore = defineStore('wallet', {
     async signArbitraryData(address: string, message: string) {
       const sharedWalletStore = useSharedWalletStore()
 
-      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+      if (
+        ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+          sharedWalletStore.wallet
+        )
+      ) {
         return await walletStrategy.signEip712TypedData(
           message,
           sharedWalletStore.address

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { DEBOUNCE_DEFAULT_PERIOD } from '@/app/utils/constants'
+
 const { width } = useWindowSize()
 
 const zIndex = ref(0)
@@ -22,7 +24,7 @@ watchDebounced(
       closeSidebar()
     }
   },
-  { debounce: 200, immediate: true }
+  { debounce: DEBOUNCE_DEFAULT_PERIOD, immediate: true }
 )
 </script>
 

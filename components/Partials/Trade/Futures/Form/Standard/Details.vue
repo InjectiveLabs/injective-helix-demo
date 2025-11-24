@@ -1,33 +1,35 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  Modal,
   MarketKey,
+  TradeDetails,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+
+const modalStore = useSharedModalStore()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 withDefaults(
   defineProps<{
-    margin: BigNumberInBase
-    quantity: BigNumberInBase
-    feeAmount: BigNumberInBase
-    worstPrice: BigNumberInBase
-    totalNotional: BigNumberInBase
-    marginWithFee: BigNumberInBase
+    isLimitOrder?: boolean
+    isTriggerOrder?: boolean
+    tradeDetails: TradeDetails
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
 )
 
-const isOpen = ref(true)
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const slippagePercentage = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
+)
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: derivativeMarket?.value?.takerFeeRate,
@@ -37,63 +39,56 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
-const isLimitAndPostOnly = computed(
+const formAmount = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
+)
+
+const isMakerFee = computed(
   () =>
     (derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
         DerivativeTradeTypes.Limit) ||
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
+      DerivativeTradeTypes.StopLimit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopMarket
 )
 
-function toggle() {
-  isOpen.value = !isOpen.value
+function openSlippageModal() {
+  modalStore.openModal(Modal.Slippage)
 }
 </script>
 
 <template>
-  <div v-if="derivativeMarket" class="mb-4">
-    <div
-      class="flex items-center justify-between cursor-pointer select-none text-white"
-      @click="toggle"
-    >
-      <p class="text-xs font-semibold select-none">{{ $t('trade.details') }}</p>
-      <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
-      </div>
-    </div>
-
-    <AppCollapse v-bind="{ isOpen }">
-      <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
-          <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
-          <div class="flex-1 mx-2" />
-
+  <PartialsTradeCommonFormDetails>
+    <template #default>
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.total') }}</template>
+        <template #value>
           <p
-            class="space-x-2 flex text-white"
+            class="flex space-x-2"
             :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)"
           >
             <span class="flex space-x-2">
               <span>&asymp;</span>
-
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
                   shouldAbbreviate: false,
-                  amount: marginWithFee.toFixed()
+                  amount: tradeDetails.marginWithFee.value
                 }"
               />
             </span>
@@ -102,96 +97,48 @@ function toggle() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2">
+      <PartialsTradeCommonFormDetailsRow v-if="!isLimitOrder">
+        <template #label>{{ $t('trade.slippage') }}</template>
+        <template #value>
+          <PartialsTradeCommonFormDetailsSlippage
+            v-bind="{
+              formAmount,
+              slippagePercentage,
+              estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
+              showEstSlippage:
+                tradeDetails.enoughLiquidity.value && !isTriggerOrder
+            }"
+            @on:click="openSlippageModal"
+          />
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.margin') }}</template>
+        <template #value>
+          <p class="flex space-x-2">
             <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
-                amount: margin.toFixed()
+                amount: tradeDetails.margin.value
               }"
-              class="text-white"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: totalNotional.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.quantity') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: quantity.toFixed()
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{
-                derivativeMarket.baseToken.overrideSymbol ||
-                derivativeMarket.baseToken.symbol
-              }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">
-            {{ $t('trade.averagePrice') }}
-          </p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: worstPrice.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.estLiquidationPrice') }}</template>
+        <template #value>
+          <p class="flex space-x-2">
             <SharedAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
@@ -199,77 +146,51 @@ function toggle() {
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
-                amount: estLiquidationPrice.toFixed(),
+                amount: estLiquidationPrice,
                 decimals: derivativeMarket.priceDecimals
               }"
-              class="text-white"
             />
-
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-
-        <template v-if="!isLimitAndPostOnly">
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p
-              v-if="derivativeMarket"
-              class="text-white"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)"
-            >
-              {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
-            </p>
-          </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
-            <div class="flex-1 mx-2" />
-            <p class="space-x-2 flex">
-              <SharedAmount
-                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              <span class="text-coolGray-450">
-                {{ derivativeMarket.quoteToken.symbol }}
-              </span>
-            </p>
-          </div>
         </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <template v-else>
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="text-white">
-              {{ makerFeeRateToFixed }}%
-            </p>
-          </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="flex gap-x-2">
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              {{ derivativeMarket.quoteToken.symbol }}
-            </p>
-          </div>
+      <PartialsTradeCommonFormDetailsRow
+        v-if="!isMakerFee"
+        :tooltip="
+          $t('trade.makerTakerRateTooltip', {
+            makerFeeRate: makerFeeRateToFixed,
+            takerFeeRate: takerFeeRateToFixed
+          })
+        "
+      >
+        <template #label>{{ $t('trade.fees') }}</template>
+        <template #value>
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)">
+            {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
+          </p>
         </template>
-      </div>
-    </AppCollapse>
-  </div>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow v-else>
+        <template #label>{{ $t('trade.fees') }}</template>
+        <template #value>
+          <p>{{ makerFeeRateToFixed }}%</p>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+    </template>
+
+    <template #devMode>
+      <PartialsTradeCommonFormDetailsDevMode
+        v-bind="{
+          isLimitOrder,
+          tradeDetails,
+          isTriggerOrder,
+          slippagePercentage
+        }"
+      />
+    </template>
+  </PartialsTradeCommonFormDetails>
 </template>
