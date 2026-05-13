@@ -18,23 +18,23 @@ _Helix | The Premier Decentralized Spot and Derivatives Exchange_
 1. Clone the repository
 
 ```bash
-$ git clone git@github.com:InjectiveLabs/injective-dex.git
-$ cd injective-dex
-$ yarn
+$ git clone https://github.com/InjectiveLabs/injective-helix-demo.git
+$ cd injective-helix-demo
+$ pnpm install
 ```
 
 2. Duplicate the .env.example to .env and fill in the values
 3. Compile the app locally
 
 ```bash
-$ yarn dev
+$ pnpm dev
 ```
 
 ## 📖 Documentation
 
-The `injective-helix` is built using Nuxt and TailwindCSS and its powered by the [injective-ts monorepo](https://github.com/InjectiveLabs/injective-ts/).
+The `injective-helix-demo` is built using Nuxt and TailwindCSS and its powered by the [injective-ts monorepo](https://github.com/InjectiveLabs/injective-ts/).
 
-You can always boot the dex locally on your own laptop without having to set up a relayer. You can use the `public` network in your `VITE_NETWORK` `.env` configuration variable and run the `yarn run dev` command. You can find all of the available networks (i.e - predefined set of endpoints) [here](https://github.com/InjectiveLabs/injective-ts/blob/17b1aa5df39d5724baf6262b276980cf722a1cba/packages/networks/src/types.ts#L1). Using these endpoints (from the `public`) network gives the 40% of the trading fees to the community spend pool.
+You can boot the demo locally without setting up a relayer. The checked-in `.env.example` uses the mainnet public endpoints from `@injectivelabs/networks`; copy it to `.env` and run `pnpm dev`. You can find all of the available networks (i.e - predefined set of endpoints) [here](https://github.com/InjectiveLabs/injective-ts/blob/17b1aa5df39d5724baf6262b276980cf722a1cba/packages/networks/src/types.ts#L1).
 
 ### Deployment
 
@@ -48,10 +48,10 @@ We've migrated the `injective-helix` repo to Nuxt3 in January, 2023. To make the
 
 1. Pull the latest codebase from the `injective-dex` repo, `master` branch,
 2. Resolve merge conflicts on your fork,
-3. Install the dependencies `yarn install`
-4. Clean up left overs from the previous deployments `yarn clean-up && rm -rf dist`
+3. Install the dependencies `pnpm install`
+4. Clean up left overs from the previous deployments `pnpm clean-up && rm -rf dist`
 5. Update your `.env` file and add `VITE_` prefix to all of the `.env` variables,
-6. Run the dex `yarn dev`
+6. Run the dex `pnpm dev`
 
 ---
 
