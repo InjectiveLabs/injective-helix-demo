@@ -18,7 +18,24 @@ const HELIX_OPTIMIZE_DEPS = [
   'lightweight-charts',
   'html-to-image',
   'embla-carousel-vue',
-  '@injectivelabs/wallet-ledger'
+  '@injectivelabs/wallet-ledger',
+  '@shared/types',
+  '@shared/Service',
+  '@shared/utils',
+  '@shared/data/token',
+  '@shared/WalletService',
+  '@shared/utils/async',
+  '@shared/utils/helper',
+  '@shared/utils/lib',
+  '@shared/utils/network',
+  '@shared/utils/constant',
+  '@shared/utils/formatter',
+  '@shared/wallet/alchemy',
+  '@shared/Service/app/ethGasPrice',
+  '@shared/transformer/market',
+  '@shared/transformer/market/fundingRate',
+  '@shared/transformer/trade',
+  '@shared/transformer/oracle'
 ]
 
 export default {
