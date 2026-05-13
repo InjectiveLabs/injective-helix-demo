@@ -5,9 +5,6 @@
   "license": "Apache-2.0",
   "author": "@InjectiveLabs",
   "private": true,
-  "browser": {
-    "buffer": true
-  },
   "scripts": {
     "fetch:data": "ts-node -P tsconfig-script.json ./scripts/marketMap.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/restriction.ts && ts-node -P tsconfig-script.json ./scripts/swap.ts && ts-node -P tsconfig-script.json ./scripts/denom.ts",
     "github:version": "ts-node -P tsconfig-script.json ./scripts/github.ts",
@@ -15,7 +12,7 @@
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
     "start": "nuxi start",
-    "postinstall": "pnpm update '@injectivelabs/*' --latest && pnpm fetch:data && pnpm github:version",
+    "postinstall": "pnpm fetch:data && pnpm github:version",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "analyze": "NODE_OPTIONS=--max-old-space-size=30720 ANALYZE_BUNDLE=true nuxi build --analyze",
@@ -65,6 +62,7 @@
     "@vueuse/nuxt": "13.7.0",
     "apexcharts": "^4.0.0",
     "axios": "1.11.0",
+    "buffer": "6.0.3",
     "canvas-confetti": "^1.6.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -76,6 +74,7 @@
     "gsap": "^3.12.5",
     "html-to-image": "^1.11.11",
     "js-confetti": "^0.12.0",
+    "js-sha3": "^0.9.3",
     "lightweight-charts": "^4.1.1",
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "2.67.0",

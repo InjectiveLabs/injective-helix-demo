@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
-import { dirname } from 'node:path'
-import { mkdirSync, existsSync, writeFileSync } from 'node:fs'
+import { dirname } from 'path'
+import { mkdirSync, existsSync, writeFileSync } from 'fs'
 
 export const storeJsonFile = (path: string, data: any) => {
   const dirPath = dirname(path)

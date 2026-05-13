@@ -6,6 +6,69 @@ import {
 import type { NitroConfig } from 'nitropack'
 import type { NuxtHooks } from 'nuxt/schema'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+const HELIX_OPTIMIZE_DEPS = [
+  'buffer',
+  'clsx',
+  'gsap',
+  'js-sha3',
+  'gsap/ScrollTrigger',
+  'gsap/ScrollToPlugin',
+  'lightweight-charts',
+  'html-to-image',
+  'embla-carousel-vue',
+  '@injectivelabs/wallet-ledger',
+  '@shared/types',
+  '@shared/Service',
+  '@shared/utils',
+  '@shared/data/token',
+  '@shared/WalletService',
+  '@shared/utils/async',
+  '@shared/utils/helper',
+  '@shared/utils/lib',
+  '@shared/utils/network',
+  '@shared/utils/constant',
+  '@shared/utils/formatter',
+  '@shared/wallet/alchemy',
+  '@shared/Service/app/ethGasPrice',
+  '@shared/transformer/market',
+  '@shared/transformer/market/fundingRate',
+  '@shared/transformer/trade',
+  '@shared/transformer/oracle'
+]
+
+const VUE_DEDUPE_DEPS = [
+  'vue',
+  '@vue/shared',
+  '@vue/reactivity',
+  '@vue/runtime-core',
+  '@vue/runtime-dom'
+]
+
+function aliasBufferEntrypoint(config: any) {
+  config.resolve = config.resolve || {}
+
+  if (Array.isArray(config.resolve.alias)) {
+    config.resolve.alias.push({ find: /^buffer$/, replacement: 'buffer/' })
+
+    return
+  }
+
+  config.resolve.alias = {
+    ...(config.resolve.alias || {}),
+    buffer: 'buffer/'
+  }
+}
+
+function dedupeVueRuntime(config: any) {
+  config.resolve = config.resolve || {}
+  config.resolve.dedupe = config.resolve.dedupe || []
+  config.resolve.dedupe = [
+    ...new Set([...config.resolve.dedupe, ...VUE_DEDUPE_DEPS])
+  ]
+}
+
 export default {
   'pages:extend'(pages) {
     const spotPage = pages.find((page) => page.name === TradePage.Spot)
@@ -47,5 +110,18 @@ export default {
       ...Object.keys(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
       ...Object.keys(verifiedDerivateMarketIdMap).map((s) => `/futures/${s}`)
     ]
+  },
+  'vite:extendConfig'(config: any) {
+    aliasBufferEntrypoint(config)
+    dedupeVueRuntime(config)
+
+    if (isProduction) {
+      return
+    }
+
+    config.optimizeDeps = config.optimizeDeps || {}
+    config.optimizeDeps.include = config.optimizeDeps.include || []
+    config.optimizeDeps.include.push(...HELIX_OPTIMIZE_DEPS)
+    config.optimizeDeps.include = [...new Set(config.optimizeDeps.include)]
   }
-} as NuxtHooks
+} as Partial<NuxtHooks>

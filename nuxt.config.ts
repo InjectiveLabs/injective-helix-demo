@@ -3,6 +3,9 @@ import { metaTags } from './nuxt-config/meta'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 const isProduction = process.env.NODE_ENV === 'production'
+const injectiveUiLayerRef =
+  process.env.NUXT_INJECTIVE_UI_LAYER_REF ||
+  'bdab2818f0b26f7371f14960ead6a4d39ce9399c'
 
 export default defineNuxtConfig({
   hooks,
@@ -69,7 +72,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui'
-      : 'github:InjectiveLabs/injective-ui#master'
+      : `github:InjectiveLabs/injective-ui#${injectiveUiLayerRef}`
   ],
   // @ts-ignore
   site: {
