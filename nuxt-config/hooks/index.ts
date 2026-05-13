@@ -6,6 +6,21 @@ import {
 import type { NitroConfig } from 'nitropack'
 import type { NuxtHooks } from 'nuxt/schema'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+const HELIX_OPTIMIZE_DEPS = [
+  'buffer',
+  'clsx',
+  'gsap',
+  'js-sha3',
+  'gsap/ScrollTrigger',
+  'gsap/ScrollToPlugin',
+  'lightweight-charts',
+  'html-to-image',
+  'embla-carousel-vue',
+  '@injectivelabs/wallet-ledger'
+]
+
 export default {
   'pages:extend'(pages) {
     const spotPage = pages.find((page) => page.name === TradePage.Spot)
@@ -47,5 +62,15 @@ export default {
       ...Object.keys(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
       ...Object.keys(verifiedDerivateMarketIdMap).map((s) => `/futures/${s}`)
     ]
+  },
+  'vite:extendConfig'(config: any) {
+    if (isProduction) {
+      return
+    }
+
+    config.optimizeDeps = config.optimizeDeps || {}
+    config.optimizeDeps.include = config.optimizeDeps.include || []
+    config.optimizeDeps.include.push(...HELIX_OPTIMIZE_DEPS)
+    config.optimizeDeps.include = [...new Set(config.optimizeDeps.include)]
   }
-} as NuxtHooks
+} as Partial<NuxtHooks>
