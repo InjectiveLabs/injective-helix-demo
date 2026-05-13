@@ -38,6 +38,21 @@ const HELIX_OPTIMIZE_DEPS = [
   '@shared/transformer/oracle'
 ]
 
+function aliasBufferEntrypoint(config: any) {
+  config.resolve = config.resolve || {}
+
+  if (Array.isArray(config.resolve.alias)) {
+    config.resolve.alias.push({ find: /^buffer$/, replacement: 'buffer/' })
+
+    return
+  }
+
+  config.resolve.alias = {
+    ...(config.resolve.alias || {}),
+    buffer: 'buffer/'
+  }
+}
+
 export default {
   'pages:extend'(pages) {
     const spotPage = pages.find((page) => page.name === TradePage.Spot)
@@ -81,6 +96,8 @@ export default {
     ]
   },
   'vite:extendConfig'(config: any) {
+    aliasBufferEntrypoint(config)
+
     if (isProduction) {
       return
     }
