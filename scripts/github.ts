@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import 'dotenv/config'
 import { simpleGit } from 'simple-git'
 import { storeJsonFile } from './helper'
@@ -14,8 +13,10 @@ const main = async () => {
       : await git.log(['-n', '20'])
     const branch = await git.revparse(['--abbrev-ref', 'HEAD'])
 
-    const repositoryUrl = 'https://github.com/InjectiveLabs/injective-helix-demo'
-    const gitTagLink = `${repositoryUrl}/releases/tag/${tag}`
+    const repositoryUrl =
+      'https://github.com/InjectiveLabs/injective-helix-demo'
+    const gitTagLink =
+      tag === 'dev' ? '' : `${repositoryUrl}/releases/tag/${tag}`
 
     if (process.env.GIT_TAG) {
       storeJsonFile('app/json/gitVersion.json', {
@@ -28,7 +29,7 @@ const main = async () => {
       return
     }
 
-    const logs = all.map((log: any) => ({
+    const logs = all.map((log) => ({
       ...log,
       commitLink: `${repositoryUrl}/commit/${log.hash}`
     }))

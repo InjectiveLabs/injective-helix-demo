@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
 import 'dotenv/config'
-import { writeFileSync } from 'node:fs'
+import { writeFileSync } from 'fs'
 import { HttpClient } from '@injectivelabs/utils'
 
 export const fetchOFACAndRestrictedAddresses = async (): Promise<any> => {
