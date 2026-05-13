@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import 'dotenv/config'
 import { simpleGit } from 'simple-git'
 import { storeJsonFile } from './helper'
@@ -8,32 +7,36 @@ const main = async () => {
     const git = simpleGit(process.cwd())
 
     const { latest } = await git.tags()
-    const { all } = await git.log({ from: latest, to: 'HEAD' })
+    const tag = process.env.GIT_TAG || latest || 'dev'
+    const { all } = latest
+      ? await git.log({ from: latest, to: 'HEAD' })
+      : await git.log(['-n', '20'])
     const branch = await git.revparse(['--abbrev-ref', 'HEAD'])
 
-    const gitTagLink = `https://github.com/InjectiveLabs/injective-helix/releases/tag/${
-      process.env.GIT_TAG || latest
-    }`
+    const repositoryUrl =
+      'https://github.com/InjectiveLabs/injective-helix-demo'
+    const gitTagLink =
+      tag === 'dev' ? '' : `${repositoryUrl}/releases/tag/${tag}`
 
     if (process.env.GIT_TAG) {
       storeJsonFile('app/json/gitVersion.json', {
         branch,
         gitTagLink,
-        tag: process.env.GIT_TAG,
+        tag,
         logs: []
       })
 
       return
     }
 
-    const logs = all.map((log: any) => ({
+    const logs = all.map((log) => ({
       ...log,
-      commitLink: `https://github.com/InjectiveLabs/injective-helix/commit/${log.hash}`
+      commitLink: `${repositoryUrl}/commit/${log.hash}`
     }))
 
     storeJsonFile('app/json/gitVersion.json', {
       branch,
-      tag: latest,
+      tag,
       gitTagLink,
       logs
     })
