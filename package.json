@@ -5,9 +5,6 @@
   "license": "Apache-2.0",
   "author": "@InjectiveLabs",
   "private": true,
-  "browser": {
-    "buffer": true
-  },
   "scripts": {
     "fetch:data": "ts-node -P tsconfig-script.json ./scripts/marketMap.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/restriction.ts && ts-node -P tsconfig-script.json ./scripts/swap.ts && ts-node -P tsconfig-script.json ./scripts/denom.ts",
     "github:version": "ts-node -P tsconfig-script.json ./scripts/github.ts",
@@ -15,7 +12,7 @@
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
     "start": "nuxi start",
-    "postinstall": "pnpm update '@injectivelabs/*' --latest && pnpm fetch:data && pnpm github:version",
+    "postinstall": "pnpm fetch:data && pnpm github:version",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "analyze": "NODE_OPTIONS=--max-old-space-size=30720 ANALYZE_BUNDLE=true nuxi build --analyze",
