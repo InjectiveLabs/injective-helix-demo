@@ -38,6 +38,14 @@ const HELIX_OPTIMIZE_DEPS = [
   '@shared/transformer/oracle'
 ]
 
+const VUE_DEDUPE_DEPS = [
+  'vue',
+  '@vue/shared',
+  '@vue/reactivity',
+  '@vue/runtime-core',
+  '@vue/runtime-dom'
+]
+
 function aliasBufferEntrypoint(config: any) {
   config.resolve = config.resolve || {}
 
@@ -51,6 +59,14 @@ function aliasBufferEntrypoint(config: any) {
     ...(config.resolve.alias || {}),
     buffer: 'buffer/'
   }
+}
+
+function dedupeVueRuntime(config: any) {
+  config.resolve = config.resolve || {}
+  config.resolve.dedupe = config.resolve.dedupe || []
+  config.resolve.dedupe = [
+    ...new Set([...config.resolve.dedupe, ...VUE_DEDUPE_DEPS])
+  ]
 }
 
 export default {
@@ -97,6 +113,7 @@ export default {
   },
   'vite:extendConfig'(config: any) {
     aliasBufferEntrypoint(config)
+    dedupeVueRuntime(config)
 
     if (isProduction) {
       return
