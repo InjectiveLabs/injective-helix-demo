@@ -117,6 +117,9 @@ importers:
       axios:
         specifier: 1.11.0
         version: 1.11.0
+      buffer:
+        specifier: 6.0.3
+        version: 6.0.3
       canvas-confetti:
         specifier: ^1.6.0
         version: 1.9.3
